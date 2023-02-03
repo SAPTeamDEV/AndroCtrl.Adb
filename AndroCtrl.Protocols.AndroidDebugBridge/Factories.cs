@@ -8,7 +8,7 @@ using System.Net;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge;
 /// <summary>
-/// Provides factory methods used by the various SharpAdbClient classes.
+/// Provides factory methods used by the various AndroCtrl.Protocols.AndroidDebugBridge classes.
 /// </summary>
 public static class Factories
 {

@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <Description>AndroCtrl.Protocols.AndroidDebugBridge is a .NET library that allows AndroCtrl and other .NET Core applications to communicate with Android devices.</Description>
-    <AssemblyTitle>.NET client for adb, the Android Debug Bridge (SharpAdbClient)</AssemblyTitle>
+    <AssemblyTitle>.NET client for adb, the Android Debug Bridge (AndroCtrl)</AssemblyTitle>
     <Title>.NET client for adb, Android Debug Bridge (AndroCtrl)</Title>
     <VersionPrefix>1.0.0</VersionPrefix>
     <Authors>The Android Open Source Project, Ryan Conrad, Quamotion, Alireza Poodineh</Authors>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>AndroCtrl.Protocols.AndroidDebugBridge</AssemblyName>
-    <AssemblyOriginatorKeyFile>SharpAdbClient.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>False</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>AndroCtrl.Protocols.AndroidDebugBridge</PackageId>

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <SignAssembly>False</SignAssembly>
-    <AssemblyOriginatorKeyFile>SharpAdbClient.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpAdbClient\AndroCtrl.Protocols.AndroidDebugBridge.csproj" />
+    <ProjectReference Include="..\AndroCtrl.Protocols.AndroidDebugBridge\AndroCtrl.Protocols.AndroidDebugBridge.csproj" />
   </ItemGroup>
 
   <ItemGroup>

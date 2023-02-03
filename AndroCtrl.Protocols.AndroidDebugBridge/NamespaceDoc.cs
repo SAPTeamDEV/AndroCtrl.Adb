@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace AndroCtrl.Protocols.AndroidDebugBridge;
 /// <summary>
 /// <para>
-///     SharpAdbClient is a .NET library that allows.NET applications to communicate with Android devices.
+///     AndroCtrl.Protocols.AndroidDebugBridge is a .NET library that allows.NET applications to communicate with Android devices.
 ///     It provides a.NET implementation of the <c>adb</c> protocol, giving more flexibility to the developer than launching an
 ///     <c>adb.exe</c> process and parsing the console output.
 /// </para>

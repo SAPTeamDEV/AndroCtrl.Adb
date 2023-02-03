@@ -67,7 +67,7 @@ public class AdbCommandLineClient : IAdbCommandLineClient
         }
         else
         {
-            throw new NotSupportedException("SharpAdbClient only supports launching adb.exe on Windows, Mac OS and Linux");
+            throw new NotSupportedException("This library only supports launching adb.exe on Windows, Mac OS and Linux");
         }
 
         this.EnsureIsValidAdbFile(adbPath);
