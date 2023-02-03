@@ -21,6 +21,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Company>SAP Team</Company>
     <RepositoryUrl>https://github.com/SAPTeamDEV/AndroCtrl.Protocols.AndroidDebugBridge</RepositoryUrl>
+    <IsPublishable>False</IsPublishable>
   </PropertyGroup>
 
   <ItemGroup>
