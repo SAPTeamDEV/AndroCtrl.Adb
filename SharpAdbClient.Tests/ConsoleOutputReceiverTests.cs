@@ -1,13 +1,14 @@
 ﻿using Xunit;
-using SharpAdbClient.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class ConsoleOutputReceiverTests
     {

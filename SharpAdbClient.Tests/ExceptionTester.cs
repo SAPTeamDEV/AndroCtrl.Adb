@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     internal static class ExceptionTester<T>
         where T : Exception

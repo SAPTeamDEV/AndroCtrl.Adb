@@ -2,12 +2,14 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge;
 
     /// <summary>
     ///
@@ -19,7 +21,7 @@ namespace SharpAdbClient
         /// </summary>
         public MultiLineReceiver()
         {
-            this.Lines = new List<string>();
+            Lines = new List<string>();
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace SharpAdbClient
         /// </param>
         public void AddOutput(string line)
         {
-            this.Lines.Add(line);
+            Lines.Add(line);
         }
 
         /// <summary>
@@ -62,14 +64,14 @@ namespace SharpAdbClient
         /// </summary>
         public void Flush()
         {
-            if (this.Lines.Count > 0)
+            if (Lines.Count > 0)
             {
                 // send it for final processing
-                this.ProcessNewLines(this.Lines);
-                this.Lines.Clear();
+                ProcessNewLines(Lines);
+                Lines.Clear();
             }
 
-            this.Done();
+            Done();
         }
 
         /// <summary>

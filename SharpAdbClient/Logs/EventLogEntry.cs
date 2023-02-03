@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.Logs
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
 {
     using System.Collections.ObjectModel;
 
@@ -17,7 +17,7 @@ namespace SharpAdbClient.Logs
         /// </summary>
         public EventLogEntry()
         {
-            this.Values = new Collection<object>();
+            Values = new Collection<object>();
         }
 
         /// <summary>

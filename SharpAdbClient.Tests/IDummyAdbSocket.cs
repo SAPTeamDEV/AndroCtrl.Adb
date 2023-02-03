@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace SharpAdbClient.Tests
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public interface IDummyAdbSocket : IAdbSocket
     {

@@ -1,7 +1,8 @@
 ﻿using Xunit;
 using System;
+using AndroCtrl.Protocols.AndroidDebugBridge;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class SyncCommandConverterTests
     {

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace SharpAdbClient.Tests
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     internal class DummySyncService : ISyncService
     {
@@ -12,7 +14,7 @@ namespace SharpAdbClient.Tests
 
         public bool IsOpen
         {
-            get {  return true; }
+            get { return true; }
         }
 
         public void Dispose()
@@ -34,7 +36,7 @@ namespace SharpAdbClient.Tests
 
         public void Push(Stream stream, string remotePath, int permissions, DateTimeOffset timestamp, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            this.UploadedFiles.Add(remotePath, stream);
+            UploadedFiles.Add(remotePath, stream);
         }
 
         public FileStatistics Stat(string remotePath)

@@ -2,10 +2,12 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
     /// <summary>
     /// Processes output of the <c>pm install</c> command.
@@ -52,21 +54,21 @@ namespace SharpAdbClient.DeviceCommands
                 {
                     if (line.StartsWith(SuccessOutput))
                     {
-                        this.ErrorMessage = null;
-                        this.Success = true;
+                        ErrorMessage = null;
+                        Success = true;
                     }
                     else
                     {
                         var m = Regex.Match(line, FailurePattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                        this.ErrorMessage = UnknownError;
+                        ErrorMessage = UnknownError;
 
                         if (m.Success)
                         {
                             string msg = m.Groups[1].Value;
-                            this.ErrorMessage = string.IsNullOrWhiteSpace(msg) ? UnknownError : msg;
+                            ErrorMessage = string.IsNullOrWhiteSpace(msg) ? UnknownError : msg;
                         }
 
-                        this.Success = false;
+                        Success = false;
                     }
                 }
             }

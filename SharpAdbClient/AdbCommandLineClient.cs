@@ -2,11 +2,13 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
+    using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
-    using SharpAdbClient.Exceptions;
+
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -24,7 +26,7 @@ namespace SharpAdbClient
         /// The regex pattern for getting the adb version from the <c>adb version</c> command.
         /// </summary>
         private const string AdbVersionPattern = "^.*(\\d+)\\.(\\d+)\\.(\\d+)$";
-        
+
         /// <summary>
         /// The logger to use when logging messages.
         /// </summary>
@@ -70,7 +72,7 @@ namespace SharpAdbClient
 
             this.EnsureIsValidAdbFile(adbPath);
 
-            this.AdbPath = adbPath;
+            AdbPath = adbPath;
             this.logger = logger ?? NullLogger<AdbCommandLineClient>.Instance;
         }
 
@@ -94,20 +96,20 @@ namespace SharpAdbClient
             // Run the adb.exe version command and capture the output.
             List<string> standardOutput = new List<string>();
 
-            this.RunAdbProcess("version", null, standardOutput);
+            RunAdbProcess("version", null, standardOutput);
 
             // Parse the output to get the version.
             var version = GetVersionFromOutput(standardOutput);
 
             if (version == null)
             {
-                throw new AdbException($"The version of the adb executable at {this.AdbPath} could not be determined.");
+                throw new AdbException($"The version of the adb executable at {AdbPath} could not be determined.");
             }
 
             if (version < AdbServer.RequiredAdbVersion)
             {
                 var ex = new AdbException($"Required minimum version of adb: {AdbServer.RequiredAdbVersion}. Current version is {version}");
-                this.logger.LogError(ex, ex.Message);
+                logger.LogError(ex, ex.Message);
                 throw ex;
             }
 
@@ -119,7 +121,7 @@ namespace SharpAdbClient
         /// </summary>
         public void StartServer()
         {
-            int status = this.RunAdbProcessInner("start-server", null, null);
+            int status = RunAdbProcessInner("start-server", null, null);
 
             if (status == 0)
             {
@@ -150,7 +152,7 @@ namespace SharpAdbClient
 
             // Try again. This time, we don't call "Inner", and an exception will be thrown if the start operation fails
             // again. We'll let that exception bubble up the stack.
-            this.RunAdbProcess("start-server", null, null);
+            RunAdbProcess("start-server", null, null);
         }
 
         /// <inheritdoc/>
@@ -222,7 +224,7 @@ namespace SharpAdbClient
         /// </exception>
         protected virtual void RunAdbProcess(string command, List<string> errorOutput, List<string> standardOutput)
         {
-            int status = this.RunAdbProcessInner(command, errorOutput, standardOutput);
+            int status = RunAdbProcessInner(command, errorOutput, standardOutput);
 
             if (status != 0)
             {
@@ -265,7 +267,7 @@ namespace SharpAdbClient
 
             int status;
 
-            ProcessStartInfo psi = new ProcessStartInfo(this.AdbPath, command)
+            ProcessStartInfo psi = new ProcessStartInfo(AdbPath, command)
             {
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden,

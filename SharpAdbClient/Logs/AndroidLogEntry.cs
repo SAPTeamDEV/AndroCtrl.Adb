@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace SharpAdbClient.Logs
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
 {
     /// <summary>
     /// Represents a standard Android log entry (an entry in any Android log buffer
@@ -63,7 +63,7 @@ namespace SharpAdbClient.Logs
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{this.TimeStamp:yy-MM HH:mm:ss.fff} {this.ProcessId, 5} {this.ProcessId, 5} {FormatPriority(this.Priority)} {this.Tag, -8}: {this.Message}";
+            return $"{TimeStamp:yy-MM HH:mm:ss.fff} {ProcessId,5} {ProcessId,5} {FormatPriority(Priority)} {Tag,-8}: {Message}";
         }
 
         /// <summary>

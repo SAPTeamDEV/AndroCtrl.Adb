@@ -2,10 +2,13 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
-    using SharpAdbClient.Exceptions;
-    using SharpAdbClient.Logs;
+    using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
+    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -84,7 +87,7 @@ namespace SharpAdbClient
                 throw new ArgumentNullException(nameof(adbSocketFactory));
             }
 
-            this.EndPoint = endPoint;
+            EndPoint = endPoint;
             this.adbSocketFactory = adbSocketFactory;
         }
 
@@ -155,7 +158,7 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public int GetAdbVersion()
         {
-            using (var socket = this.adbSocketFactory(this.EndPoint))
+            using (var socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest("host:version");
                 var response = socket.ReadAdbResponse();
@@ -168,7 +171,7 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public void KillAdb()
         {
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest("host:kill");
 
@@ -180,7 +183,7 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public List<DeviceData> GetDevices()
         {
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest("host:devices-l");
                 socket.ReadAdbResponse();
@@ -195,9 +198,9 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public int CreateReverseForward(DeviceData device, string remote, string local, bool allowRebind)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SetDevice(device);
 
@@ -219,9 +222,9 @@ namespace SharpAdbClient
 
         public void RemoveReverseForward(DeviceData device, string remote)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SetDevice(device);
 
@@ -232,9 +235,9 @@ namespace SharpAdbClient
 
         public void RemoveAllReverseForwards(DeviceData device)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SetDevice(device);
 
@@ -246,9 +249,9 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public int CreateForward(DeviceData device, string local, string remote, bool allowRebind)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 string rebind = allowRebind ? string.Empty : "norebind:";
 
@@ -269,15 +272,15 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public int CreateForward(DeviceData device, ForwardSpec local, ForwardSpec remote, bool allowRebind)
         {
-            return this.CreateForward(device, local?.ToString(), remote?.ToString(), allowRebind);
+            return CreateForward(device, local?.ToString(), remote?.ToString(), allowRebind);
         }
 
         /// <inheritdoc/>
         public void RemoveForward(DeviceData device, int localPort)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest($"host-serial:{device.Serial}:killforward:tcp:{localPort}");
                 var response = socket.ReadAdbResponse();
@@ -287,9 +290,9 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public void RemoveAllForwards(DeviceData device)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest($"host-serial:{device.Serial}:killforward-all");
                 var response = socket.ReadAdbResponse();
@@ -299,9 +302,9 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public IEnumerable<ForwardData> ListForward(DeviceData device)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest($"host-serial:{device.Serial}:list-forward");
                 var response = socket.ReadAdbResponse();
@@ -316,9 +319,9 @@ namespace SharpAdbClient
 
         public IEnumerable<ForwardData> ListReverseForward(DeviceData device)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SetDevice(device);
 
@@ -336,15 +339,15 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public Task ExecuteRemoteCommandAsync(string command, DeviceData device, IShellOutputReceiver receiver, CancellationToken cancellationToken)
         {
-            return this.ExecuteRemoteCommandAsync(command, device, receiver, Encoding, cancellationToken);
+            return ExecuteRemoteCommandAsync(command, device, receiver, Encoding, cancellationToken);
         }
 
         /// <inheritdoc/>
         public async Task ExecuteRemoteCommandAsync(string command, DeviceData device, IShellOutputReceiver receiver, Encoding encoding, CancellationToken cancellationToken)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 cancellationToken.Register(() => socket.Dispose());
 
@@ -399,7 +402,7 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public Framebuffer CreateRefreshableFramebuffer(DeviceData device)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
             return new Framebuffer(device, this);
         }
@@ -407,9 +410,9 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public async Task<Image> GetFrameBufferAsync(DeviceData device, CancellationToken cancellationToken)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (Framebuffer framebuffer = this.CreateRefreshableFramebuffer(device))
+            using (Framebuffer framebuffer = CreateRefreshableFramebuffer(device))
             {
                 await framebuffer.RefreshAsync(cancellationToken).ConfigureAwait(false);
 
@@ -426,11 +429,11 @@ namespace SharpAdbClient
                 throw new ArgumentException(nameof(messageSink));
             }
 
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
             // The 'log' service has been deprecated, see
             // https://android.googlesource.com/platform/system/core/+/7aa39a7b199bb9803d3fd47246ee9530b4a96177
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SetDevice(device);
 
@@ -478,11 +481,11 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public void Reboot(string into, DeviceData device)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
             var request = $"reboot:{into}";
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SetDevice(device);
                 socket.SendAdbRequest(request);
@@ -498,7 +501,7 @@ namespace SharpAdbClient
                 throw new ArgumentNullException(nameof(endpoint));
             }
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest($"host:connect:{endpoint.Host}:{endpoint.Port}");
                 var response = socket.ReadAdbResponse();
@@ -508,21 +511,21 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public void Root(DeviceData device)
         {
-            this.Root("root:", device);
+            Root("root:", device);
         }
 
         /// <inheritdoc/>
         public void Unroot(DeviceData device)
         {
-            this.Root("unroot:", device);
+            Root("unroot:", device);
         }
 
         /// <inheritdoc/>
         protected void Root(string request, DeviceData device)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SetDevice(device);
                 socket.SendAdbRequest(request);
@@ -552,7 +555,7 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public List<string> GetFeatureSet(DeviceData device)
         {
-            using (var socket = this.adbSocketFactory(this.EndPoint))
+            using (var socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest($"host-serial:{device.Serial}:features");
 
@@ -567,7 +570,7 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public void Install(DeviceData device, Stream apk, params string[] arguments)
         {
-            this.EnsureDevice(device);
+            EnsureDevice(device);
 
             if (apk == null)
             {
@@ -595,7 +598,7 @@ namespace SharpAdbClient
             // do last to override any user specified value
             requestBuilder.Append($" -S {apk.Length}");
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SetDevice(device);
 
@@ -627,7 +630,7 @@ namespace SharpAdbClient
                 throw new ArgumentNullException(nameof(endpoint));
             }
 
-            using (IAdbSocket socket = this.adbSocketFactory(this.EndPoint))
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
             {
                 socket.SendAdbRequest($"host:disconnect:{endpoint.Host}:{endpoint.Port}");
                 var response = socket.ReadAdbResponse();

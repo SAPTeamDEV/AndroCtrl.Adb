@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     using System;
     using System.Collections.Generic;
@@ -141,21 +141,21 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public override string ToString()
         {
-            var protocolString = Mappings.FirstOrDefault(v => v.Value == this.Protocol).Key;
+            var protocolString = Mappings.FirstOrDefault(v => v.Value == Protocol).Key;
 
-            switch (this.Protocol)
+            switch (Protocol)
             {
                 case ForwardProtocol.JavaDebugWireProtocol:
-                    return $"{protocolString}:{this.ProcessId}";
+                    return $"{protocolString}:{ProcessId}";
 
                 case ForwardProtocol.Tcp:
-                    return $"{protocolString}:{this.Port}";
+                    return $"{protocolString}:{Port}";
 
                 case ForwardProtocol.LocalAbstract:
                 case ForwardProtocol.LocalFilesystem:
                 case ForwardProtocol.LocalReserved:
                 case ForwardProtocol.Device:
-                    return $"{protocolString}:{this.SocketName}";
+                    return $"{protocolString}:{SocketName}";
 
                 default:
                     return string.Empty;
@@ -165,10 +165,10 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return (int)this.Protocol
-                ^ this.Port
-                ^ this.ProcessId
-                ^ (this.SocketName == null ? 1 : this.SocketName.GetHashCode());
+            return (int)Protocol
+                ^ Port
+                ^ ProcessId
+                ^ (SocketName == null ? 1 : SocketName.GetHashCode());
         }
 
         /// <inheritdoc/>
@@ -181,24 +181,24 @@ namespace SharpAdbClient
                 return false;
             }
 
-            if (other.Protocol != this.Protocol)
+            if (other.Protocol != Protocol)
             {
                 return false;
             }
 
-            switch (this.Protocol)
+            switch (Protocol)
             {
                 case ForwardProtocol.JavaDebugWireProtocol:
-                    return this.ProcessId == other.ProcessId;
+                    return ProcessId == other.ProcessId;
 
                 case ForwardProtocol.Tcp:
-                    return this.Port == other.Port;
+                    return Port == other.Port;
 
                 case ForwardProtocol.LocalAbstract:
                 case ForwardProtocol.LocalFilesystem:
                 case ForwardProtocol.LocalReserved:
                 case ForwardProtocol.Device:
-                    return string.Equals(this.SocketName, other.SocketName);
+                    return string.Equals(SocketName, other.SocketName);
 
                 default:
                     return false;

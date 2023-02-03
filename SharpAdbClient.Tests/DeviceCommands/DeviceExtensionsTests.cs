@@ -1,9 +1,11 @@
 ﻿using Xunit;
 using Moq;
-using SharpAdbClient.DeviceCommands;
 using System.Linq;
+using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+using AndroCtrl.Protocols.AndroidDebugBridge.Tests;
 
-namespace SharpAdbClient.Tests.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.DeviceCommands
 {
     public class DeviceExtensionsTests
     {
@@ -357,7 +359,7 @@ then
     /system/bin/ls /proc/
 else
     /system/bin/ls -1 /proc/
-fi".Replace("\r\n", "\n"), 
+fi".Replace("\r\n", "\n"),
 @"1
 2
 3

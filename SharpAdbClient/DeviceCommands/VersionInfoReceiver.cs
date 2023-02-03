@@ -4,16 +4,15 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
-    using SharpAdbClient;
     using System;
     using System.Text.RegularExpressions;
 
     /// <summary>
     /// Processes command line output of the <c>dumpsys package</c> command.
     /// </summary>
-    internal class VersionInfoReceiver : InfoReceiver
+    public class VersionInfoReceiver : InfoReceiver
     {
         /// <summary>
         /// The name of the version code property.
@@ -35,8 +34,8 @@ namespace SharpAdbClient.DeviceCommands
         /// </summary>
         public VersionInfoReceiver()
         {
-            this.AddPropertyParser(versionCode, this.GetVersionCode);
-            this.AddPropertyParser(versionName, this.GetVersionName);
+            AddPropertyParser(versionCode, GetVersionCode);
+            AddPropertyParser(versionName, GetVersionName);
         }
 
         /// <summary>
@@ -46,9 +45,9 @@ namespace SharpAdbClient.DeviceCommands
         {
             get
             {
-                if (this.GetPropertyValue(versionCode) != null && this.GetPropertyValue(versionName) != null)
+                if (GetPropertyValue(versionCode) != null && GetPropertyValue(versionName) != null)
                 {
-                    return new VersionInfo((int)this.GetPropertyValue(versionCode), (string)this.GetPropertyValue(versionName));
+                    return new VersionInfo((int)GetPropertyValue(versionCode), (string)GetPropertyValue(versionName));
                 }
                 else
                 {
@@ -79,7 +78,7 @@ namespace SharpAdbClient.DeviceCommands
                 return;
             }
 
-            this.inPackagesSection = string.Equals("Packages:", line, StringComparison.OrdinalIgnoreCase);
+            inPackagesSection = string.Equals("Packages:", line, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -87,11 +86,11 @@ namespace SharpAdbClient.DeviceCommands
         /// </summary>
         /// <param name="line">The line to be parsed.</param>
         /// <returns>The extracted version name.</returns>
-        internal object GetVersionName(string line)
+        public object GetVersionName(string line)
         {
-            this.CheckPackagesSection(line);
+            CheckPackagesSection(line);
 
-            if (!this.inPackagesSection)
+            if (!inPackagesSection)
             {
                 return null;
             }
@@ -111,11 +110,11 @@ namespace SharpAdbClient.DeviceCommands
         /// </summary>
         /// <param name="line">The line to be parsed.</param>
         /// <returns>The extracted version code.</returns>
-        internal object GetVersionCode(string line)
+        public object GetVersionCode(string line)
         {
-            this.CheckPackagesSection(line);
+            CheckPackagesSection(line);
 
-            if (!this.inPackagesSection)
+            if (!inPackagesSection)
             {
                 return null;
             }

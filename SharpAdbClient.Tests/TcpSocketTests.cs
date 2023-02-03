@@ -2,9 +2,12 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class TcpSocketTests
     {

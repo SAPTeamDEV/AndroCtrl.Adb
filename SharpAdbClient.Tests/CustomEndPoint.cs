@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     /// <summary>
     /// Used by the <see cref="TcpSocketTests.CreateUnsupportedSocketTest"/> test.

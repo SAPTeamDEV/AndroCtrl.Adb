@@ -2,9 +2,10 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.Logs
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
 {
-    using SharpAdbClient.Exceptions;
+    using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+
     using System;
     using System.Collections.ObjectModel;
     using System.IO;
@@ -50,12 +51,12 @@ namespace SharpAdbClient.Logs
             // Read the log data in binary format. This format is defined at
             // https://android.googlesource.com/platform/system/core/+/master/include/log/logger.h
             // https://android.googlesource.com/platform/system/core/+/67d7eaf/include/log/logger.h
-            var payloadLengthValue = await this.ReadUInt16Async(cancellationToken).ConfigureAwait(false);
-            var headerSizeValue = payloadLengthValue == null ? null : await this.ReadUInt16Async(cancellationToken).ConfigureAwait(false);
-            var pidValue = headerSizeValue == null ? null : await this.ReadInt32Async(cancellationToken).ConfigureAwait(false);
-            var tidValue = pidValue == null ? null : await this.ReadInt32Async(cancellationToken).ConfigureAwait(false);
-            var secValue = tidValue == null ? null : await this.ReadInt32Async(cancellationToken).ConfigureAwait(false);
-            var nsecValue = secValue == null ? null : await this.ReadInt32Async(cancellationToken).ConfigureAwait(false);
+            var payloadLengthValue = await ReadUInt16Async(cancellationToken).ConfigureAwait(false);
+            var headerSizeValue = payloadLengthValue == null ? null : await ReadUInt16Async(cancellationToken).ConfigureAwait(false);
+            var pidValue = headerSizeValue == null ? null : await ReadInt32Async(cancellationToken).ConfigureAwait(false);
+            var tidValue = pidValue == null ? null : await ReadInt32Async(cancellationToken).ConfigureAwait(false);
+            var secValue = tidValue == null ? null : await ReadInt32Async(cancellationToken).ConfigureAwait(false);
+            var nsecValue = secValue == null ? null : await ReadInt32Async(cancellationToken).ConfigureAwait(false);
 
             if (nsecValue == null)
             {
@@ -80,7 +81,7 @@ namespace SharpAdbClient.Logs
             {
                 if (headerSize >= 0x18)
                 {
-                    var idValue = await this.ReadUInt32Async(cancellationToken).ConfigureAwait(false);
+                    var idValue = await ReadUInt32Async(cancellationToken).ConfigureAwait(false);
 
                     if (idValue == null)
                     {
@@ -92,7 +93,7 @@ namespace SharpAdbClient.Logs
 
                 if (headerSize >= 0x1c)
                 {
-                    var uidValue = await this.ReadUInt32Async(cancellationToken).ConfigureAwait(false);
+                    var uidValue = await ReadUInt32Async(cancellationToken).ConfigureAwait(false);
 
                     if (uidValue == null)
                     {
@@ -105,7 +106,7 @@ namespace SharpAdbClient.Logs
                 if (headerSize >= 0x20)
                 {
                     // Not sure what this is.
-                    await this.ReadUInt32Async(cancellationToken).ConfigureAwait(false);
+                    await ReadUInt32Async(cancellationToken).ConfigureAwait(false);
                 }
 
                 if (headerSize > 0x20)
@@ -114,7 +115,7 @@ namespace SharpAdbClient.Logs
                 }
             }
 
-            byte[] data = await this.ReadBytesSafeAsync(payloadLength, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ReadBytesSafeAsync(payloadLength, cancellationToken).ConfigureAwait(false);
 
             if (data == null)
             {
@@ -182,7 +183,7 @@ namespace SharpAdbClient.Logs
 
                             while (dataStream.Position < dataStream.Length)
                             {
-                                this.ReadLogEntry(reader, entry.Values);
+                                ReadLogEntry(reader, entry.Values);
                             }
                         }
 
@@ -227,7 +228,7 @@ namespace SharpAdbClient.Logs
 
                     for (int i = 0; i < listLength; i++)
                     {
-                        this.ReadLogEntry(reader, list);
+                        ReadLogEntry(reader, list);
                     }
 
                     parent.Add(list);
@@ -244,7 +245,7 @@ namespace SharpAdbClient.Logs
 
         private async Task<ushort?> ReadUInt16Async(CancellationToken cancellationToken)
         {
-            byte[] data = await this.ReadBytesSafeAsync(2, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ReadBytesSafeAsync(2, cancellationToken).ConfigureAwait(false);
 
             if (data == null)
             {
@@ -256,7 +257,7 @@ namespace SharpAdbClient.Logs
 
         private async Task<uint?> ReadUInt32Async(CancellationToken cancellationToken)
         {
-            byte[] data = await this.ReadBytesSafeAsync(4, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ReadBytesSafeAsync(4, cancellationToken).ConfigureAwait(false);
 
             if (data == null)
             {
@@ -268,7 +269,7 @@ namespace SharpAdbClient.Logs
 
         private async Task<int?> ReadInt32Async(CancellationToken cancellationToken)
         {
-            byte[] data = await this.ReadBytesSafeAsync(4, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ReadBytesSafeAsync(4, cancellationToken).ConfigureAwait(false);
 
             if (data == null)
             {
@@ -285,7 +286,7 @@ namespace SharpAdbClient.Logs
 
             byte[] data = new byte[count];
 
-            while ((read = await this.stream.ReadAsync(data, totalRead, count - totalRead, cancellationToken).ConfigureAwait(false)) > 0)
+            while ((read = await stream.ReadAsync(data, totalRead, count - totalRead, cancellationToken).ConfigureAwait(false)) > 0)
             {
                 totalRead += read;
             }

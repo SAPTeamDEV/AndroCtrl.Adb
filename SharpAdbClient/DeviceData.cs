@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     using System;
     using System.Text.RegularExpressions;
@@ -142,7 +142,7 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public override string ToString()
         {
-            return this.Serial;
+            return Serial;
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace SharpAdbClient
         /// </summary>
         /// <param name="state">The device state string</param>
         /// <returns></returns>
-        internal static DeviceState GetStateFromString(string state)
+        public static DeviceState GetStateFromString(string state)
         {
             // Default to the unknown state
             DeviceState value = DeviceState.Unknown;
@@ -168,7 +168,7 @@ namespace SharpAdbClient
             else
             {
                 // Else, we try to match a value of the DeviceState enumeration.
-                if (!Enum.TryParse<DeviceState>(state, true, out value))
+                if (!Enum.TryParse(state, true, out value))
                 {
                     value = DeviceState.Unknown;
                 }

@@ -1,11 +1,12 @@
-﻿using SharpAdbClient.Exceptions;
-using Xunit;
+﻿using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     /// <summary>
     /// Tests the <see cref="AdbCommandLineClient"/> class.

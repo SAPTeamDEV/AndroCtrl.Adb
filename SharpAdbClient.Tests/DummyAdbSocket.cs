@@ -1,5 +1,4 @@
-﻿using SharpAdbClient.Exceptions;
-using Xunit;
+﻿using Xunit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,8 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
+using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     internal class DummyAdbSocket : IAdbSocket, IDummyAdbSocket
     {
@@ -21,7 +22,7 @@ namespace SharpAdbClient.Tests
 
         public DummyAdbSocket()
         {
-            this.IsConnected = true;
+            IsConnected = true;
         }
 
         public Stream ShellStream
@@ -75,8 +76,8 @@ namespace SharpAdbClient.Tests
         {
             get
             {
-                return this.IsConnected
-                    && (this.WaitForNewData || this.Responses.Count > 0 || this.ResponseMessages.Count > 0 || this.SyncResponses.Count > 0 || this.SyncDataReceived.Count > 0);
+                return IsConnected
+                    && (WaitForNewData || Responses.Count > 0 || ResponseMessages.Count > 0 || SyncResponses.Count > 0 || SyncDataReceived.Count > 0);
             }
         }
 
@@ -97,12 +98,12 @@ namespace SharpAdbClient.Tests
 
         public void Dispose()
         {
-            this.IsConnected = false;
+            IsConnected = false;
         }
 
         public int Read(byte[] data)
         {
-            var actual = this.SyncDataReceived.Dequeue();
+            var actual = SyncDataReceived.Dequeue();
 
             for (int i = 0; i < data.Length && i < actual.Length; i++)
             {
@@ -114,14 +115,14 @@ namespace SharpAdbClient.Tests
 
         public Task ReadAsync(byte[] data, CancellationToken cancellationToken)
         {
-            this.Read(data);
+            Read(data);
 
             return Task.FromResult(true);
         }
 
         public AdbResponse ReadAdbResponse()
         {
-            var response = this.Responses.Dequeue();
+            var response = Responses.Dequeue();
 
             if (!response.Okay)
             {
@@ -133,26 +134,26 @@ namespace SharpAdbClient.Tests
 
         public string ReadString()
         {
-            return this.ReadStringAsync(CancellationToken.None).Result;
+            return ReadStringAsync(CancellationToken.None).Result;
         }
 
         public string ReadSyncString()
         {
-            return this.ResponseMessages.Dequeue();
+            return ResponseMessages.Dequeue();
         }
 
         public async Task<string> ReadStringAsync(CancellationToken cancellationToken)
         {
-            if (this.WaitForNewData)
+            if (WaitForNewData)
             {
-                while (this.ResponseMessages.Count == 0)
+                while (ResponseMessages.Count == 0)
                 {
                     await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
                 }
             }
 
-            var message = this.ResponseMessages.Dequeue();
+            var message = ResponseMessages.Dequeue();
 
             if (message == ServerDisconnected)
             {
@@ -167,12 +168,12 @@ namespace SharpAdbClient.Tests
 
         public void SendAdbRequest(string request)
         {
-            this.Requests.Add(request);
+            Requests.Add(request);
         }
 
         public void Close()
         {
-            this.IsConnected = false;
+            IsConnected = false;
         }
 
         public void SendSyncRequest(string command, int value)
@@ -182,12 +183,12 @@ namespace SharpAdbClient.Tests
 
         public void Send(byte[] data, int length)
         {
-            this.SyncDataSent.Enqueue(data.Take(length).ToArray());
+            SyncDataSent.Enqueue(data.Take(length).ToArray());
         }
 
         public int Read(byte[] data, int length)
         {
-            var actual = this.SyncDataReceived.Dequeue();
+            var actual = SyncDataReceived.Dequeue();
 
             Assert.Equal(actual.Length, length);
 
@@ -198,29 +199,29 @@ namespace SharpAdbClient.Tests
 
         public void SendSyncRequest(SyncCommand command, string path)
         {
-            this.SyncRequests.Add(new Tuple<SyncCommand, string>(command, path));
+            SyncRequests.Add(new Tuple<SyncCommand, string>(command, path));
         }
 
         public SyncCommand ReadSyncResponse()
         {
-            return this.SyncResponses.Dequeue();
+            return SyncResponses.Dequeue();
         }
 
         public void SendSyncRequest(SyncCommand command, int length)
         {
-            this.SyncRequests.Add(new Tuple<SyncCommand, string>(command, length.ToString()));
+            SyncRequests.Add(new Tuple<SyncCommand, string>(command, length.ToString()));
         }
 
         public void SendSyncRequest(SyncCommand command, string path, int permissions)
         {
-            this.SyncRequests.Add(new Tuple<SyncCommand, string>(command, $"{path},{permissions}"));
+            SyncRequests.Add(new Tuple<SyncCommand, string>(command, $"{path},{permissions}"));
         }
 
         public Stream GetShellStream()
         {
-            if (this.ShellStream != null)
+            if (ShellStream != null)
             {
-                return this.ShellStream;
+                return ShellStream;
             }
             else
             {
@@ -231,7 +232,7 @@ namespace SharpAdbClient.Tests
 
         public void Reconnect()
         {
-            this.DidReconnect = true;
+            DidReconnect = true;
         }
 
         public Task<int> ReadAsync(byte[] data, int length, CancellationToken cancellationToken)
@@ -243,7 +244,7 @@ namespace SharpAdbClient.Tests
         {
             if (offset == 0)
             {
-                this.Send(data, length);
+                Send(data, length);
             }
             else
             {
@@ -257,11 +258,11 @@ namespace SharpAdbClient.Tests
             // to a specific device
             if (device != null)
             {
-                this.SendAdbRequest($"host:transport:{device.Serial}");
+                SendAdbRequest($"host:transport:{device.Serial}");
 
                 try
                 {
-                    var response = this.ReadAdbResponse();
+                    var response = ReadAdbResponse();
                 }
                 catch (AdbException e)
                 {

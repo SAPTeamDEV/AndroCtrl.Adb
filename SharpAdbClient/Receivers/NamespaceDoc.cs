@@ -2,10 +2,12 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.Receivers
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
 {
     using System.Runtime.CompilerServices;
     using System.Threading;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge;
 
     /// <summary>
     /// <para>
@@ -14,7 +16,7 @@ namespace SharpAdbClient.Receivers
     ///     method to capture the output of any Android command.
     /// </para>
     /// </summary>
-    [CompilerGeneratedAttribute]
+    [CompilerGenerated]
     internal class NamespaceDoc
     {
     }

@@ -2,8 +2,9 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using AndroCtrl.Protocols.AndroidDebugBridge;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class FramebufferHeaderTests
     {

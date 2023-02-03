@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
     /// <summary>
     /// Represents a version of an Android application.
@@ -16,8 +16,8 @@ namespace SharpAdbClient.DeviceCommands
         /// <param name="versionName">The version name of the application</param>
         public VersionInfo(int versionCode, string versionName)
         {
-            this.VersionCode = versionCode;
-            this.VersionName = versionName;
+            VersionCode = versionCode;
+            VersionName = versionName;
         }
 
         /// <summary>

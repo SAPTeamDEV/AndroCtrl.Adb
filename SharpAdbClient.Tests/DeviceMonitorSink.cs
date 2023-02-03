@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Threading;
 
-namespace SharpAdbClient.Tests
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     internal class DeviceMonitorSink
     {
@@ -13,14 +15,14 @@ namespace SharpAdbClient.Tests
                 throw new ArgumentNullException(nameof(monitor));
             }
 
-            this.Monitor = monitor;
-            this.Monitor.DeviceChanged += OnDeviceChanged;
-            this.Monitor.DeviceConnected += OnDeviceConnected;
-            this.Monitor.DeviceDisconnected += OnDeviceDisconnected;
+            Monitor = monitor;
+            Monitor.DeviceChanged += OnDeviceChanged;
+            Monitor.DeviceConnected += OnDeviceConnected;
+            Monitor.DeviceDisconnected += OnDeviceDisconnected;
 
-            this.ChangedEvents = new Collection<DeviceDataEventArgs>();
-            this.DisconnectedEvents = new Collection<DeviceDataEventArgs>();
-            this.ConnectedEvents = new Collection<DeviceDataEventArgs>();
+            ChangedEvents = new Collection<DeviceDataEventArgs>();
+            DisconnectedEvents = new Collection<DeviceDataEventArgs>();
+            ConnectedEvents = new Collection<DeviceDataEventArgs>();
         }
 
         public Collection<DeviceDataEventArgs> DisconnectedEvents
@@ -50,25 +52,25 @@ namespace SharpAdbClient.Tests
         public ManualResetEvent CreateEventSignal()
         {
             ManualResetEvent signal = new ManualResetEvent(false);
-            this.Monitor.DeviceChanged += (sender, e) => signal.Set();
-            this.Monitor.DeviceConnected += (sender, e) => signal.Set();
-            this.Monitor.DeviceDisconnected += (sender, e) => signal.Set();
+            Monitor.DeviceChanged += (sender, e) => signal.Set();
+            Monitor.DeviceConnected += (sender, e) => signal.Set();
+            Monitor.DeviceDisconnected += (sender, e) => signal.Set();
             return signal;
         }
 
         protected virtual void OnDeviceDisconnected(object sender, DeviceDataEventArgs e)
         {
-            this.DisconnectedEvents.Add(e);
+            DisconnectedEvents.Add(e);
         }
 
         protected virtual void OnDeviceConnected(object sender, DeviceDataEventArgs e)
         {
-            this.ConnectedEvents.Add(e);
+            ConnectedEvents.Add(e);
         }
 
         protected virtual void OnDeviceChanged(object sender, DeviceDataEventArgs e)
         {
-            this.ChangedEvents.Add(e);
+            ChangedEvents.Add(e);
         }
     }
 }

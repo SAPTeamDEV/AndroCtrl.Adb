@@ -2,9 +2,13 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
+    using AndroCtrl.Protocols.AndroidDebugBridge;
+    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+
     using Receivers;
+
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;

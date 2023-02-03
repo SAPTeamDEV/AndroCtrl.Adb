@@ -2,15 +2,16 @@
 using Moq;
 using System;
 using System.IO;
+using AndroCtrl.Protocols.AndroidDebugBridge;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class AdbCommandLineClientExtensionsTests
     {
         [Fact]
         public void EnsureIsValidAdbFileNullValueTest()
         {
-            Assert.Throws< ArgumentNullException>(() => AdbCommandLineClientExtensions.EnsureIsValidAdbFile(null, "adb.exe"));
+            Assert.Throws<ArgumentNullException>(() => AdbCommandLineClientExtensions.EnsureIsValidAdbFile(null, "adb.exe"));
         }
 
         [Fact]

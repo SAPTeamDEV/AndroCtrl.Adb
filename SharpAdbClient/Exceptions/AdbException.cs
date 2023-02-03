@@ -2,11 +2,13 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.Exceptions
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Exceptions
 {
     using System;
     using System.Net.Sockets;
     using System.Runtime.Serialization;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge;
 
     /// <summary>
     /// Represents an exception with communicating with ADB
@@ -46,7 +48,7 @@ namespace SharpAdbClient.Exceptions
         public AdbException(string message, string adbError)
             : base(message)
         {
-            this.AdbError = adbError;
+            AdbError = adbError;
         }
 
         /// <summary>
@@ -62,8 +64,8 @@ namespace SharpAdbClient.Exceptions
         public AdbException(string message, AdbResponse response)
             : base(message)
         {
-            this.AdbError = response.Message;
-            this.Response = response;
+            AdbError = response.Message;
+            Response = response;
         }
 
         /// <summary>
@@ -113,7 +115,7 @@ namespace SharpAdbClient.Exceptions
         {
             get
             {
-                var socketException = this.InnerException as SocketException;
+                var socketException = InnerException as SocketException;
 
                 if (socketException == null)
                 {

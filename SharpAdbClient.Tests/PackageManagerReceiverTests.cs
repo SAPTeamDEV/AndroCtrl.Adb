@@ -1,7 +1,9 @@
-﻿using SharpAdbClient.DeviceCommands;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class PackageManagerReceiverTests
     {

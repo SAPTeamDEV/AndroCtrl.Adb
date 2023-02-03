@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
     using System;
     using System.Linq;
@@ -146,7 +146,7 @@ namespace SharpAdbClient.DeviceCommands
                     char ch = path[num2];
                     if (ch == DirectorySeparatorChar)
                     {
-                        return path.Substring(num2 + 1, (length - num2) - 1);
+                        return path.Substring(num2 + 1, length - num2 - 1);
                     }
                 }
             }
@@ -165,8 +165,8 @@ namespace SharpAdbClient.DeviceCommands
             {
                 CheckInvalidPathChars(path);
                 int length = path.Length;
-                if ((length >= 1 && (path[0] == DirectorySeparatorChar)) ||
-                    (length == 1))
+                if (length >= 1 && path[0] == DirectorySeparatorChar ||
+                    length == 1)
                 {
                     return true;
                 }
@@ -206,7 +206,7 @@ namespace SharpAdbClient.DeviceCommands
         /// Checks the invalid path chars.
         /// </summary>
         /// <param name="path">The path.</param>
-        internal static void CheckInvalidPathChars(string path)
+        public static void CheckInvalidPathChars(string path)
         {
             if (path == null)
             {

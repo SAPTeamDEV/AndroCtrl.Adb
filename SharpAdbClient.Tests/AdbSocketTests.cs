@@ -1,13 +1,16 @@
-﻿using SharpAdbClient.Exceptions;
-using SharpAdbClient.Logs;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
+
 using System;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class AdbSocketTests
     {
@@ -48,7 +51,7 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void SendSyncRequestTest()
         {
-            this.RunTest(
+            RunTest(
                 (socket) => socket.SendSyncRequest(SyncCommand.DATA, 2),
                 new byte[] { (byte)'D', (byte)'A', (byte)'T', (byte)'A', 2, 0, 0, 0 });
         }
@@ -56,7 +59,7 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void SendSyncRequestTest2()
         {
-            this.RunTest(
+            RunTest(
                 (socket) => socket.SendSyncRequest(SyncCommand.SEND, "/test"),
                 new byte[] { (byte)'S', (byte)'E', (byte)'N', (byte)'D', 5, 0, 0, 0, (byte)'/', (byte)'t', (byte)'e', (byte)'s', (byte)'t' });
         }
@@ -64,7 +67,7 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void SendSyncRequest3()
         {
-            this.RunTest(
+            RunTest(
                 (socket) => socket.SendSyncRequest(SyncCommand.DENT, "/data", 633),
                 new byte[] { (byte)'D', (byte)'E', (byte)'N', (byte)'T', 9, 0, 0, 0, (byte)'/', (byte)'d', (byte)'a', (byte)'t', (byte)'a', (byte)',', (byte)'6', (byte)'3', (byte)'3' });
         }
@@ -72,7 +75,7 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void SendSyncNullRequestTest()
         {
-            Assert.Throws<ArgumentNullException>(() => this.RunTest(
+            Assert.Throws<ArgumentNullException>(() => RunTest(
                (socket) => socket.SendSyncRequest(SyncCommand.DATA, null),
                new byte[] { }));
         }
@@ -228,7 +231,7 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void SendAdbRequestTest()
         {
-            this.RunTest(
+            RunTest(
                 (socket) => socket.SendAdbRequest("Test"),
                 Encoding.ASCII.GetBytes("0004Test"));
         }

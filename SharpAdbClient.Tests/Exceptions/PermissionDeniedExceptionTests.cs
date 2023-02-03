@@ -1,7 +1,8 @@
 ﻿using Xunit;
-using SharpAdbClient.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Tests;
 
-namespace SharpAdbClient.Tests.Exceptions
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
 {
     public class PermissionDeniedExceptionTests
     {

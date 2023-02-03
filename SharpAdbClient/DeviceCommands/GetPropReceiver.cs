@@ -2,10 +2,12 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
     /// <summary>
     /// Parses the output of the <c>getprop</c> command, which lists all properties of an
@@ -28,7 +30,7 @@ namespace SharpAdbClient.DeviceCommands
         /// </summary>
         public GetPropReceiver()
         {
-            this.Properties = new Dictionary<string, string>();
+            Properties = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace SharpAdbClient.DeviceCommands
 
                     if (label.Length > 0)
                     {
-                        this.Properties.Add(label, value);
+                        Properties.Add(label, value);
                     }
                 }
             }

@@ -1,5 +1,4 @@
-﻿using SharpAdbClient.Logs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -8,8 +7,11 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
+using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
+using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     internal class DummyAdbClient : IAdbClient
     {
@@ -45,13 +47,13 @@ namespace SharpAdbClient.Tests
 
         public Task ExecuteRemoteCommandAsync(string command, DeviceData device, IShellOutputReceiver receiver, CancellationToken cancellationToken)
         {
-            this.ReceivedCommands.Add(command);
+            ReceivedCommands.Add(command);
 
-            if (this.Commands.ContainsKey(command))
+            if (Commands.ContainsKey(command))
             {
                 if (receiver != null)
                 {
-                    StringReader reader = new StringReader(this.Commands[command]);
+                    StringReader reader = new StringReader(Commands[command]);
 
                     while (reader.Peek() != -1)
                     {

@@ -2,9 +2,10 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
-    using SharpAdbClient.Exceptions;
+    using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+
     using System;
     using System.IO;
     using System.Net;
@@ -40,7 +41,7 @@ namespace SharpAdbClient
         ///  one with no server application running.
         /// </remarks>
         /// <seealso href="https://msdn.microsoft.com/en-us/library/ms740668.aspx"/>
-        internal const int ConnectionRefused = 10061;
+        public const int ConnectionRefused = 10061;
 
         /// <summary>
         /// The error code that is returned by the <see cref="SocketException"/> when the connection was reset by the peer.
@@ -52,7 +53,7 @@ namespace SharpAdbClient
         /// a failure while one or more operations are in progress.
         /// </remarks>
         /// <seealso href="https://msdn.microsoft.com/en-us/library/ms740668.aspx"/>
-        internal const int ConnectionReset = 10054;
+        public const int ConnectionReset = 10054;
 
         /// <summary>
         /// A lock used to ensure only one caller at a time can attempt to restart adb.
@@ -110,10 +111,10 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public StartServerResult StartServer(string adbPath, bool restartServerIfNewer)
         {
-            var serverStatus = this.GetStatus();
+            var serverStatus = GetStatus();
             Version commandLineVersion = null;
 
-            var commandLineClient = this.adbCommandLineClientFactory(adbPath);
+            var commandLineClient = adbCommandLineClientFactory(adbPath);
 
             if (commandLineClient.IsValidAdbFile(adbPath))
             {
@@ -141,15 +142,15 @@ namespace SharpAdbClient
             }
 
             if (serverStatus.IsRunning
-                && ((serverStatus.Version < RequiredAdbVersion)
-                     || ((serverStatus.Version < commandLineVersion) && restartServerIfNewer)))
+                && (serverStatus.Version < RequiredAdbVersion
+                     || serverStatus.Version < commandLineVersion && restartServerIfNewer))
             {
                 if (adbPath == null)
                 {
                     throw new ArgumentNullException(nameof(adbPath));
                 }
 
-                this.adbClient.KillAdb();
+                adbClient.KillAdb();
                 serverStatus.IsRunning = false;
                 serverStatus.Version = null;
 
@@ -182,7 +183,7 @@ namespace SharpAdbClient
 
             lock (RestartLock)
             {
-                this.StartServer(cachedAdbPath, false);
+                StartServer(cachedAdbPath, false);
             }
         }
 
@@ -192,7 +193,7 @@ namespace SharpAdbClient
             // Try to connect to a running instance of the adb server
             try
             {
-                int versionCode = this.adbClient.GetAdbVersion();
+                int versionCode = adbClient.GetAdbVersion();
 
                 return new AdbServerStatus()
                 {

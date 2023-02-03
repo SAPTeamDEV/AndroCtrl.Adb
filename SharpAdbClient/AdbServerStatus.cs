@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     using System;
 
@@ -39,9 +39,9 @@ namespace SharpAdbClient
         /// </returns>
         public override string ToString()
         {
-            if (this.IsRunning)
+            if (IsRunning)
             {
-                return $"Version {this.Version} of the adb daemon is running.";
+                return $"Version {Version} of the adb daemon is running.";
             }
             else
             {

@@ -5,9 +5,9 @@
 //-----------------------------------------------------------------------
 
 using Xunit;
-using SharpAdbClient.DeviceCommands;
+using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     /// <summary>
     /// Tests the <see cref="AndroidProcess"/> class.

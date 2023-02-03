@@ -1,7 +1,10 @@
 ﻿using System;
+
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class AdbServerStatusTests
     {

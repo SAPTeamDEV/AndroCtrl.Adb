@@ -2,11 +2,15 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
+    using AndroCtrl.Protocols.AndroidDebugBridge;
+
     using Exceptions;
+
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
+
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -80,9 +84,9 @@ namespace SharpAdbClient.DeviceCommands
                 throw new ArgumentNullException(nameof(device));
             }
 
-            this.Device = device;
-            this.Packages = new Dictionary<string, string>();
-            this.ThirdPartyOnly = thirdPartyOnly;
+            Device = device;
+            Packages = new Dictionary<string, string>();
+            ThirdPartyOnly = thirdPartyOnly;
             this.client = client ?? throw new ArgumentNullException(nameof(client));
 
             if (syncServiceFactory == null)
@@ -96,7 +100,7 @@ namespace SharpAdbClient.DeviceCommands
 
             if (!skipInit)
             {
-                this.RefreshPackages();
+                RefreshPackages();
             }
 
             this.logger = logger ?? NullLogger<PackageManager>.Instance;
@@ -128,17 +132,17 @@ namespace SharpAdbClient.DeviceCommands
         /// </summary>
         public void RefreshPackages()
         {
-            this.ValidateDevice();
+            ValidateDevice();
 
-            PackageManagerReceiver pmr = new PackageManagerReceiver(this.Device, this);
+            PackageManagerReceiver pmr = new PackageManagerReceiver(Device, this);
 
-            if (this.ThirdPartyOnly)
+            if (ThirdPartyOnly)
             {
-                this.client.ExecuteShellCommand(this.Device, ListThirdPartyOnly, pmr);
+                client.ExecuteShellCommand(Device, ListThirdPartyOnly, pmr);
             }
             else
             {
-                this.client.ExecuteShellCommand(this.Device, ListFull, pmr);
+                client.ExecuteShellCommand(Device, ListFull, pmr);
             }
         }
 
@@ -154,11 +158,11 @@ namespace SharpAdbClient.DeviceCommands
         /// </param>
         public void InstallPackage(string packageFilePath, bool reinstall)
         {
-            this.ValidateDevice();
+            ValidateDevice();
 
-            string remoteFilePath = this.SyncPackageToDevice(packageFilePath);
-            this.InstallRemotePackage(remoteFilePath, reinstall);
-            this.RemoveRemotePackage(remoteFilePath);
+            string remoteFilePath = SyncPackageToDevice(packageFilePath);
+            InstallRemotePackage(remoteFilePath, reinstall);
+            RemoveRemotePackage(remoteFilePath);
         }
 
         /// <summary>
@@ -168,13 +172,13 @@ namespace SharpAdbClient.DeviceCommands
         /// <param name="reinstall">set to <see langword="true"/> if re-install of app should be performed</param>
         public void InstallRemotePackage(string remoteFilePath, bool reinstall)
         {
-            this.ValidateDevice();
+            ValidateDevice();
 
             InstallReceiver receiver = new InstallReceiver();
             var reinstallSwitch = reinstall ? "-r " : string.Empty;
 
             string cmd = $"pm install {reinstallSwitch}{remoteFilePath}";
-            this.client.ExecuteShellCommand(this.Device, cmd, receiver);
+            client.ExecuteShellCommand(Device, cmd, receiver);
 
             if (!string.IsNullOrEmpty(receiver.ErrorMessage))
             {
@@ -190,10 +194,10 @@ namespace SharpAdbClient.DeviceCommands
         /// </param>
         public void UninstallPackage(string packageName)
         {
-            this.ValidateDevice();
+            ValidateDevice();
 
             InstallReceiver receiver = new InstallReceiver();
-            this.client.ExecuteShellCommand(this.Device, $"pm uninstall {packageName}", receiver);
+            client.ExecuteShellCommand(Device, $"pm uninstall {packageName}", receiver);
             if (!string.IsNullOrEmpty(receiver.ErrorMessage))
             {
                 throw new PackageInstallationException(receiver.ErrorMessage);
@@ -208,16 +212,16 @@ namespace SharpAdbClient.DeviceCommands
         /// </param>
         public VersionInfo GetVersionInfo(string packageName)
         {
-            this.ValidateDevice();
+            ValidateDevice();
 
             VersionInfoReceiver receiver = new VersionInfoReceiver();
-            this.client.ExecuteShellCommand(this.Device, $"dumpsys package {packageName}", receiver);
+            client.ExecuteShellCommand(Device, $"dumpsys package {packageName}", receiver);
             return receiver.VersionInfo;
         }
 
         private void ValidateDevice()
         {
-            if (this.Device.State != DeviceState.Online)
+            if (Device.State != DeviceState.Online)
             {
                 throw new AdbException("Device is offline");
             }
@@ -231,7 +235,7 @@ namespace SharpAdbClient.DeviceCommands
         /// <exception cref="IOException">if fatal error occurred when pushing file</exception>
         private string SyncPackageToDevice(string localFilePath)
         {
-            this.ValidateDevice();
+            ValidateDevice();
 
             try
             {
@@ -242,12 +246,12 @@ namespace SharpAdbClient.DeviceCommands
                 // workitem: 19711
                 string remoteFilePath = LinuxPath.Combine(TempInstallationDirectory, packageFileName);
 
-                this.logger.LogDebug(packageFileName, $"Uploading {packageFileName} onto device '{this.Device.Serial}'");
+                logger.LogDebug(packageFileName, $"Uploading {packageFileName} onto device '{Device.Serial}'");
 
-                using (ISyncService sync = this.syncServiceFactory(this.client, this.Device))
+                using (ISyncService sync = syncServiceFactory(client, Device))
                 using (Stream stream = File.OpenRead(localFilePath))
                 {
-                    this.logger.LogDebug($"Uploading file onto device '{this.Device.Serial}'");
+                    logger.LogDebug($"Uploading file onto device '{Device.Serial}'");
 
                     // As C# can't use octals, the octal literal 666 (rw-Permission) is here converted to decimal (438)
                     sync.Push(stream, remoteFilePath, 438, File.GetLastWriteTime(localFilePath), null, CancellationToken.None);
@@ -257,7 +261,7 @@ namespace SharpAdbClient.DeviceCommands
             }
             catch (IOException e)
             {
-                this.logger.LogError(e, $"Unable to open sync connection! reason: {e.Message}");
+                logger.LogError(e, $"Unable to open sync connection! reason: {e.Message}");
                 throw;
             }
         }
@@ -272,11 +276,11 @@ namespace SharpAdbClient.DeviceCommands
             // now we delete the app we sync'ed
             try
             {
-                this.client.ExecuteShellCommand(this.Device, "rm " + remoteFilePath, null);
+                client.ExecuteShellCommand(Device, "rm " + remoteFilePath, null);
             }
             catch (IOException e)
             {
-                this.logger.LogError(e, $"Failed to delete temporary package: {e.Message}");
+                logger.LogError(e, $"Failed to delete temporary package: {e.Message}");
                 throw;
             }
         }

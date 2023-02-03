@@ -1,5 +1,4 @@
-﻿using SharpAdbClient.Exceptions;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,8 +6,10 @@ using System.Net;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
+using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     internal class TracingAdbSocket : AdbSocket, IDummyAdbSocket
     {
@@ -58,7 +59,7 @@ namespace SharpAdbClient.Tests
         { get; } = new List<Tuple<SyncCommand, string>>();
 
         public bool DidReconnect
-        {get; private set; }
+        { get; private set; }
 
         public bool WaitForNewData
         {
@@ -68,7 +69,7 @@ namespace SharpAdbClient.Tests
 
         public override void Dispose()
         {
-            if (this.DoDispose)
+            if (DoDispose)
             {
                 base.Dispose();
             }
@@ -81,12 +82,12 @@ namespace SharpAdbClient.Tests
 #else
             var trace = new StackTrace();
 #endif
-            
+
             int read = base.Read(data);
 
             if (trace != null && trace.GetFrames()[1].GetMethod().DeclaringType != typeof(AdbSocket))
             {
-                this.SyncDataReceived.Enqueue(data);
+                SyncDataReceived.Enqueue(data);
             }
 
             return read;
@@ -104,7 +105,7 @@ namespace SharpAdbClient.Tests
 
             if (trace != null && trace.GetFrames()[1].GetMethod().DeclaringType != typeof(AdbSocket))
             {
-                this.SyncDataReceived.Enqueue(data.Take(length).ToArray());
+                SyncDataReceived.Enqueue(data.Take(length).ToArray());
             }
 
             return read;
@@ -125,7 +126,7 @@ namespace SharpAdbClient.Tests
                 response = ex.Response;
             }
 
-            this.Responses.Enqueue(response);
+            Responses.Enqueue(response);
 
             if (exception != null)
             {
@@ -138,33 +139,33 @@ namespace SharpAdbClient.Tests
         public override string ReadString()
         {
             var value = base.ReadString();
-            this.ResponseMessages.Enqueue(value);
+            ResponseMessages.Enqueue(value);
             return value;
         }
 
         public override string ReadSyncString()
         {
             var value = base.ReadSyncString();
-            this.ResponseMessages.Enqueue(value);
+            ResponseMessages.Enqueue(value);
             return value;
         }
 
         public async override Task<string> ReadStringAsync(CancellationToken cancellationToken)
         {
             var value = await base.ReadStringAsync(cancellationToken);
-            this.ResponseMessages.Enqueue(value);
+            ResponseMessages.Enqueue(value);
             return value;
         }
 
         public override void SendAdbRequest(string request)
         {
-            this.Requests.Add(request);
+            Requests.Add(request);
             base.SendAdbRequest(request);
         }
 
         public override void SendSyncRequest(SyncCommand command, string path)
         {
-            this.SyncRequests.Add(new Tuple<SyncCommand, string>(command, path));
+            SyncRequests.Add(new Tuple<SyncCommand, string>(command, path));
             base.SendSyncRequest(command, path);
         }
 
@@ -178,7 +179,7 @@ namespace SharpAdbClient.Tests
 
             if (trace != null && trace.GetFrames()[1].GetMethod().DeclaringType != typeof(AdbSocket))
             {
-                this.SyncRequests.Add(new Tuple<SyncCommand, string>(command, length.ToString()));
+                SyncRequests.Add(new Tuple<SyncCommand, string>(command, length.ToString()));
             }
 
             base.SendSyncRequest(command, length);
@@ -187,7 +188,7 @@ namespace SharpAdbClient.Tests
         public override SyncCommand ReadSyncResponse()
         {
             var response = base.ReadSyncResponse();
-            this.SyncResponses.Enqueue(response);
+            SyncResponses.Enqueue(response);
             return response;
         }
 
@@ -203,7 +204,7 @@ namespace SharpAdbClient.Tests
 
             if (trace != null && trace.GetFrames()[1].GetMethod().DeclaringType != typeof(AdbSocket))
             {
-                this.SyncDataSent.Enqueue(data.Take(length).ToArray());
+                SyncDataSent.Enqueue(data.Take(length).ToArray());
             }
         }
 
@@ -211,7 +212,7 @@ namespace SharpAdbClient.Tests
         {
             base.Reconnect();
 
-            this.DidReconnect = true;
+            DidReconnect = true;
         }
     }
 }

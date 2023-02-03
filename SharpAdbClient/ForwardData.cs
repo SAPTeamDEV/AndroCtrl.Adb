@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     /// <summary>
     /// Contains information about port forwarding configured by the Android Debug Bridge.
@@ -35,7 +35,7 @@ namespace SharpAdbClient
         {
             get
             {
-                return ForwardSpec.Parse(this.Local);
+                return ForwardSpec.Parse(Local);
             }
         }
 
@@ -55,7 +55,7 @@ namespace SharpAdbClient
         {
             get
             {
-                return ForwardSpec.Parse(this.Remote);
+                return ForwardSpec.Parse(Remote);
             }
         }
 
@@ -89,7 +89,7 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{this.SerialNumber} {this.Local} {this.Remote}";
+            return $"{SerialNumber} {Local} {Remote}";
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using Xunit;
-using SharpAdbClient.DeviceCommands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class InstallReceiverTests
     {

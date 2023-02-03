@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.Exceptions
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Exceptions
 {
     using System;
     using System.Runtime.Serialization;
@@ -26,7 +26,7 @@ namespace SharpAdbClient.Exceptions
         /// <param name="device">The device.</param>
         public DeviceNotFoundException(string device)
             : base("The device '" + device + "' was not found.")
-            {
+        {
         }
 
         /// <summary>

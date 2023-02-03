@@ -2,10 +2,15 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
+    using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+
     using Exceptions;
-    using SharpAdbClient.Logs;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
+
     using System;
     using System.Net;
     using System.Text;
@@ -79,7 +84,7 @@ namespace SharpAdbClient
         /// <param name="rcvr">The shell output receiver</param>
         public static void ExecuteRemoteCommand(this IAdbClient client, string command, DeviceData device, IShellOutputReceiver rcvr)
         {
-            ExecuteRemoteCommand(client, command, device, rcvr, AdbClient.Encoding);
+            client.ExecuteRemoteCommand(command, device, rcvr, AdbClient.Encoding);
         }
 
         /// <summary>

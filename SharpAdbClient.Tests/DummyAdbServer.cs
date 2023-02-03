@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Net;
 
-namespace SharpAdbClient.Tests
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     /// <summary>
     /// A mock implementation of the <see cref="IAdbServer"/> class.
@@ -31,24 +33,24 @@ namespace SharpAdbClient.Tests
         /// <inheritdoc/>
         public AdbServerStatus GetStatus()
         {
-            return this.Status;
+            return Status;
         }
 
         /// <inheritdoc/>
         public void RestartServer()
         {
-            this.WasRestarted = true;
+            WasRestarted = true;
         }
 
         /// <inheritdoc/>
         public StartServerResult StartServer(string adbPath, bool restartServerIfNewer)
         {
-            if (this.Status.IsRunning == true)
+            if (Status.IsRunning == true)
             {
                 return StartServerResult.AlreadyRunning;
             }
 
-            this.Status = new AdbServerStatus()
+            Status = new AdbServerStatus()
             {
                 IsRunning = true,
                 Version = new Version(1, 0, 20)

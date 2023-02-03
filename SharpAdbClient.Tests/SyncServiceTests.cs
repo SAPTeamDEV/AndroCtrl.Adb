@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.Extensions;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class SyncServiceTests : SocketBasedTests
     {
@@ -29,7 +31,7 @@ namespace SharpAdbClient.Tests
 
             FileStatistics value = null;
 
-            this.RunTest(
+            RunTest(
                 OkResponses(2),
                 NoResponseMessages,
                 Requests("host:transport:169.254.109.177:5555", "sync:"),
@@ -39,7 +41,7 @@ namespace SharpAdbClient.Tests
                 null,
                 () =>
                 {
-                    using (SyncService service = new SyncService(this.Socket, device))
+                    using (SyncService service = new SyncService(Socket, device))
                     {
                         value = service.Stat("/fstab.donatello");
                     }
@@ -62,7 +64,7 @@ namespace SharpAdbClient.Tests
 
             List<FileStatistics> value = null;
 
-            this.RunTest(
+            RunTest(
                 OkResponses(2),
                 ResponseMessages(".", "..", "sdcard0", "emulated"),
                 Requests("host:transport:169.254.109.177:5555", "sync:"),
@@ -78,7 +80,7 @@ namespace SharpAdbClient.Tests
                 null,
                 () =>
                 {
-                    using (SyncService service = new SyncService(this.Socket, device))
+                    using (SyncService service = new SyncService(Socket, device))
                     {
                         value = service.GetDirectoryListing("/storage").ToList();
                     }
@@ -126,7 +128,7 @@ namespace SharpAdbClient.Tests
             var content = File.ReadAllBytes("fstab.bin");
             var contentLength = BitConverter.GetBytes(content.Length);
 
-            this.RunTest(
+            RunTest(
                 OkResponses(2),
                 ResponseMessages(),
                 Requests("host:transport:169.254.109.177:5555", "sync:"),
@@ -141,7 +143,7 @@ namespace SharpAdbClient.Tests
                 null,
                 () =>
                 {
-                    using (SyncService service = new SyncService(this.Socket, device))
+                    using (SyncService service = new SyncService(Socket, device))
                     {
                         service.Pull("/fstab.donatello", stream, null, CancellationToken.None);
                     }
@@ -167,7 +169,7 @@ namespace SharpAdbClient.Tests
             contentMessage.AddRange(BitConverter.GetBytes(content.Length));
             contentMessage.AddRange(content);
 
-            this.RunTest(
+            RunTest(
                 OkResponses(2),
                 ResponseMessages(),
                 Requests("host:transport:169.254.109.177:5555", "sync:"),
@@ -182,7 +184,7 @@ namespace SharpAdbClient.Tests
                 },
                 () =>
                 {
-                    using (SyncService service = new SyncService(this.Socket, device))
+                    using (SyncService service = new SyncService(Socket, device))
                     {
                         service.Push(stream, "/sdcard/test", 0644, new DateTime(2015, 11, 2, 23, 0, 0, DateTimeKind.Utc), null, CancellationToken.None);
                     }

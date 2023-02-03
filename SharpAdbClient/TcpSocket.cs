@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     using System;
     using System.IO;
@@ -25,7 +25,7 @@ namespace SharpAdbClient
         /// </summary>
         public TcpSocket()
         {
-            this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
         /// <inheritdoc/>
@@ -33,7 +33,7 @@ namespace SharpAdbClient
         {
             get
             {
-                return this.socket.Connected;
+                return socket.Connected;
             }
         }
 
@@ -42,12 +42,12 @@ namespace SharpAdbClient
         {
             get
             {
-                return this.socket.ReceiveBufferSize;
+                return socket.ReceiveBufferSize;
             }
 
             set
             {
-                this.socket.ReceiveBufferSize = value;
+                socket.ReceiveBufferSize = value;
             }
         }
 
@@ -59,52 +59,52 @@ namespace SharpAdbClient
                 throw new NotSupportedException();
             }
 
-            this.socket.Connect(endPoint);
-            this.socket.Blocking = true;
+            socket.Connect(endPoint);
+            socket.Blocking = true;
             this.endPoint = endPoint;
         }
 
         /// <inheritdoc/>
         public void Reconnect()
         {
-            if (this.socket.Connected)
+            if (socket.Connected)
             {
                 // Already connected - nothing to do.
                 return;
             }
 
-            this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            this.Connect(this.endPoint);
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Connect(endPoint);
         }
 
         /// <inheritdoc/>
         public void Dispose()
         {
-            this.socket.Dispose();
+            socket.Dispose();
         }
 
         /// <inheritdoc/>
         public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags)
         {
-            return this.socket.Send(buffer, offset, size, socketFlags);
+            return socket.Send(buffer, offset, size, socketFlags);
         }
 
         /// <inheritdoc/>
         public Stream GetStream()
         {
-            return new NetworkStream(this.socket);
+            return new NetworkStream(socket);
         }
 
         /// <inheritdoc/>
         public int Receive(byte[] buffer, int offset, SocketFlags socketFlags)
         {
-            return this.socket.Receive(buffer, offset, socketFlags);
+            return socket.Receive(buffer, offset, socketFlags);
         }
 
         /// <inheritdoc/>
         public Task<int> ReceiveAsync(byte[] buffer, int offset, int size, SocketFlags socketFlags, CancellationToken cancellationToken)
         {
-            return this.socket.ReceiveAsync(buffer, offset, size, socketFlags, cancellationToken);
+            return socket.ReceiveAsync(buffer, offset, size, socketFlags, cancellationToken);
         }
     }
 }

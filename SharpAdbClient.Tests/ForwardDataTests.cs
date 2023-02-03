@@ -1,6 +1,8 @@
-﻿using Xunit;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge;
 
-namespace SharpAdbClient.Tests
+using Xunit;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class ForwardDataTests
     {

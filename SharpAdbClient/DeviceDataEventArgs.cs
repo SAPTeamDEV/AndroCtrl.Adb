@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     using System;
 
@@ -17,7 +17,7 @@ namespace SharpAdbClient
         /// <param name="device">The device.</param>
         public DeviceDataEventArgs(DeviceData device)
         {
-            this.Device = device;
+            Device = device;
         }
 
         /// <summary>

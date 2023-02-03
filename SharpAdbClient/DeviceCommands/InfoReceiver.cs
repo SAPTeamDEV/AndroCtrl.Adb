@@ -4,9 +4,10 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
-    using SharpAdbClient;
+    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+
     using System;
     using System.Collections.Generic;
 
@@ -20,8 +21,8 @@ namespace SharpAdbClient.DeviceCommands
         /// </summary>
         public InfoReceiver()
         {
-            this.Properties = new Dictionary<string, object>();
-            this.PropertyParsers = new Dictionary<string, Func<string, object>>();
+            Properties = new Dictionary<string, object>();
+            PropertyParsers = new Dictionary<string, Func<string, object>>();
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace SharpAdbClient.DeviceCommands
         /// <returns>The received value</returns>
         public object GetPropertyValue(string propertyName)
         {
-            return this.Properties.ContainsKey(propertyName) ? this.Properties[propertyName] : null;
+            return Properties.ContainsKey(propertyName) ? Properties[propertyName] : null;
         }
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace SharpAdbClient.DeviceCommands
         /// <param name="parser">Function parsing one string and returning the property value if possible. </param>
         public void AddPropertyParser(string property, Func<string, object> parser)
         {
-            this.PropertyParsers.Add(property, parser);
+            PropertyParsers.Add(property, parser);
         }
 
         /// <summary>
@@ -79,12 +80,12 @@ namespace SharpAdbClient.DeviceCommands
                     continue;
                 }
 
-                foreach (var parser in this.PropertyParsers)
+                foreach (var parser in PropertyParsers)
                 {
                     var propertyValue = parser.Value(line);
                     if (propertyValue != null)
                     {
-                        this.Properties.Add(parser.Key, propertyValue);
+                        Properties.Add(parser.Key, propertyValue);
                     }
                 }
             }

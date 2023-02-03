@@ -4,13 +4,16 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using SharpAdbClient;
-using SharpAdbClient.DeviceCommands;
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
+using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+
 using System;
 using System.IO;
+
 using Xunit;
 
-namespace Quamotion.Test.Devices.Android
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     /// <summary>
     /// Tests the <see cref="VersionInfoReceiver"/> class.
@@ -28,7 +31,7 @@ namespace Quamotion.Test.Devices.Android
             // Trick the receiver into thinking we're in the package section
             Assert.Null(receiver.GetVersionCode("Packages:"));
 
-            Assert.Equal<int>(10210, (int)receiver.GetVersionCode(" versionCode=10210 targetSdk=18"));
+            Assert.Equal(10210, (int)receiver.GetVersionCode(" versionCode=10210 targetSdk=18"));
             Assert.Null(receiver.GetVersionCode(null));
             Assert.Null(receiver.GetVersionCode(string.Empty));
             Assert.Null(receiver.GetVersionCode(" versionCode=10210targetSdk=18"));

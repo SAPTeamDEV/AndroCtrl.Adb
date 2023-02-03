@@ -1,8 +1,10 @@
-﻿using SharpAdbClient.DeviceCommands;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+
 using System;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class LinuxPathTests
     {
@@ -48,7 +50,7 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void CombineTest()
         {
-            String result = LinuxPath.Combine("/system", "busybox");
+            string result = LinuxPath.Combine("/system", "busybox");
             Assert.Equal("/system/busybox", result);
 
             result = LinuxPath.Combine("/system/", "busybox");
@@ -80,7 +82,7 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void GetDirectoryNameTest()
         {
-            String result = LinuxPath.GetDirectoryName("/system/busybox");
+            string result = LinuxPath.GetDirectoryName("/system/busybox");
             Assert.Equal("/system/", result);
 
             result = LinuxPath.GetDirectoryName("/");
@@ -99,7 +101,7 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void GetFileNameTest()
         {
-            String result = LinuxPath.GetFileName("/system/busybox");
+            string result = LinuxPath.GetFileName("/system/busybox");
             Assert.Equal("busybox", result);
 
             result = LinuxPath.GetFileName("/");

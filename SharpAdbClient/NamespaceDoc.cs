@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     using System.Runtime.CompilerServices;
 
@@ -16,7 +16,7 @@ namespace SharpAdbClient
     /// <para>
     ///     Most of the adb functionality is exposed through the <see cref="AdbClient"/> class.
     ///     You can create your own instance of that class, or just use the instance we provide for you at
-    ///     <see cref="SharpAdbClient.AdbClient.Instance"/>
+    ///     <see cref="AdbClient.Instance"/>
     /// </para>
     ///
     /// <para>
@@ -43,7 +43,7 @@ namespace SharpAdbClient
     /// }
     /// </code>
     /// </example>
-    [CompilerGeneratedAttribute]
+    [CompilerGenerated]
     internal class NamespaceDoc
     {
     }

@@ -1,5 +1,9 @@
-﻿using SharpAdbClient.Exceptions;
-using SharpAdbClient.Logs;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
+using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using AndroCtrl.Protocols.AndroidDebugBridge.Tests;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,9 +12,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class AdbClientTests : SocketBasedTests
     {
@@ -72,13 +77,13 @@ namespace SharpAdbClient.Tests
                 "host:kill"
             };
 
-            this.RunTest(
+            RunTest(
                 NoResponses,
                 NoResponseMessages,
                 requests,
                 () =>
                 {
-                    this.TestClient.KillAdb();
+                    TestClient.KillAdb();
                 });
         }
 
@@ -97,13 +102,13 @@ namespace SharpAdbClient.Tests
 
             int version = 0;
 
-            this.RunTest(
+            RunTest(
                 OkResponse,
                 responseMessages,
                 requests,
                 () =>
                 {
-                    version = this.TestClient.GetAdbVersion();
+                    version = TestClient.GetAdbVersion();
                 });
 
             // Make sure and the correct value is returned.
@@ -125,13 +130,13 @@ namespace SharpAdbClient.Tests
 
             List<DeviceData> devices = null;
 
-            this.RunTest(
+            RunTest(
                 OkResponse,
                 responseMessages,
                 requests,
                 () =>
                 {
-                    devices = this.TestClient.GetDevices();
+                    devices = TestClient.GetDevices();
                 });
 
             // Make sure and the correct value is returned.
@@ -154,13 +159,13 @@ namespace SharpAdbClient.Tests
                 "host:transport:169.254.109.177:5555"
             };
 
-            this.RunTest(
+            RunTest(
                 OkResponse,
                 NoResponseMessages,
                 requests,
                 () =>
                 {
-                    this.Socket.SetDevice(Device);
+                    Socket.SetDevice(Device);
                 });
         }
 
@@ -172,13 +177,13 @@ namespace SharpAdbClient.Tests
                 "host:transport:169.254.109.177:5555"
             };
 
-            Assert.Throws<DeviceNotFoundException>(() => this.RunTest(
+            Assert.Throws<DeviceNotFoundException>(() => RunTest(
                 new AdbResponse[] { AdbResponse.FromError("device not found") },
                 NoResponseMessages,
                 requests,
                 () =>
                 {
-                    this.Socket.SetDevice(Device);
+                    Socket.SetDevice(Device);
                 }));
         }
 
@@ -190,13 +195,13 @@ namespace SharpAdbClient.Tests
                 "host:transport:169.254.109.177:5555"
             };
 
-            Assert.Throws<AdbException>(() => this.RunTest(
+            Assert.Throws<AdbException>(() => RunTest(
                 new AdbResponse[] { AdbResponse.FromError("Too many cats.") },
                 NoResponseMessages,
                 requests,
                 () =>
                 {
-                    this.Socket.SetDevice(Device);
+                    Socket.SetDevice(Device);
                 }));
         }
 
@@ -209,13 +214,13 @@ namespace SharpAdbClient.Tests
                 "reboot:"
             };
 
-            this.RunTest(
+            RunTest(
                 new AdbResponse[] { AdbResponse.OK, AdbResponse.OK },
                 NoResponseMessages,
                 requests,
                 () =>
                 {
-                    this.TestClient.Reboot(Device);
+                    TestClient.Reboot(Device);
                 });
         }
 
@@ -247,14 +252,14 @@ namespace SharpAdbClient.Tests
 
             var receiver = new ConsoleOutputReceiver();
 
-            this.RunTest(
+            RunTest(
                 responses,
                 responseMessages,
                 requests,
                 shellStream,
                 () =>
                 {
-                    this.TestClient.ExecuteRemoteCommand("echo Hello, World", device, receiver);
+                    TestClient.ExecuteRemoteCommand("echo Hello, World", device, receiver);
                 });
 
             Assert.Equal("Hello, World\r\n", receiver.ToString(), ignoreLineEndingDifferences: true);
@@ -285,22 +290,22 @@ namespace SharpAdbClient.Tests
 
             var receiver = new ConsoleOutputReceiver();
 
-            Assert.Throws<ShellCommandUnresponsiveException>(() => this.RunTest(
+            Assert.Throws<ShellCommandUnresponsiveException>(() => RunTest(
                 responses,
                 responseMessages,
                 requests,
                 null,
                 () =>
                 {
-                    this.TestClient.ExecuteRemoteCommand("echo Hello, World", device, receiver);
+                    TestClient.ExecuteRemoteCommand("echo Hello, World", device, receiver);
                 }));
         }
 
         [Fact]
         public void CreateForwardTest()
         {
-            this.RunCreateForwardTest(
-                (device) => this.TestClient.CreateForward(device, "tcp:1", "tcp:2", true),
+            RunCreateForwardTest(
+                (device) => TestClient.CreateForward(device, "tcp:1", "tcp:2", true),
                 "tcp:1;tcp:2");
         }
 
@@ -308,24 +313,24 @@ namespace SharpAdbClient.Tests
         [Fact]
         public void CreateReverseTest()
         {
-            this.RunCreateReverseTest(
-                (device) => this.TestClient.CreateReverseForward(device, "tcp:1", "tcp:2", true),
+            RunCreateReverseTest(
+                (device) => TestClient.CreateReverseForward(device, "tcp:1", "tcp:2", true),
                 "tcp:1;tcp:2");
         }
 
         [Fact]
         public void CreateTcpForwardTest()
         {
-            this.RunCreateForwardTest(
-                (device) => this.TestClient.CreateForward(device, 3, 4),
+            RunCreateForwardTest(
+                (device) => TestClient.CreateForward(device, 3, 4),
                 "tcp:3;tcp:4");
         }
 
         [Fact]
         public void CreateSocketForwardTest()
         {
-            this.RunCreateForwardTest(
-                (device) => this.TestClient.CreateForward(device, 5, "/socket/1"),
+            RunCreateForwardTest(
+                (device) => TestClient.CreateForward(device, 5, "/socket/1"),
                 "tcp:5;local:/socket/1");
         }
 
@@ -342,13 +347,13 @@ namespace SharpAdbClient.Tests
                 "host-serial:169.254.109.177:5555:forward:norebind:tcp:1;tcp:2"
             };
 
-            Assert.Throws<AdbException>(() => this.RunTest(
+            Assert.Throws<AdbException>(() => RunTest(
                 responses,
                 NoResponseMessages,
                 requests,
                 () =>
                 {
-                    this.TestClient.CreateForward(Device, "tcp:1", "tcp:2", false);
+                    TestClient.CreateForward(Device, "tcp:1", "tcp:2", false);
                 }));
         }
 
@@ -366,11 +371,11 @@ namespace SharpAdbClient.Tests
 
             ForwardData[] forwards = null;
 
-            this.RunTest(
+            RunTest(
                 OkResponse,
                 responseMessages,
                 requests,
-                () => forwards = this.TestClient.ListForward(Device).ToArray());
+                () => forwards = TestClient.ListForward(Device).ToArray());
 
             Assert.NotNull(forwards);
             Assert.Equal(3, forwards.Length);
@@ -399,11 +404,11 @@ namespace SharpAdbClient.Tests
 
             ForwardData[] forwards = null;
 
-            this.RunTest(
+            RunTest(
                 responses,
                 responseMessages,
                 requests,
-                () => forwards = this.TestClient.ListReverseForward(Device).ToArray());
+                () => forwards = TestClient.ListReverseForward(Device).ToArray());
 
             Assert.NotNull(forwards);
             Assert.Equal(3, forwards.Length);
@@ -420,11 +425,11 @@ namespace SharpAdbClient.Tests
                 "host-serial:169.254.109.177:5555:killforward:tcp:1"
             };
 
-            this.RunTest(
+            RunTest(
                 OkResponse,
                 NoResponseMessages,
                 requests,
-                () => this.TestClient.RemoveForward(Device, 1));
+                () => TestClient.RemoveForward(Device, 1));
         }
 
         [Fact]
@@ -442,11 +447,11 @@ namespace SharpAdbClient.Tests
                 AdbResponse.OK,
             };
 
-            this.RunTest(
+            RunTest(
                 responses,
                 NoResponseMessages,
                 requests,
-                () => this.TestClient.RemoveReverseForward(Device, "localabstract:test"));
+                () => TestClient.RemoveReverseForward(Device, "localabstract:test"));
         }
 
         [Fact]
@@ -457,11 +462,11 @@ namespace SharpAdbClient.Tests
                 "host-serial:169.254.109.177:5555:killforward-all"
             };
 
-            this.RunTest(
+            RunTest(
                 OkResponse,
                 NoResponseMessages,
                 requests,
-                () => this.TestClient.RemoveAllForwards(Device));
+                () => TestClient.RemoveAllForwards(Device));
         }
 
         [Fact]
@@ -479,67 +484,67 @@ namespace SharpAdbClient.Tests
                 AdbResponse.OK,
             };
 
-            this.RunTest(
+            RunTest(
                 responses,
                 NoResponseMessages,
                 requests,
-                () => this.TestClient.RemoveAllReverseForwards(Device));
+                () => TestClient.RemoveAllReverseForwards(Device));
         }
 
         [Fact]
         public void ConnectIPAddressTest()
         {
-            this.RunConnectTest(
-                () => this.TestClient.Connect(IPAddress.Loopback),
+            RunConnectTest(
+                () => TestClient.Connect(IPAddress.Loopback),
                 "127.0.0.1:5555");
         }
 
         [Fact]
         public void ConnectDnsEndpointTest()
         {
-            this.RunConnectTest(
-                () => this.TestClient.Connect(new DnsEndPoint("localhost", 1234)),
+            RunConnectTest(
+                () => TestClient.Connect(new DnsEndPoint("localhost", 1234)),
                 "localhost:1234");
         }
 
         [Fact]
         public void ConnectIPEndpointTest()
         {
-            this.RunConnectTest(
-                () => this.TestClient.Connect(new IPEndPoint(IPAddress.Loopback, 4321)),
+            RunConnectTest(
+                () => TestClient.Connect(new IPEndPoint(IPAddress.Loopback, 4321)),
                 "127.0.0.1:4321");
         }
 
         [Fact]
         public void ConnectHostEndpointTest()
         {
-            this.RunConnectTest(
-                () => this.TestClient.Connect("localhost"),
+            RunConnectTest(
+                () => TestClient.Connect("localhost"),
                 "localhost:5555");
         }
 
         [Fact]
         public void ConnectIPAddressNullTest()
         {
-            Assert.Throws<ArgumentNullException>(() => this.TestClient.Connect((IPAddress)null));
+            Assert.Throws<ArgumentNullException>(() => TestClient.Connect((IPAddress)null));
         }
 
         [Fact]
         public void ConnectDnsEndpointNullTest()
         {
-            Assert.Throws<ArgumentNullException>(() => this.TestClient.Connect((DnsEndPoint)null));
+            Assert.Throws<ArgumentNullException>(() => TestClient.Connect(null));
         }
 
         [Fact]
         public void ConnectIPEndpointNullTest()
         {
-            Assert.Throws<ArgumentNullException>(() => this.TestClient.Connect((IPEndPoint)null));
+            Assert.Throws<ArgumentNullException>(() => TestClient.Connect((IPEndPoint)null));
         }
 
         [Fact]
         public void ConnectHostEndpointNullTest()
         {
-            Assert.Throws<ArgumentNullException>(() => this.TestClient.Connect((string)null));
+            Assert.Throws<ArgumentNullException>(() => TestClient.Connect((string)null));
         }
 
         [Fact]
@@ -547,11 +552,11 @@ namespace SharpAdbClient.Tests
         {
             var requests = new string[] { "host:disconnect:localhost:5555" };
 
-            this.RunTest(
+            RunTest(
                 OkResponse,
                 NoResponseMessages,
                 requests,
-                () => this.TestClient.Disconnect(new DnsEndPoint("localhost", 5555)));
+                () => TestClient.Disconnect(new DnsEndPoint("localhost", 5555)));
         }
 
         [Fact]
@@ -582,17 +587,17 @@ namespace SharpAdbClient.Tests
             using (Stream stream = File.OpenRead("logcat.bin"))
             using (ShellStream shellStream = new ShellStream(stream, false))
             {
-                Collection<Logs.LogEntry> logs = new Collection<LogEntry>();
+                Collection<LogEntry> logs = new Collection<LogEntry>();
                 Action<LogEntry> sink = (entry) => logs.Add(entry);
 
-                this.RunTest(
+                RunTest(
                     responses,
                     responseMessages,
                     requests,
                     shellStream,
                     () =>
                     {
-                        this.TestClient.RunLogServiceAsync(device, sink, CancellationToken.None, Logs.LogId.System).Wait();
+                        TestClient.RunLogServiceAsync(device, sink, CancellationToken.None, LogId.System).Wait();
                     });
 
                 Assert.Equal(3, logs.Count());
@@ -618,7 +623,7 @@ namespace SharpAdbClient.Tests
             byte[] expectedString = Encoding.UTF8.GetBytes("adbd cannot run as root in production builds\n");
             Buffer.BlockCopy(expectedString, 0, expectedData, 0, expectedString.Length);
 
-            Assert.Throws<AdbException>(() => this.RunTest(
+            Assert.Throws<AdbException>(() => RunTest(
                 new AdbResponse[]
                 {
                     AdbResponse.OK,
@@ -630,7 +635,7 @@ namespace SharpAdbClient.Tests
                 new SyncCommand[] { },
                 new byte[][] { expectedData },
                 new byte[][] { },
-                () => this.TestClient.Root(device)));
+                () => TestClient.Root(device)));
         }
 
         [Fact]
@@ -652,7 +657,7 @@ namespace SharpAdbClient.Tests
             byte[] expectedString = Encoding.UTF8.GetBytes("adbd not running as root\n");
             Buffer.BlockCopy(expectedString, 0, expectedData, 0, expectedString.Length);
 
-            Assert.Throws<AdbException>(() => this.RunTest(
+            Assert.Throws<AdbException>(() => RunTest(
                 new AdbResponse[]
                 {
                     AdbResponse.OK,
@@ -664,7 +669,7 @@ namespace SharpAdbClient.Tests
                 new SyncCommand[] { },
                 new byte[][] { expectedData },
                 new byte[][] { },
-                () => this.TestClient.Unroot(device)));
+                () => TestClient.Unroot(device)));
         }
 
         [Fact]
@@ -708,7 +713,7 @@ namespace SharpAdbClient.Tests
 
             using (Stream stream = File.OpenRead("testapp.apk"))
             {
-                this.RunTest(
+                RunTest(
                     new AdbResponse[]
                     {
                         AdbResponse.OK,
@@ -720,7 +725,7 @@ namespace SharpAdbClient.Tests
                     new SyncCommand[] { },
                     new byte[][] { response },
                     applicationDataChuncks.ToArray(),
-                        () => this.TestClient.Install(device, stream));
+                        () => TestClient.Install(device, stream));
             }
         }
 
@@ -731,7 +736,7 @@ namespace SharpAdbClient.Tests
                 $"host:connect:{connectString}"
             };
 
-            this.RunTest(
+            RunTest(
                 OkResponse,
                 NoResponseMessages,
                 requests,
@@ -746,7 +751,7 @@ namespace SharpAdbClient.Tests
                 $"reverse:forward:{reverseString}",
             };
 
-            this.RunTest(
+            RunTest(
                 new AdbResponse[]
                 {
                     AdbResponse.OK,
@@ -768,7 +773,7 @@ namespace SharpAdbClient.Tests
                 $"host-serial:169.254.109.177:5555:forward:{forwardString}"
             };
 
-            this.RunTest(
+            RunTest(
                 new AdbResponse[]
                 {
                     AdbResponse.OK,

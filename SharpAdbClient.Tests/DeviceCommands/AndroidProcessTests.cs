@@ -1,8 +1,10 @@
-﻿using SharpAdbClient.DeviceCommands;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+
 using System;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.DeviceCommands
 {
     public class AndroidProcessTests
     {

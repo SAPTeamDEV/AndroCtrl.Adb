@@ -2,12 +2,13 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.Receivers
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using SharpAdbClient.DeviceCommands;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
 
     /// <summary>
     /// Parses the output of a <c>cat /proc/[pid]/stat</c> command.
@@ -33,7 +34,7 @@ namespace SharpAdbClient.Receivers
 
                 try
                 {
-                    this.Processes.Add(AndroidProcess.Parse(line, cmdLinePrefix: true));
+                    Processes.Add(AndroidProcess.Parse(line, cmdLinePrefix: true));
                 }
                 catch (Exception)
                 {

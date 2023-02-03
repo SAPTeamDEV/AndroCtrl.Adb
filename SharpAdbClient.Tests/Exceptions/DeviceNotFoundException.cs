@@ -1,7 +1,7 @@
 ﻿using Xunit;
-using SharpAdbClient.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace SharpAdbClient.Tests.Exceptions
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
 {
     public class DeviceNotFoundExceptionTests
     {

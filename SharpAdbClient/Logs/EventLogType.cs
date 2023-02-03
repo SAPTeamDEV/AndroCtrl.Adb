@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.Logs
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
 {
     /// <summary>
     /// Represents the different types of values that can be stored in an event log entry.

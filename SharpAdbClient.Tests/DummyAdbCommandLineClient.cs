@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace SharpAdbClient.Tests
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     /// <summary>
     /// 
@@ -46,13 +48,13 @@ namespace SharpAdbClient.Tests
 
             if (command == "start-server")
             {
-                this.ServerStarted = true;
+                ServerStarted = true;
             }
             else if (command == "version")
             {
-                if (standardOutput != null && this.Version != null)
+                if (standardOutput != null && Version != null)
                 {
-                    standardOutput.Add($"Android Debug Bridge version {this.Version.ToString(3)}");
+                    standardOutput.Add($"Android Debug Bridge version {Version.ToString(3)}");
                 }
             }
             else

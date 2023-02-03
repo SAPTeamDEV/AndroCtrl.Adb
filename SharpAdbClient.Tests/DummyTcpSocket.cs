@@ -5,7 +5,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SharpAdbClient.Tests
+using AndroCtrl.Protocols.AndroidDebugBridge;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     internal class DummyTcpSocket : ITcpSocket
     {
@@ -29,44 +31,44 @@ namespace SharpAdbClient.Tests
 
         public void Close()
         {
-            this.Connected = false;
+            Connected = false;
         }
 
         public void Connect(EndPoint endPoint)
         {
-            this.Connected = true;
+            Connected = true;
         }
 
         public void Dispose()
         {
-            this.Connected = false;
+            Connected = false;
         }
 
         public Stream GetStream()
         {
-            return this.OutputStream;
+            return OutputStream;
         }
 
         public int Receive(byte[] buffer, int size, SocketFlags socketFlags)
         {
-            return this.InputStream.Read(buffer, 0, size);
+            return InputStream.Read(buffer, 0, size);
         }
 
         public Task<int> ReceiveAsync(byte[] buffer, int offset, int size, SocketFlags socketFlags, CancellationToken cancellationToken)
         {
-            int value = this.InputStream.Read(buffer, offset, size);
+            int value = InputStream.Read(buffer, offset, size);
             return Task.FromResult(value);
         }
 
         public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags)
         {
-            this.OutputStream.Write(buffer, offset, size);
+            OutputStream.Write(buffer, offset, size);
             return size;
         }
 
         public byte[] GetBytesSent()
         {
-            return this.OutputStream.ToArray();
+            return OutputStream.ToArray();
         }
 
         public void Reconnect()

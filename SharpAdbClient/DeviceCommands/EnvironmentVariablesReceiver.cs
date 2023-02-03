@@ -2,11 +2,13 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
     using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
     /// <summary>
     /// Processes the output of the <c>printenv</c> command, which dumps all environment variables of
@@ -29,7 +31,7 @@ namespace SharpAdbClient
         /// </summary>
         public EnvironmentVariablesReceiver()
         {
-            this.EnvironmentVariables = new Dictionary<string, string>();
+            EnvironmentVariables = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -62,13 +64,13 @@ namespace SharpAdbClient
 
                     if (label.Length > 0)
                     {
-                        if (this.EnvironmentVariables.ContainsKey(label))
+                        if (EnvironmentVariables.ContainsKey(label))
                         {
-                            this.EnvironmentVariables[label] = value;
+                            EnvironmentVariables[label] = value;
                         }
                         else
                         {
-                            this.EnvironmentVariables.Add(label, value);
+                            EnvironmentVariables.Add(label, value);
                         }
                     }
                 }

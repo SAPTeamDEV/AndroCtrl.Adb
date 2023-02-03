@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.Logs
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
 {
     using System;
     using System.IO;
@@ -45,7 +45,7 @@ namespace SharpAdbClient.Logs
                 throw new ArgumentOutOfRangeException(nameof(inner));
             }
 
-            this.Inner = inner;
+            Inner = inner;
             this.closeStream = closeStream;
         }
 
@@ -121,16 +121,16 @@ namespace SharpAdbClient.Logs
             // consume it.
             int read = 0;
 
-            if (this.pendingByte != null)
+            if (pendingByte != null)
             {
-                buffer[offset] = this.pendingByte.Value;
-                read = this.Inner.Read(buffer, offset + 1, count - 1);
+                buffer[offset] = pendingByte.Value;
+                read = Inner.Read(buffer, offset + 1, count - 1);
                 read++;
-                this.pendingByte = null;
+                pendingByte = null;
             }
             else
             {
-                read = this.Inner.Read(buffer, offset, count);
+                read = Inner.Read(buffer, offset, count);
             }
 
             // Loop over the data, and find a LF (0x0d) character. If it is
@@ -162,7 +162,7 @@ namespace SharpAdbClient.Logs
                     }
 
                     byte[] minibuffer = new byte[1];
-                    int miniRead = this.Inner.Read(minibuffer, 0, 1);
+                    int miniRead = Inner.Read(minibuffer, 0, 1);
 
                     if (miniRead == 0)
                     {
@@ -182,7 +182,7 @@ namespace SharpAdbClient.Logs
             // we need to read one more byte from the inner stream.
             if (read > 0 && buffer[offset + read - 1] == 0x0d)
             {
-                int nextByte = this.Inner.ReadByte();
+                int nextByte = Inner.ReadByte();
 
                 if (nextByte == 0x0a)
                 {
@@ -195,7 +195,7 @@ namespace SharpAdbClient.Logs
                     // If the next byte was not 0x0a, store it as the 'pending byte' --
                     // the next read operation will fetch this byte. We can't do a Seek here,
                     // because e.g. the network stream doesn't support seeking.
-                    this.pendingByte = (byte)nextByte;
+                    pendingByte = (byte)nextByte;
                 }
             }
 
@@ -215,16 +215,16 @@ namespace SharpAdbClient.Logs
             // consume it.
             int read = 0;
 
-            if (this.pendingByte != null)
+            if (pendingByte != null)
             {
-                buffer[offset] = this.pendingByte.Value;
-                read = await this.Inner.ReadAsync(buffer, offset + 1, count - 1, cancellationToken).ConfigureAwait(false);
+                buffer[offset] = pendingByte.Value;
+                read = await Inner.ReadAsync(buffer, offset + 1, count - 1, cancellationToken).ConfigureAwait(false);
                 read++;
-                this.pendingByte = null;
+                pendingByte = null;
             }
             else
             {
-                read = await this.Inner.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+                read = await Inner.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             }
 
             byte[] minibuffer = new byte[1];
@@ -257,7 +257,7 @@ namespace SharpAdbClient.Logs
                         continue;
                     }
 
-                    int miniRead = await this.Inner.ReadAsync(minibuffer, 0, 1, cancellationToken).ConfigureAwait(false);
+                    int miniRead = await Inner.ReadAsync(minibuffer, 0, 1, cancellationToken).ConfigureAwait(false);
 
                     if (miniRead == 0)
                     {
@@ -277,7 +277,7 @@ namespace SharpAdbClient.Logs
             // we need to read one more byte from the inner stream.
             if (read > 0 && buffer[offset + read - 1] == 0x0d)
             {
-                int miniRead = await this.Inner.ReadAsync(minibuffer, 0, 1, cancellationToken).ConfigureAwait(false);
+                int miniRead = await Inner.ReadAsync(minibuffer, 0, 1, cancellationToken).ConfigureAwait(false);
                 int nextByte = minibuffer[0];
 
                 if (nextByte == 0x0a)
@@ -291,7 +291,7 @@ namespace SharpAdbClient.Logs
                     // If the next byte was not 0x0a, store it as the 'pending byte' --
                     // the next read operation will fetch this byte. We can't do a Seek here,
                     // because e.g. the network stream doesn't support seeking.
-                    this.pendingByte = (byte)nextByte;
+                    pendingByte = (byte)nextByte;
                 }
             }
 
@@ -325,10 +325,10 @@ namespace SharpAdbClient.Logs
         /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
-            if (this.closeStream && this.Inner != null)
+            if (closeStream && Inner != null)
             {
-                this.Inner.Dispose();
-                this.Inner = null;
+                Inner.Dispose();
+                Inner = null;
             }
 
             base.Dispose(disposing);

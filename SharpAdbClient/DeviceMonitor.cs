@@ -2,11 +2,15 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
+    using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+
     using Exceptions;
+
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
+
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -82,9 +86,9 @@ namespace SharpAdbClient
                 throw new ArgumentNullException(nameof(socket));
             }
 
-            this.Socket = socket;
-            this.devices = new List<DeviceData>();
-            this.Devices = this.devices.AsReadOnly();
+            Socket = socket;
+            devices = new List<DeviceData>();
+            Devices = devices.AsReadOnly();
             this.logger = logger ?? NullLogger<DeviceMonitor>.Instance;
         }
 
@@ -117,15 +121,15 @@ namespace SharpAdbClient
         /// <inheritdoc/>
         public void Start()
         {
-            if (this.monitorTask == null)
+            if (monitorTask == null)
             {
-                this.firstDeviceListParsed.Reset();
+                firstDeviceListParsed.Reset();
 
-                this.monitorTask = Task.Run(() => this.DeviceMonitorLoopAsync(this.monitorTaskCancellationTokenSource.Token));
+                monitorTask = Task.Run(() => DeviceMonitorLoopAsync(monitorTaskCancellationTokenSource.Token));
 
                 // Wait for the worker thread to have read the first list
                 // of devices.
-                this.firstDeviceListParsed.WaitOne();
+                firstDeviceListParsed.WaitOne();
             }
         }
 
@@ -136,28 +140,28 @@ namespace SharpAdbClient
         {
             // First kill the monitor task, which has a dependency on the socket,
             // then close the socket.
-            if (this.monitorTask != null)
+            if (monitorTask != null)
             {
-                this.IsRunning = false;
+                IsRunning = false;
 
                 // Stop the thread. The tread will keep waiting for updated information from adb
                 // eternally, so we need to forcefully abort it here.
-                this.monitorTaskCancellationTokenSource.Cancel();
-                this.monitorTask.Wait();
+                monitorTaskCancellationTokenSource.Cancel();
+                monitorTask.Wait();
 
-                this.monitorTask.Dispose();
-                this.monitorTask = null;
+                monitorTask.Dispose();
+                monitorTask = null;
             }
 
             // Close the connection to adb. To be done after the monitor task exited.
-            if (this.Socket != null)
+            if (Socket != null)
             {
-                this.Socket.Dispose();
-                this.Socket = null;
+                Socket.Dispose();
+                Socket = null;
             }
 
-            this.firstDeviceListParsed.Dispose();
-            this.monitorTaskCancellationTokenSource.Dispose();
+            firstDeviceListParsed.Dispose();
+            monitorTaskCancellationTokenSource.Dispose();
         }
 
         /// <summary>
@@ -166,9 +170,9 @@ namespace SharpAdbClient
         /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
         protected void OnDeviceChanged(DeviceDataEventArgs e)
         {
-            if (this.DeviceChanged != null)
+            if (DeviceChanged != null)
             {
-                this.DeviceChanged(this, e);
+                DeviceChanged(this, e);
             }
         }
 
@@ -178,9 +182,9 @@ namespace SharpAdbClient
         /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
         protected void OnDeviceConnected(DeviceDataEventArgs e)
         {
-            if (this.DeviceConnected != null)
+            if (DeviceConnected != null)
             {
-                this.DeviceConnected(this, e);
+                DeviceConnected(this, e);
             }
         }
 
@@ -190,9 +194,9 @@ namespace SharpAdbClient
         /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
         protected void OnDeviceDisconnected(DeviceDataEventArgs e)
         {
-            if (this.DeviceDisconnected != null)
+            if (DeviceDisconnected != null)
             {
-                this.DeviceDisconnected(this, e);
+                DeviceDisconnected(this, e);
             }
         }
 
@@ -201,19 +205,19 @@ namespace SharpAdbClient
         /// </summary>
         private async Task DeviceMonitorLoopAsync(CancellationToken cancellationToken)
         {
-            this.IsRunning = true;
+            IsRunning = true;
 
             // Set up the connection to track the list of devices.
-            this.InitializeSocket();
+            InitializeSocket();
 
             do
             {
                 try
                 {
-                    var value = await this.Socket.ReadStringAsync(cancellationToken).ConfigureAwait(false);
-                    this.ProcessIncomingDeviceData(value);
+                    var value = await Socket.ReadStringAsync(cancellationToken).ConfigureAwait(false);
+                    ProcessIncomingDeviceData(value);
 
-                    this.firstDeviceListParsed.Set();
+                    firstDeviceListParsed.Set();
                 }
                 catch (TaskCanceledException ex)
                 {
@@ -227,7 +231,7 @@ namespace SharpAdbClient
                     else
                     {
                         // The exception was unexpected, so log it & rethrow.
-                        this.logger.LogError(ex, ex.Message);
+                        logger.LogError(ex, ex.Message);
                         throw;
                     }
                 }
@@ -243,7 +247,7 @@ namespace SharpAdbClient
                     else
                     {
                         // The exception was unexpected, so log it & rethrow.
-                        this.logger.LogError(ex, ex.Message);
+                        logger.LogError(ex, ex.Message);
                         throw;
                     }
                 }
@@ -253,8 +257,8 @@ namespace SharpAdbClient
                     {
                         // The adb server was killed, for whatever reason. Try to restart it and recover from this.
                         AdbServer.Instance.RestartServer();
-                        this.Socket.Reconnect();
-                        this.InitializeSocket();
+                        Socket.Reconnect();
+                        InitializeSocket();
                     }
                     else
                     {
@@ -264,7 +268,7 @@ namespace SharpAdbClient
                 catch (Exception ex)
                 {
                     // The exception was unexpected, so log it & rethrow.
-                    this.logger.LogError(ex, ex.Message);
+                    logger.LogError(ex, ex.Message);
                     throw;
                 }
             }
@@ -274,8 +278,8 @@ namespace SharpAdbClient
         private void InitializeSocket()
         {
             // Set up the connection to track the list of devices.
-            this.Socket.SendAdbRequest("host:track-devices");
-            this.Socket.ReadAdbResponse();
+            Socket.SendAdbRequest("host:track-devices");
+            Socket.ReadAdbResponse();
         }
 
         /// <summary>
@@ -288,7 +292,7 @@ namespace SharpAdbClient
             string[] deviceValues = result.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             List<DeviceData> currentDevices = deviceValues.Select(d => DeviceData.CreateFromAdbData(d)).ToList();
-            this.UpdateDevices(currentDevices);
+            UpdateDevices(currentDevices);
         }
 
         private void UpdateDevices(List<DeviceData> devices)
@@ -307,25 +311,25 @@ namespace SharpAdbClient
                 // Add or update existing devices
                 foreach (var device in devices)
                 {
-                    var existingDevice = this.Devices.SingleOrDefault(d => d.Serial == device.Serial);
+                    var existingDevice = Devices.SingleOrDefault(d => d.Serial == device.Serial);
 
                     if (existingDevice == null)
                     {
                         this.devices.Add(device);
-                        this.OnDeviceConnected(new DeviceDataEventArgs(device));
+                        OnDeviceConnected(new DeviceDataEventArgs(device));
                     }
                     else
                     {
                         existingDevice.State = device.State;
-                        this.OnDeviceChanged(new DeviceDataEventArgs(existingDevice));
+                        OnDeviceChanged(new DeviceDataEventArgs(existingDevice));
                     }
                 }
 
                 // Remove devices
-                foreach (var device in this.Devices.Where(d => !devices.Any(e => e.Serial == d.Serial)).ToArray())
+                foreach (var device in Devices.Where(d => !devices.Any(e => e.Serial == d.Serial)).ToArray())
                 {
                     this.devices.Remove(device);
-                    this.OnDeviceDisconnected(new DeviceDataEventArgs(device));
+                    OnDeviceDisconnected(new DeviceDataEventArgs(device));
                 }
             }
         }

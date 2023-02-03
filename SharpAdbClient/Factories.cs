@@ -2,13 +2,15 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Text;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge;
 
     /// <summary>
     /// Provides factory methods used by the various SharpAdbClient classes.
@@ -60,7 +62,7 @@ namespace SharpAdbClient
         public static void Reset()
         {
             AdbSocketFactory = (endPoint) => new AdbSocket(endPoint);
-            AdbClientFactory = (endPoint) => new AdbClient(endPoint, Factories.AdbSocketFactory);
+            AdbClientFactory = (endPoint) => new AdbClient(endPoint, AdbSocketFactory);
             AdbCommandLineClientFactory = (path) => new AdbCommandLineClient(path);
             SyncServiceFactory = (client, device) => new SyncService(client, device);
         }

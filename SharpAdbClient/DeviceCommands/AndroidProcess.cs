@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
     using System;
     using System.Collections.Generic;
@@ -204,7 +204,7 @@ namespace SharpAdbClient.DeviceCommands
         /// </returns>
         public override string ToString()
         {
-            return $"{this.Name} ({this.ProcessId})";
+            return $"{Name} ({ProcessId})";
         }
 
         /// <summary>

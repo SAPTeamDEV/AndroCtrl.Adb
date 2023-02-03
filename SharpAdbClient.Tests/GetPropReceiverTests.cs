@@ -1,7 +1,8 @@
 ﻿using Xunit;
-using SharpAdbClient.DeviceCommands;
+using AndroCtrl.Protocols.AndroidDebugBridge;
+using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class GetPropReceiverTests
     {

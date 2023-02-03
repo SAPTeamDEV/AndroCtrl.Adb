@@ -1,7 +1,10 @@
 ﻿using System.Linq;
+
+using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
     public class EnvironmentVariablesReceiverTests
     {

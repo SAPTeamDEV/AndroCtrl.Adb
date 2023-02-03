@@ -1,7 +1,9 @@
-﻿using SharpAdbClient.Exceptions;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Tests;
+
 using Xunit;
 
-namespace SharpAdbClient.Tests.Exceptions
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
 {
     public class ShellCommandUnresponsiveExceptionTests
     {
@@ -22,13 +24,5 @@ namespace SharpAdbClient.Tests.Exceptions
         {
             ExceptionTester<ShellCommandUnresponsiveException>.TestMessageAndInnerConstructor((message, inner) => new ShellCommandUnresponsiveException(message, inner));
         }
-
-#if !NETCOREAPP1_1
-        [Fact]
-        public void TestSerializationConstructor()
-        {
-            ExceptionTester<ShellCommandUnresponsiveException>.TestSerializationConstructor((info, context) => new ShellCommandUnresponsiveException(info, context));
-        }
-#endif
     }
 }

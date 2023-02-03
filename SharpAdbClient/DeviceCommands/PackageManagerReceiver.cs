@@ -2,10 +2,13 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace SharpAdbClient.DeviceCommands
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
     using System.Collections.Generic;
     using System.Diagnostics;
+
+    using AndroCtrl.Protocols.AndroidDebugBridge;
+    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
     /// <summary>
     /// Parses the output of the various <c>pm</c> commands.
@@ -23,8 +26,8 @@ namespace SharpAdbClient.DeviceCommands
         /// </param>
         public PackageManagerReceiver(DeviceData device, PackageManager packageManager)
         {
-            this.Device = device;
-            this.PackageManager = packageManager;
+            Device = device;
+            PackageManager = packageManager;
         }
 
         /// <summary>
@@ -43,7 +46,7 @@ namespace SharpAdbClient.DeviceCommands
         /// <param name="lines">The lines.</param>
         protected override void ProcessNewLines(IEnumerable<string> lines)
         {
-            this.PackageManager.Packages.Clear();
+            PackageManager.Packages.Clear();
 
             foreach (var line in lines)
             {
@@ -65,14 +68,14 @@ namespace SharpAdbClient.DeviceCommands
 
                     if (separator == -1)
                     {
-                        this.PackageManager.Packages.Add(package, null);
+                        PackageManager.Packages.Add(package, null);
                     }
                     else
                     {
                         var path = package.Substring(0, separator);
                         var name = package.Substring(separator + 1);
 
-                        this.PackageManager.Packages.Add(name, path);
+                        PackageManager.Packages.Add(name, path);
                     }
                 }
             }
