@@ -2,207 +2,187 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge;
+/// <summary>
+/// Represents an adb forward specification as used by the various adb port forwarding
+/// functions.
+/// </summary>
+public class ForwardSpec
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    /// <summary>
+    /// Provides a mapping between a <see cref="string"/> and a <see cref="ForwardProtocol"/>
+    /// value, used for the <see cref="string"/> representation of the <see cref="ForwardSpec"/>
+    /// class.
+    /// </summary>
+    private static readonly Dictionary<string, ForwardProtocol> Mappings
+        = new(StringComparer.OrdinalIgnoreCase)
+            {
+                { "tcp", ForwardProtocol.Tcp },
+                { "localabstract", ForwardProtocol.LocalAbstract },
+                { "localreserved", ForwardProtocol.LocalReserved },
+                { "localfilesystem", ForwardProtocol.LocalFilesystem },
+                { "dev", ForwardProtocol.Device },
+                { "jdwp", ForwardProtocol.JavaDebugWireProtocol }
+            };
 
     /// <summary>
-    /// Represents an adb forward specification as used by the various adb port forwarding
-    /// functions.
+    /// Gets or sets the protocol which is being forwarded.
     /// </summary>
-    public class ForwardSpec
+    public ForwardProtocol Protocol
     {
-        /// <summary>
-        /// Provides a mapping between a <see cref="string"/> and a <see cref="ForwardProtocol"/>
-        /// value, used for the <see cref="string"/> representation of the <see cref="ForwardSpec"/>
-        /// class.
-        /// </summary>
-        private static readonly Dictionary<string, ForwardProtocol> Mappings
-            = new Dictionary<string, ForwardProtocol>(StringComparer.OrdinalIgnoreCase)
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets or sets, when the <see cref="Protocol"/> is <see cref="ForwardProtocol.Tcp"/>, the port
+    /// number of the port being forwarded.
+    /// </summary>
+    public int Port
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets or sets, when the <see cref="Protocol"/> is <see cref="ForwardProtocol.LocalAbstract"/>,
+    /// <see cref="ForwardProtocol.LocalReserved"/> or <see cref="ForwardProtocol.LocalFilesystem"/>,
+    /// the Unix domain socket name of the socket being forwarded.
+    /// </summary>
+    public string SocketName
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets or sets, when the <see cref="Protocol"/> is <see cref="ForwardProtocol.JavaDebugWireProtocol"/>,
+    /// the process id of the process to which the debugger is attached.
+    /// </summary>
+    public int ProcessId
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="ForwardSpec"/> from its <see cref="string"/> representation.
+    /// </summary>
+    /// <param name="spec">
+    /// A <see cref="string"/> which represents a <see cref="ForwardSpec"/>.
+    /// </param>
+    /// <returns>
+    /// A <see cref="ForwardSpec"/> which represents <paramref name="spec"/>.
+    /// </returns>
+    public static ForwardSpec Parse(string spec)
+    {
+        if (spec == null)
+        {
+            throw new ArgumentNullException(nameof(spec));
+        }
+
+        string[] parts = spec.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length != 2)
+        {
+            throw new ArgumentOutOfRangeException(nameof(spec));
+        }
+
+        if (!Mappings.ContainsKey(parts[0]))
+        {
+            throw new ArgumentOutOfRangeException(nameof(spec));
+        }
+
+        ForwardProtocol protocol = Mappings[parts[0]];
+
+        ForwardSpec value = new()
+        {
+            Protocol = protocol
+        };
+
+
+        bool isInt = int.TryParse(parts[1], out int intValue);
+
+        switch (protocol)
+        {
+            case ForwardProtocol.JavaDebugWireProtocol:
+                if (!isInt)
                 {
-                    { "tcp", ForwardProtocol.Tcp },
-                    { "localabstract", ForwardProtocol.LocalAbstract },
-                    { "localreserved", ForwardProtocol.LocalReserved },
-                    { "localfilesystem", ForwardProtocol.LocalFilesystem },
-                    { "dev", ForwardProtocol.Device },
-                    { "jdwp", ForwardProtocol.JavaDebugWireProtocol }
-                };
+                    throw new ArgumentOutOfRangeException(nameof(spec));
+                }
 
-        /// <summary>
-        /// Gets or sets the protocol which is being forwarded.
-        /// </summary>
-        public ForwardProtocol Protocol
-        {
-            get;
-            set;
+                value.ProcessId = intValue;
+                break;
+
+            case ForwardProtocol.Tcp:
+                if (!isInt)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(spec));
+                }
+
+                value.Port = intValue;
+                break;
+
+            case ForwardProtocol.LocalAbstract:
+            case ForwardProtocol.LocalFilesystem:
+            case ForwardProtocol.LocalReserved:
+            case ForwardProtocol.Device:
+                value.SocketName = parts[1];
+                break;
         }
 
-        /// <summary>
-        /// Gets or sets, when the <see cref="Protocol"/> is <see cref="ForwardProtocol.Tcp"/>, the port
-        /// number of the port being forwarded.
-        /// </summary>
-        public int Port
+        return value;
+    }
+
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+        string protocolString = Mappings.FirstOrDefault(v => v.Value == Protocol).Key;
+
+        return Protocol switch
         {
-            get;
-            set;
+            ForwardProtocol.JavaDebugWireProtocol => $"{protocolString}:{ProcessId}",
+            ForwardProtocol.Tcp => $"{protocolString}:{Port}",
+            ForwardProtocol.LocalAbstract or ForwardProtocol.LocalFilesystem or ForwardProtocol.LocalReserved or ForwardProtocol.Device => $"{protocolString}:{SocketName}",
+            _ => string.Empty,
+        };
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return (int)Protocol
+            ^ Port
+            ^ ProcessId
+            ^ (SocketName == null ? 1 : SocketName.GetHashCode());
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object obj)
+    {
+        ForwardSpec other = obj as ForwardSpec;
+
+        if (other == null)
+        {
+            return false;
         }
 
-        /// <summary>
-        /// Gets or sets, when the <see cref="Protocol"/> is <see cref="ForwardProtocol.LocalAbstract"/>,
-        /// <see cref="ForwardProtocol.LocalReserved"/> or <see cref="ForwardProtocol.LocalFilesystem"/>,
-        /// the Unix domain socket name of the socket being forwarded.
-        /// </summary>
-        public string SocketName
+        if (other.Protocol != Protocol)
         {
-            get;
-            set;
+            return false;
         }
 
-        /// <summary>
-        /// Gets or sets, when the <see cref="Protocol"/> is <see cref="ForwardProtocol.JavaDebugWireProtocol"/>,
-        /// the process id of the process to which the debugger is attached.
-        /// </summary>
-        public int ProcessId
+        return Protocol switch
         {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Creates a <see cref="ForwardSpec"/> from its <see cref="string"/> representation.
-        /// </summary>
-        /// <param name="spec">
-        /// A <see cref="string"/> which represents a <see cref="ForwardSpec"/>.
-        /// </param>
-        /// <returns>
-        /// A <see cref="ForwardSpec"/> which represents <paramref name="spec"/>.
-        /// </returns>
-        public static ForwardSpec Parse(string spec)
-        {
-            if (spec == null)
-            {
-                throw new ArgumentNullException(nameof(spec));
-            }
-
-            var parts = spec.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
-
-            if (parts.Length != 2)
-            {
-                throw new ArgumentOutOfRangeException(nameof(spec));
-            }
-
-            if (!Mappings.ContainsKey(parts[0]))
-            {
-                throw new ArgumentOutOfRangeException(nameof(spec));
-            }
-
-            var protocol = Mappings[parts[0]];
-
-            ForwardSpec value = new ForwardSpec();
-            value.Protocol = protocol;
-
-            int intValue;
-
-            bool isInt = int.TryParse(parts[1], out intValue);
-
-            switch (protocol)
-            {
-                case ForwardProtocol.JavaDebugWireProtocol:
-                    if (!isInt)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(spec));
-                    }
-
-                    value.ProcessId = intValue;
-                    break;
-
-                case ForwardProtocol.Tcp:
-                    if (!isInt)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(spec));
-                    }
-
-                    value.Port = intValue;
-                    break;
-
-                case ForwardProtocol.LocalAbstract:
-                case ForwardProtocol.LocalFilesystem:
-                case ForwardProtocol.LocalReserved:
-                case ForwardProtocol.Device:
-                    value.SocketName = parts[1];
-                    break;
-            }
-
-            return value;
-        }
-
-        /// <inheritdoc/>
-        public override string ToString()
-        {
-            var protocolString = Mappings.FirstOrDefault(v => v.Value == Protocol).Key;
-
-            switch (Protocol)
-            {
-                case ForwardProtocol.JavaDebugWireProtocol:
-                    return $"{protocolString}:{ProcessId}";
-
-                case ForwardProtocol.Tcp:
-                    return $"{protocolString}:{Port}";
-
-                case ForwardProtocol.LocalAbstract:
-                case ForwardProtocol.LocalFilesystem:
-                case ForwardProtocol.LocalReserved:
-                case ForwardProtocol.Device:
-                    return $"{protocolString}:{SocketName}";
-
-                default:
-                    return string.Empty;
-            }
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return (int)Protocol
-                ^ Port
-                ^ ProcessId
-                ^ (SocketName == null ? 1 : SocketName.GetHashCode());
-        }
-
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            var other = obj as ForwardSpec;
-
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (other.Protocol != Protocol)
-            {
-                return false;
-            }
-
-            switch (Protocol)
-            {
-                case ForwardProtocol.JavaDebugWireProtocol:
-                    return ProcessId == other.ProcessId;
-
-                case ForwardProtocol.Tcp:
-                    return Port == other.Port;
-
-                case ForwardProtocol.LocalAbstract:
-                case ForwardProtocol.LocalFilesystem:
-                case ForwardProtocol.LocalReserved:
-                case ForwardProtocol.Device:
-                    return string.Equals(SocketName, other.SocketName);
-
-                default:
-                    return false;
-            }
-        }
+            ForwardProtocol.JavaDebugWireProtocol => ProcessId == other.ProcessId,
+            ForwardProtocol.Tcp => Port == other.Port,
+            ForwardProtocol.LocalAbstract or ForwardProtocol.LocalFilesystem or ForwardProtocol.LocalReserved or ForwardProtocol.Device => string.Equals(SocketName, other.SocketName),
+            _ => false,
+        };
     }
 }

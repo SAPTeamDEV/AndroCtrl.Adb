@@ -2,75 +2,74 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
-{
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
 
-    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+/// <summary>
+/// Parses the output of the <c>getprop</c> command, which lists all properties of an
+/// Android device.
+/// </summary>
+public sealed class GetPropReceiver : MultiLineReceiver
+{
+    /// <summary>
+    /// The path to the <c>getprop</c> executable to run on the device.
+    /// </summary>
+    public const string GetpropCommand = "/system/bin/getprop";
 
     /// <summary>
-    /// Parses the output of the <c>getprop</c> command, which lists all properties of an
-    /// Android device.
+    /// A regular expression which can be used to parse the getprop output.
     /// </summary>
-    public sealed class GetPropReceiver : MultiLineReceiver
+    private const string GetpropRegex = "^\\[([^]]+)\\]\\:\\s*\\[(.*)\\]$";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GetPropReceiver"/> class.
+    /// </summary>
+    public GetPropReceiver()
     {
-        /// <summary>
-        /// The path to the <c>getprop</c> executable to run on the device.
-        /// </summary>
-        public const string GetpropCommand = "/system/bin/getprop";
+        Properties = new Dictionary<string, string>();
+    }
 
-        /// <summary>
-        /// A regular expression which can be used to parse the getprop output.
-        /// </summary>
-        private const string GetpropRegex = "^\\[([^]]+)\\]\\:\\s*\\[(.*)\\]$";
+    /// <summary>
+    /// Gets the list of properties which have been retrieved.
+    /// </summary>
+    public Dictionary<string, string> Properties
+    {
+        get;
+        private set;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetPropReceiver"/> class.
-        /// </summary>
-        public GetPropReceiver()
+    /// <summary>
+    /// Processes the new lines.
+    /// </summary>
+    /// <param name="lines">
+    /// The lines to process.
+    /// </param>
+    protected override void ProcessNewLines(IEnumerable<string> lines)
+    {
+        // We receive an array of lines. We're expecting
+        // to have the build info in the first line, and the build
+        // date in the 2nd line. There seems to be an empty line
+        // after all that.
+        foreach (string line in lines)
         {
-            Properties = new Dictionary<string, string>();
-        }
-
-        /// <summary>
-        /// Gets the list of properties which have been retrieved.
-        /// </summary>
-        public Dictionary<string, string> Properties
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Processes the new lines.
-        /// </summary>
-        /// <param name="lines">
-        /// The lines to process.
-        /// </param>
-        protected override void ProcessNewLines(IEnumerable<string> lines)
-        {
-            // We receive an array of lines. We're expecting
-            // to have the build info in the first line, and the build
-            // date in the 2nd line. There seems to be an empty line
-            // after all that.
-            foreach (string line in lines)
+            if (string.IsNullOrEmpty(line) || line.StartsWith("#") || line.StartsWith("$"))
             {
-                if (string.IsNullOrEmpty(line) || line.StartsWith("#") || line.StartsWith("$"))
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                var m = Regex.Match(line, GetpropRegex, RegexOptions.Compiled);
-                if (m.Success)
-                {
-                    string label = m.Groups[1].Value.Trim();
-                    string value = m.Groups[2].Value.Trim();
+            Match m = Regex.Match(line, GetpropRegex, RegexOptions.Compiled);
+            if (m.Success)
+            {
+                string label = m.Groups[1].Value.Trim();
+                string value = m.Groups[2].Value.Trim();
 
-                    if (label.Length > 0)
-                    {
-                        Properties.Add(label, value);
-                    }
+                if (label.Length > 0)
+                {
+                    Properties.Add(label, value);
                 }
             }
         }

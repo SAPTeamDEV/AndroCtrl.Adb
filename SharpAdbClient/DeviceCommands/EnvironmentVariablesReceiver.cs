@@ -2,76 +2,74 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
 
-    using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+/// <summary>
+/// Processes the output of the <c>printenv</c> command, which dumps all environment variables of
+/// an Android device.
+/// </summary>
+public sealed class EnvironmentVariablesReceiver : MultiLineReceiver
+{
+    /// <summary>
+    /// The path to the <c>printenv</c> command.
+    /// </summary>
+    public const string PrintEnvCommand = "/system/bin/printenv";
 
     /// <summary>
-    /// Processes the output of the <c>printenv</c> command, which dumps all environment variables of
-    /// an Android device.
+    /// A regular expression that can be used to parse the output of the <c>printenv</c> command.
     /// </summary>
-    public sealed class EnvironmentVariablesReceiver : MultiLineReceiver
+    private const string EnvPattern = @"^([^=\s]+)\s*=\s*(.*)$";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EnvironmentVariablesReceiver"/> class.
+    /// </summary>
+    public EnvironmentVariablesReceiver()
     {
-        /// <summary>
-        /// The path to the <c>printenv</c> command.
-        /// </summary>
-        public const string PrintEnvCommand = "/system/bin/printenv";
+        EnvironmentVariables = new Dictionary<string, string>();
+    }
 
-        /// <summary>
-        /// A regular expression that can be used to parse the output of the <c>printenv</c> command.
-        /// </summary>
-        private const string EnvPattern = @"^([^=\s]+)\s*=\s*(.*)$";
+    /// <summary>
+    /// Gets the environment variables that are currently defined on the device.
+    /// </summary>
+    public Dictionary<string, string> EnvironmentVariables
+    {
+        get;
+        private set;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EnvironmentVariablesReceiver"/> class.
-        /// </summary>
-        public EnvironmentVariablesReceiver()
+    /// <summary>
+    /// Processes the new lines.
+    /// </summary>
+    /// <param name="lines">The lines.</param>
+    protected override void ProcessNewLines(IEnumerable<string> lines)
+    {
+        foreach (string line in lines)
         {
-            EnvironmentVariables = new Dictionary<string, string>();
-        }
-
-        /// <summary>
-        /// Gets the environment variables that are currently defined on the device.
-        /// </summary>
-        public Dictionary<string, string> EnvironmentVariables
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Processes the new lines.
-        /// </summary>
-        /// <param name="lines">The lines.</param>
-        protected override void ProcessNewLines(IEnumerable<string> lines)
-        {
-            foreach (string line in lines)
+            if (string.IsNullOrEmpty(line) || line.StartsWith("#"))
             {
-                if (string.IsNullOrEmpty(line) || line.StartsWith("#"))
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                Match m = Regex.Match(line, EnvPattern);
-                if (m.Success)
-                {
-                    string label = m.Groups[1].Value.Trim();
-                    string value = m.Groups[2].Value.Trim();
+            Match m = Regex.Match(line, EnvPattern);
+            if (m.Success)
+            {
+                string label = m.Groups[1].Value.Trim();
+                string value = m.Groups[2].Value.Trim();
 
-                    if (label.Length > 0)
+                if (label.Length > 0)
+                {
+                    if (EnvironmentVariables.ContainsKey(label))
                     {
-                        if (EnvironmentVariables.ContainsKey(label))
-                        {
-                            EnvironmentVariables[label] = value;
-                        }
-                        else
-                        {
-                            EnvironmentVariables.Add(label, value);
-                        }
+                        EnvironmentVariables[label] = value;
+                    }
+                    else
+                    {
+                        EnvironmentVariables.Add(label, value);
                     }
                 }
             }

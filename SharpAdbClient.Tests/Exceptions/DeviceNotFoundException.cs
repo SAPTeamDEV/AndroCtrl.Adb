@@ -1,28 +1,28 @@
-﻿using Xunit;
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
+using Xunit;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions;
+
+public class DeviceNotFoundExceptionTests
 {
-    public class DeviceNotFoundExceptionTests
+    [Fact]
+    public void TestEmptyConstructor()
     {
-        [Fact]
-        public void TestEmptyConstructor()
-        {
-            ExceptionTester<DeviceNotFoundException>.TestEmptyConstructor(() => new DeviceNotFoundException());
-        }
+        ExceptionTester<DeviceNotFoundException>.TestEmptyConstructor(() => new DeviceNotFoundException());
+    }
 
-        [Fact]
-        public void TestMessageAndInnerConstructor()
-        {
-            ExceptionTester<DeviceNotFoundException>.TestMessageAndInnerConstructor((message, inner) => new DeviceNotFoundException(message, inner));
-        }
+    [Fact]
+    public void TestMessageAndInnerConstructor()
+    {
+        ExceptionTester<DeviceNotFoundException>.TestMessageAndInnerConstructor((message, inner) => new DeviceNotFoundException(message, inner));
+    }
 
 #if !NETCOREAPP1_1
-        [Fact]
-        public void TestSerializationConstructor()
-        {
-            ExceptionTester<DeviceNotFoundException>.TestSerializationConstructor((info, context) => new DeviceNotFoundException(info, context));
-        }
-#endif
+    [Fact]
+    public void TestSerializationConstructor()
+    {
+        ExceptionTester<DeviceNotFoundException>.TestSerializationConstructor((info, context) => new DeviceNotFoundException(info, context));
     }
+#endif
 }

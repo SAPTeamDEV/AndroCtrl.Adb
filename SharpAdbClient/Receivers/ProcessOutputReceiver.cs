@@ -2,44 +2,43 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+/// <summary>
+/// Parses the output of a <c>cat /proc/[pid]/stat</c> command.
+/// </summary>
+internal class ProcessOutputReceiver : MultiLineReceiver
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-
-    using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
-
     /// <summary>
-    /// Parses the output of a <c>cat /proc/[pid]/stat</c> command.
+    /// Gets a list of all processes that have been received.
     /// </summary>
-    internal class ProcessOutputReceiver : MultiLineReceiver
+    public Collection<AndroidProcess> Processes
+    { get; private set; } = new Collection<AndroidProcess>();
+
+    /// <inheritdoc/>
+    protected override void ProcessNewLines(IEnumerable<string> lines)
     {
-        /// <summary>
-        /// Gets a list of all processes that have been received.
-        /// </summary>
-        public Collection<AndroidProcess> Processes
-        { get; private set; } = new Collection<AndroidProcess>();
-
-        /// <inheritdoc/>
-        protected override void ProcessNewLines(IEnumerable<string> lines)
+        foreach (string line in lines)
         {
-            foreach (var line in lines)
+            // Process has already died (e.g. the cat process itself)
+            if (line.Contains("No such file or directory"))
             {
-                // Process has already died (e.g. the cat process itself)
-                if (line.Contains("No such file or directory"))
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                try
-                {
-                    Processes.Add(AndroidProcess.Parse(line, cmdLinePrefix: true));
-                }
-                catch (Exception)
-                {
-                    // Swallow
-                }
+            try
+            {
+                Processes.Add(AndroidProcess.Parse(line, cmdLinePrefix: true));
+            }
+            catch (Exception)
+            {
+                // Swallow
             }
         }
     }

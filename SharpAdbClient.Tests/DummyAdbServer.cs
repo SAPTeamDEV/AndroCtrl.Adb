@@ -1,62 +1,59 @@
 ﻿using System;
 using System.Net;
 
-using AndroCtrl.Protocols.AndroidDebugBridge;
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+/// <summary>
+/// A mock implementation of the <see cref="IAdbServer"/> class.
+/// </summary>
+internal class DummyAdbServer : IAdbServer
 {
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The value is set to a value different from the default adb end point, to detect the dummy
+    /// server being used. 
+    /// </remarks>
+    public EndPoint EndPoint
+    { get; set; } = new IPEndPoint(IPAddress.Loopback, 9999);
+
     /// <summary>
-    /// A mock implementation of the <see cref="IAdbServer"/> class.
+    /// Gets or sets the status as is to be reported by the <see cref="DummyAdbServer"/>.
     /// </summary>
-    internal class DummyAdbServer : IAdbServer
+    public AdbServerStatus Status
+    { get; set; }
+
+    /// <summary>
+    /// Gets a value indicating whether the server was restarted.
+    /// </summary>
+    public bool WasRestarted
+    { get; private set; }
+
+    /// <inheritdoc/>
+    public AdbServerStatus GetStatus()
     {
-        /// <inheritdoc/>
-        /// <remarks>
-        /// The value is set to a value different from the default adb end point, to detect the dummy
-        /// server being used. 
-        /// </remarks>
-        public EndPoint EndPoint
-        { get; set; } = new IPEndPoint(IPAddress.Loopback, 9999);
+        return Status;
+    }
 
-        /// <summary>
-        /// Gets or sets the status as is to be reported by the <see cref="DummyAdbServer"/>.
-        /// </summary>
-        public AdbServerStatus Status
-        { get; set; }
+    /// <inheritdoc/>
+    public void RestartServer()
+    {
+        WasRestarted = true;
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether the server was restarted.
-        /// </summary>
-        public bool WasRestarted
-        { get; private set; }
-
-        /// <inheritdoc/>
-        public AdbServerStatus GetStatus()
+    /// <inheritdoc/>
+    public StartServerResult StartServer(string adbPath, bool restartServerIfNewer)
+    {
+        if (Status.IsRunning == true)
         {
-            return Status;
+            return StartServerResult.AlreadyRunning;
         }
 
-        /// <inheritdoc/>
-        public void RestartServer()
+        Status = new AdbServerStatus()
         {
-            WasRestarted = true;
-        }
+            IsRunning = true,
+            Version = new Version(1, 0, 20)
+        };
 
-        /// <inheritdoc/>
-        public StartServerResult StartServer(string adbPath, bool restartServerIfNewer)
-        {
-            if (Status.IsRunning == true)
-            {
-                return StartServerResult.AlreadyRunning;
-            }
-
-            Status = new AdbServerStatus()
-            {
-                IsRunning = true,
-                Version = new Version(1, 0, 20)
-            };
-
-            return StartServerResult.Started;
-        }
+        return StartServerResult.Started;
     }
 }

@@ -2,109 +2,96 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge;
+/// <summary>
+/// Implements the <see cref="ITcpSocket" /> interface using the standard <see cref="Socket"/>
+/// class.
+/// </summary>
+public class TcpSocket : ITcpSocket
 {
-    using System;
-    using System.IO;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private Socket socket;
+    private EndPoint endPoint;
 
     /// <summary>
-    /// Implements the <see cref="ITcpSocket" /> interface using the standard <see cref="Socket"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="TcpSocket"/> class.
     /// </summary>
-    public class TcpSocket : ITcpSocket
+    public TcpSocket()
     {
-        private Socket socket;
-        private EndPoint endPoint;
+        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TcpSocket"/> class.
-        /// </summary>
-        public TcpSocket()
+    /// <inheritdoc/>
+    public bool Connected => socket.Connected;
+
+    /// <inheritdoc/>
+    public int ReceiveBufferSize
+    {
+        get => socket.ReceiveBufferSize;
+
+        set => socket.ReceiveBufferSize = value;
+    }
+
+    /// <inheritdoc/>
+    public void Connect(EndPoint endPoint)
+    {
+        if (!(endPoint is IPEndPoint || endPoint is DnsEndPoint))
         {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            throw new NotSupportedException();
         }
 
-        /// <inheritdoc/>
-        public bool Connected
+        socket.Connect(endPoint);
+        socket.Blocking = true;
+        this.endPoint = endPoint;
+    }
+
+    /// <inheritdoc/>
+    public void Reconnect()
+    {
+        if (socket.Connected)
         {
-            get
-            {
-                return socket.Connected;
-            }
+            // Already connected - nothing to do.
+            return;
         }
 
-        /// <inheritdoc/>
-        public int ReceiveBufferSize
-        {
-            get
-            {
-                return socket.ReceiveBufferSize;
-            }
+        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        Connect(endPoint);
+    }
 
-            set
-            {
-                socket.ReceiveBufferSize = value;
-            }
-        }
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        socket.Dispose();
+    }
 
-        /// <inheritdoc/>
-        public void Connect(EndPoint endPoint)
-        {
-            if (!(endPoint is IPEndPoint || endPoint is DnsEndPoint))
-            {
-                throw new NotSupportedException();
-            }
+    /// <inheritdoc/>
+    public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags)
+    {
+        return socket.Send(buffer, offset, size, socketFlags);
+    }
 
-            socket.Connect(endPoint);
-            socket.Blocking = true;
-            this.endPoint = endPoint;
-        }
+    /// <inheritdoc/>
+    public Stream GetStream()
+    {
+        return new NetworkStream(socket);
+    }
 
-        /// <inheritdoc/>
-        public void Reconnect()
-        {
-            if (socket.Connected)
-            {
-                // Already connected - nothing to do.
-                return;
-            }
+    /// <inheritdoc/>
+    public int Receive(byte[] buffer, int offset, SocketFlags socketFlags)
+    {
+        return socket.Receive(buffer, offset, socketFlags);
+    }
 
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Connect(endPoint);
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            socket.Dispose();
-        }
-
-        /// <inheritdoc/>
-        public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags)
-        {
-            return socket.Send(buffer, offset, size, socketFlags);
-        }
-
-        /// <inheritdoc/>
-        public Stream GetStream()
-        {
-            return new NetworkStream(socket);
-        }
-
-        /// <inheritdoc/>
-        public int Receive(byte[] buffer, int offset, SocketFlags socketFlags)
-        {
-            return socket.Receive(buffer, offset, socketFlags);
-        }
-
-        /// <inheritdoc/>
-        public Task<int> ReceiveAsync(byte[] buffer, int offset, int size, SocketFlags socketFlags, CancellationToken cancellationToken)
-        {
-            return socket.ReceiveAsync(buffer, offset, size, socketFlags, cancellationToken);
-        }
+    /// <inheritdoc/>
+    public Task<int> ReceiveAsync(byte[] buffer, int offset, int size, SocketFlags socketFlags, CancellationToken cancellationToken)
+    {
+        return socket.ReceiveAsync(buffer, offset, size, socketFlags, cancellationToken);
     }
 }

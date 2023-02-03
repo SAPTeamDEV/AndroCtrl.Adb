@@ -2,92 +2,86 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge;
+/// <summary>
+/// Converts <see cref="SyncCommand"/> values to their binary representation
+/// and vice versa.
+/// </summary>
+public static class SyncCommandConverter
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    /// <summary>
+    /// Maps the <see cref="SyncCommand"/> values to their string representations.
+    /// </summary>
+    private static readonly Dictionary<SyncCommand, string> Values = new();
 
     /// <summary>
-    /// Converts <see cref="SyncCommand"/> values to their binary representation
-    /// and vice versa.
+    /// Initializes static members of the <see cref="SyncCommandConverter"/> class.
     /// </summary>
-    public static class SyncCommandConverter
+    static SyncCommandConverter()
     {
-        /// <summary>
-        /// Maps the <see cref="SyncCommand"/> values to their string representations.
-        /// </summary>
-        private static readonly Dictionary<SyncCommand, string> Values = new Dictionary<SyncCommand, string>();
+        Values.Add(SyncCommand.DATA, "DATA");
+        Values.Add(SyncCommand.DENT, "DENT");
+        Values.Add(SyncCommand.DONE, "DONE");
+        Values.Add(SyncCommand.FAIL, "FAIL");
+        Values.Add(SyncCommand.LIST, "LIST");
+        Values.Add(SyncCommand.OKAY, "OKAY");
+        Values.Add(SyncCommand.RECV, "RECV");
+        Values.Add(SyncCommand.SEND, "SEND");
+        Values.Add(SyncCommand.STAT, "STAT");
+    }
 
-        /// <summary>
-        /// Initializes static members of the <see cref="SyncCommandConverter"/> class.
-        /// </summary>
-        static SyncCommandConverter()
+    /// <summary>
+    /// Gets the byte array that represents the <see cref="SyncCommand"/>.
+    /// </summary>
+    /// <param name="command">
+    /// The <see cref="SyncCommand"/> to convert.
+    /// </param>
+    /// <returns>
+    /// A byte array that represents the <see cref="SyncCommand"/>.
+    /// </returns>
+    public static byte[] GetBytes(SyncCommand command)
+    {
+        if (!Values.ContainsKey(command))
         {
-            Values.Add(SyncCommand.DATA, "DATA");
-            Values.Add(SyncCommand.DENT, "DENT");
-            Values.Add(SyncCommand.DONE, "DONE");
-            Values.Add(SyncCommand.FAIL, "FAIL");
-            Values.Add(SyncCommand.LIST, "LIST");
-            Values.Add(SyncCommand.OKAY, "OKAY");
-            Values.Add(SyncCommand.RECV, "RECV");
-            Values.Add(SyncCommand.SEND, "SEND");
-            Values.Add(SyncCommand.STAT, "STAT");
+            throw new ArgumentOutOfRangeException(nameof(command), $"{command} is not a valid sync command");
         }
 
-        /// <summary>
-        /// Gets the byte array that represents the <see cref="SyncCommand"/>.
-        /// </summary>
-        /// <param name="command">
-        /// The <see cref="SyncCommand"/> to convert.
-        /// </param>
-        /// <returns>
-        /// A byte array that represents the <see cref="SyncCommand"/>.
-        /// </returns>
-        public static byte[] GetBytes(SyncCommand command)
+        string commandText = Values[command];
+        byte[] commandBytes = AdbClient.Encoding.GetBytes(commandText);
+
+        return commandBytes;
+    }
+
+    /// <summary>
+    /// Determines which <see cref="SyncCommand"/> is represented by this byte array.
+    /// </summary>
+    /// <param name="value">
+    /// A byte array that represents a <see cref="SyncCommand"/>.
+    /// </param>
+    /// <returns>
+    /// The corresponding <see cref="SyncCommand"/>.
+    /// </returns>
+    public static SyncCommand GetCommand(byte[] value)
+    {
+        if (value == null)
         {
-            if (!Values.ContainsKey(command))
-            {
-                throw new ArgumentOutOfRangeException(nameof(command), $"{command} is not a valid sync command");
-            }
-
-            string commandText = Values[command];
-            byte[] commandBytes = AdbClient.Encoding.GetBytes(commandText);
-
-            return commandBytes;
+            throw new ArgumentNullException(nameof(value));
         }
 
-        /// <summary>
-        /// Determines which <see cref="SyncCommand"/> is represented by this byte array.
-        /// </summary>
-        /// <param name="value">
-        /// A byte array that represents a <see cref="SyncCommand"/>.
-        /// </param>
-        /// <returns>
-        /// The corresponding <see cref="SyncCommand"/>.
-        /// </returns>
-        public static SyncCommand GetCommand(byte[] value)
+        if (value.Length != 4)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            if (value.Length != 4)
-            {
-                throw new ArgumentOutOfRangeException(nameof(value));
-            }
-
-            string commandText = AdbClient.Encoding.GetString(value);
-
-            var key = Values.Where(d => string.Equals(d.Value, commandText, StringComparison.OrdinalIgnoreCase)).Select(d => new SyncCommand?(d.Key)).SingleOrDefault();
-
-            if (key == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(value), $"{commandText} is not a valid sync command");
-            }
-
-            return key.Value;
+            throw new ArgumentOutOfRangeException(nameof(value));
         }
+
+        string commandText = AdbClient.Encoding.GetString(value);
+
+        SyncCommand? key = Values.Where(d => string.Equals(d.Value, commandText, StringComparison.OrdinalIgnoreCase)).Select(d => new SyncCommand?(d.Key)).SingleOrDefault();
+
+        return key == null ? throw new ArgumentOutOfRangeException(nameof(value), $"{commandText} is not a valid sync command") : key.Value;
     }
 }

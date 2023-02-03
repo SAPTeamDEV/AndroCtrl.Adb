@@ -2,172 +2,154 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+
+using System;
+using System.Buffers;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge;
+/// <summary>
+/// Provides access to the framebuffer (that is, a copy of the image being displayed on the device screen).
+/// </summary>
+public class Framebuffer : IDisposable
 {
-    using System;
-    using System.Buffers;
-    using System.Drawing;
-    using System.Runtime.InteropServices;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly AdbClient client;
+    private byte[] headerData;
+    private bool headerInitialized;
+    private bool disposed;
 
     /// <summary>
-    /// Provides access to the framebuffer (that is, a copy of the image being displayed on the device screen).
+    /// Initializes a new instance of the <see cref="Framebuffer"/> class.
     /// </summary>
-    public class Framebuffer : IDisposable
+    /// <param name="device">
+    /// The device for which to fetch the frame buffer.
+    /// </param>
+    /// <param name="client">
+    /// A <see cref="AdbClient"/> which manages the connection with adb.
+    /// </param>
+    public Framebuffer(DeviceData device, AdbClient client)
     {
-        private readonly AdbClient client;
-        private byte[] headerData;
-        private bool headerInitialized;
-        private bool disposed;
+        Device = device ?? throw new ArgumentNullException(nameof(device));
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Framebuffer"/> class.
-        /// </summary>
-        /// <param name="device">
-        /// The device for which to fetch the frame buffer.
-        /// </param>
-        /// <param name="client">
-        /// A <see cref="AdbClient"/> which manages the connection with adb.
-        /// </param>
-        public Framebuffer(DeviceData device, AdbClient client)
+        this.client = client ?? throw new ArgumentNullException(nameof(client));
+
+        // Initialize the headerData buffer
+        int size = Marshal.SizeOf<FramebufferHeader>();
+        headerData = new byte[size];
+    }
+
+    /// <summary>
+    /// Gets the device for which to fetch the frame buffer.
+    /// </summary>
+    public DeviceData Device
+    {
+        get;
+        private set;
+    }
+
+    /// <summary>
+    /// Gets the framebuffer header. The header contains information such as the width and height and the color encoding.
+    /// This property is set after you call <see cref="RefreshAsync(CancellationToken)"/>.
+    /// </summary>
+    public FramebufferHeader Header
+    {
+        get;
+        private set;
+    }
+
+    /// <summary>
+    /// Gets the framebuffer data. You need to parse the <see cref="FramebufferHeader"/> to interpret this data (such as the color encoding).
+    /// This property is set after you call <see cref="RefreshAsync(CancellationToken)"/>.
+    /// </summary>
+    public byte[] Data
+    {
+        get;
+        private set;
+    }
+
+    /// <summary>
+    /// Asynchronously refreshes the framebuffer: fetches the latest framebuffer data from the device. Access the <see cref="Header"/>
+    /// and <see cref="Data"/> properties to get the updated framebuffer data.
+    /// </summary>
+    /// <param name="cancellationToken">
+    /// A <see cref="CancellationToken"/> which can be used to cancel the asynchronous task.
+    /// </param>
+    /// <returns>
+    /// A <see cref="Task"/> which represents the asynchronous operation.
+    /// </returns>
+    public async Task RefreshAsync(CancellationToken cancellationToken)
+    {
+        EnsureNotDisposed();
+
+        using IAdbSocket socket = Factories.AdbSocketFactory(client.EndPoint);
+        // Select the target device
+        socket.SetDevice(Device);
+
+        // Send the framebuffer command
+        socket.SendAdbRequest("framebuffer:");
+        socket.ReadAdbResponse();
+
+        // The result first is a FramebufferHeader object,
+        await socket.ReadAsync(headerData, cancellationToken).ConfigureAwait(false);
+
+        if (!headerInitialized)
         {
-            if (device == null)
-            {
-                throw new ArgumentNullException(nameof(device));
-            }
-
-            if (client == null)
-            {
-                throw new ArgumentNullException(nameof(client));
-            }
-
-            Device = device;
-
-            this.client = client;
-
-            // Initialize the headerData buffer
-            var size = Marshal.SizeOf<FramebufferHeader>();
-            headerData = new byte[size];
+            Header = FramebufferHeader.Read(headerData);
+            headerInitialized = true;
         }
 
-        /// <summary>
-        /// Gets the device for which to fetch the frame buffer.
-        /// </summary>
-        public DeviceData Device
+        if (Data == null || Data.Length < Header.Size)
         {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the framebuffer header. The header contains information such as the width and height and the color encoding.
-        /// This property is set after you call <see cref="RefreshAsync(CancellationToken)"/>.
-        /// </summary>
-        public FramebufferHeader Header
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the framebuffer data. You need to parse the <see cref="FramebufferHeader"/> to interpret this data (such as the color encoding).
-        /// This property is set after you call <see cref="RefreshAsync(CancellationToken)"/>.
-        /// </summary>
-        public byte[] Data
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Asynchronously refreshes the framebuffer: fetches the latest framebuffer data from the device. Access the <see cref="Header"/>
-        /// and <see cref="Data"/> properties to get the updated framebuffer data.
-        /// </summary>
-        /// <param name="cancellationToken">
-        /// A <see cref="CancellationToken"/> which can be used to cancel the asynchronous task.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Task"/> which represents the asynchronous operation.
-        /// </returns>
-        public async Task RefreshAsync(CancellationToken cancellationToken)
-        {
-            EnsureNotDisposed();
-
-            using (var socket = Factories.AdbSocketFactory(client.EndPoint))
-            {
-                // Select the target device
-                socket.SetDevice(Device);
-
-                // Send the framebuffer command
-                socket.SendAdbRequest("framebuffer:");
-                socket.ReadAdbResponse();
-
-                // The result first is a FramebufferHeader object,
-                await socket.ReadAsync(headerData, cancellationToken).ConfigureAwait(false);
-
-                if (!headerInitialized)
-                {
-                    Header = FramebufferHeader.Read(headerData);
-                    headerInitialized = true;
-                }
-
-                if (Data == null || Data.Length < Header.Size)
-                {
-                    // Optimization on .NET Core: Use the BufferPool to rent buffers
-                    if (Data != null)
-                    {
-                        ArrayPool<byte>.Shared.Return(Data, clearArray: false);
-                    }
-
-                    Data = ArrayPool<byte>.Shared.Rent((int)Header.Size);
-                }
-
-                // followed by the actual framebuffer content
-                await socket.ReadAsync(Data, (int)Header.Size, cancellationToken).ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Converts the framebuffer data to a <see cref="Image"/>.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="Image"/> which represents the framebuffer data.
-        /// </returns>
-        public Image ToImage()
-        {
-            EnsureNotDisposed();
-
-            if (Data == null)
-            {
-                throw new InvalidOperationException("Call RefreshAsync first");
-            }
-
-            return Header.ToImage(Data);
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
+            // Optimization on .NET Core: Use the BufferPool to rent buffers
             if (Data != null)
             {
                 ArrayPool<byte>.Shared.Return(Data, clearArray: false);
             }
 
-            headerData = null;
-            headerInitialized = false;
-            disposed = true;
+            Data = ArrayPool<byte>.Shared.Rent((int)Header.Size);
         }
 
-        /// <summary>
-        /// Throws an exception if this <see cref="Framebuffer"/> has been disposed.
-        /// </summary>
-        protected void EnsureNotDisposed()
+        // followed by the actual framebuffer content
+        await socket.ReadAsync(Data, (int)Header.Size, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Converts the framebuffer data to a <see cref="Image"/>.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="Image"/> which represents the framebuffer data.
+    /// </returns>
+    public Image ToImage()
+    {
+        EnsureNotDisposed();
+
+        return Data == null ? throw new InvalidOperationException("Call RefreshAsync first") : Header.ToImage(Data);
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        if (Data != null)
         {
-            if (disposed)
-            {
-                throw new ObjectDisposedException(nameof(Framebuffer));
-            }
+            ArrayPool<byte>.Shared.Return(Data, clearArray: false);
+        }
+
+        headerData = null;
+        headerInitialized = false;
+        disposed = true;
+    }
+
+    /// <summary>
+    /// Throws an exception if this <see cref="Framebuffer"/> has been disposed.
+    /// </summary>
+    protected void EnsureNotDisposed()
+    {
+        if (disposed)
+        {
+            throw new ObjectDisposedException(nameof(Framebuffer));
         }
     }
 }

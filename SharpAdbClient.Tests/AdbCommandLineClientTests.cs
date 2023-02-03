@@ -1,51 +1,54 @@
-﻿using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+using Xunit;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
+
+/// <summary>
+/// Tests the <see cref="AdbCommandLineClient"/> class.
+/// </summary>
+public class AdbCommandLineClientTests
 {
-    /// <summary>
-    /// Tests the <see cref="AdbCommandLineClient"/> class.
-    /// </summary>
-    public class AdbCommandLineClientTests
+    [Fact]
+    public void GetVersionTest()
     {
-        [Fact]
-        public void GetVersionTest()
+        DummyAdbCommandLineClient commandLine = new()
         {
-            DummyAdbCommandLineClient commandLine = new DummyAdbCommandLineClient();
-            commandLine.Version = new Version(1, 0, 32);
+            Version = new Version(1, 0, 32)
+        };
 
-            Assert.Equal(new Version(1, 0, 32), commandLine.GetVersion());
-        }
+        Assert.Equal(new Version(1, 0, 32), commandLine.GetVersion());
+    }
 
-        [Fact]
-        public void GetVersionNullTest()
+    [Fact]
+    public void GetVersionNullTest()
+    {
+        DummyAdbCommandLineClient commandLine = new()
         {
-            DummyAdbCommandLineClient commandLine = new DummyAdbCommandLineClient();
-            commandLine.Version = null;
-            Assert.Throws<AdbException>(() => commandLine.GetVersion());
-        }
+            Version = null
+        };
+        Assert.Throws<AdbException>(() => commandLine.GetVersion());
+    }
 
-        [Fact]
-        public void GetOutdatedVersionTest()
+    [Fact]
+    public void GetOutdatedVersionTest()
+    {
+        DummyAdbCommandLineClient commandLine = new()
         {
-            DummyAdbCommandLineClient commandLine = new DummyAdbCommandLineClient();
-            commandLine.Version = new Version(1, 0, 1);
+            Version = new Version(1, 0, 1)
+        };
 
-            Assert.Throws<AdbException>(() => commandLine.GetVersion());
-        }
+        Assert.Throws<AdbException>(() => commandLine.GetVersion());
+    }
 
-        [Fact]
-        public void StartServerTest()
-        {
-            DummyAdbCommandLineClient commandLine = new DummyAdbCommandLineClient();
-            Assert.False(commandLine.ServerStarted);
-            commandLine.StartServer();
-            Assert.True(commandLine.ServerStarted);
-        }
+    [Fact]
+    public void StartServerTest()
+    {
+        DummyAdbCommandLineClient commandLine = new();
+        Assert.False(commandLine.ServerStarted);
+        commandLine.StartServer();
+        Assert.True(commandLine.ServerStarted);
     }
 }

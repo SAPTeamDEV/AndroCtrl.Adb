@@ -1,35 +1,34 @@
-﻿using Xunit;
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Tests;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
+using Xunit;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions;
+
+public class AdbExceptionTests
 {
-    public class AdbExceptionTests
+    [Fact]
+    public void TestEmptyConstructor()
     {
-        [Fact]
-        public void TestEmptyConstructor()
-        {
-            ExceptionTester<AdbException>.TestEmptyConstructor(() => new AdbException());
-        }
+        ExceptionTester<AdbException>.TestEmptyConstructor(() => new AdbException());
+    }
 
-        [Fact]
-        public void TestMessageConstructor()
-        {
-            ExceptionTester<AdbException>.TestMessageConstructor((message) => new AdbException(message));
-        }
+    [Fact]
+    public void TestMessageConstructor()
+    {
+        ExceptionTester<AdbException>.TestMessageConstructor((message) => new AdbException(message));
+    }
 
-        [Fact]
-        public void TestMessageAndInnerConstructor()
-        {
-            ExceptionTester<AdbException>.TestMessageAndInnerConstructor((message, inner) => new AdbException(message, inner));
-        }
+    [Fact]
+    public void TestMessageAndInnerConstructor()
+    {
+        ExceptionTester<AdbException>.TestMessageAndInnerConstructor((message, inner) => new AdbException(message, inner));
+    }
 
 #if !NETCOREAPP1_1
-        [Fact]
-        public void TestSerializationConstructor()
-        {
-            ExceptionTester<AdbException>.TestSerializationConstructor((info, context) => new AdbException(info, context));
-        }
-#endif
+    [Fact]
+    public void TestSerializationConstructor()
+    {
+        ExceptionTester<AdbException>.TestSerializationConstructor((info, context) => new AdbException(info, context));
     }
+#endif
 }

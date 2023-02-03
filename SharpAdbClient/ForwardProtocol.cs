@@ -2,41 +2,40 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace AndroCtrl.Protocols.AndroidDebugBridge;
+
+/// <summary>
+/// Represents a protocol which is being forwarded over adb.
+/// </summary>
+public enum ForwardProtocol
 {
     /// <summary>
-    /// Represents a protocol which is being forwarded over adb.
+    /// Enables the forwarding of a TCP port.
     /// </summary>
-    public enum ForwardProtocol
-    {
-        /// <summary>
-        /// Enables the forwarding of a TCP port.
-        /// </summary>
-        Tcp,
+    Tcp,
 
-        /// <summary>
-        /// Enables the forwarding of a Unix domain socket.
-        /// </summary>
-        LocalAbstract,
+    /// <summary>
+    /// Enables the forwarding of a Unix domain socket.
+    /// </summary>
+    LocalAbstract,
 
-        /// <summary>
-        /// Enables the forwarding of a Unix domain socket.
-        /// </summary>
-        LocalReserved,
+    /// <summary>
+    /// Enables the forwarding of a Unix domain socket.
+    /// </summary>
+    LocalReserved,
 
-        /// <summary>
-        /// Enables the forwarding of a Unix domain socket.
-        /// </summary>
-        LocalFilesystem,
+    /// <summary>
+    /// Enables the forwarding of a Unix domain socket.
+    /// </summary>
+    LocalFilesystem,
 
-        /// <summary>
-        /// Enables the forwarding of a character device.
-        /// </summary>
-        Device,
+    /// <summary>
+    /// Enables the forwarding of a character device.
+    /// </summary>
+    Device,
 
-        /// <summary>
-        /// Enables port forwarding of the java debugger for a specific process.
-        /// </summary>
-        JavaDebugWireProtocol
-    }
+    /// <summary>
+    /// Enables port forwarding of the java debugger for a specific process.
+    /// </summary>
+    JavaDebugWireProtocol
 }

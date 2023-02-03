@@ -1,56 +1,51 @@
-﻿using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+using Xunit;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
+
+public class InstallReceiverTests
 {
-    public class InstallReceiverTests
+    [Fact]
+    public void ProcessFailureTest()
     {
-        [Fact]
-        public void ProcessFailureTest()
-        {
-            InstallReceiver receiver = new InstallReceiver();
-            receiver.AddOutput("Failure [message]");
-            receiver.Flush();
+        InstallReceiver receiver = new();
+        receiver.AddOutput("Failure [message]");
+        receiver.Flush();
 
-            Assert.False(receiver.Success);
-            Assert.Equal("message", receiver.ErrorMessage);
-        }
+        Assert.False(receiver.Success);
+        Assert.Equal("message", receiver.ErrorMessage);
+    }
 
-        [Fact]
-        public void ProcessFailureEmptyMessageTest()
-        {
-            InstallReceiver receiver = new InstallReceiver();
-            receiver.AddOutput("Failure [  ]");
-            receiver.Flush();
+    [Fact]
+    public void ProcessFailureEmptyMessageTest()
+    {
+        InstallReceiver receiver = new();
+        receiver.AddOutput("Failure [  ]");
+        receiver.Flush();
 
-            Assert.False(receiver.Success);
-            Assert.Equal(InstallReceiver.UnknownError, receiver.ErrorMessage);
-        }
+        Assert.False(receiver.Success);
+        Assert.Equal(InstallReceiver.UnknownError, receiver.ErrorMessage);
+    }
 
-        [Fact]
-        public void ProcessFailureNoMessageTest()
-        {
-            InstallReceiver receiver = new InstallReceiver();
-            receiver.AddOutput("Failure");
-            receiver.Flush();
+    [Fact]
+    public void ProcessFailureNoMessageTest()
+    {
+        InstallReceiver receiver = new();
+        receiver.AddOutput("Failure");
+        receiver.Flush();
 
-            Assert.False(receiver.Success);
-            Assert.Equal(InstallReceiver.UnknownError, receiver.ErrorMessage);
-        }
+        Assert.False(receiver.Success);
+        Assert.Equal(InstallReceiver.UnknownError, receiver.ErrorMessage);
+    }
 
-        [Fact]
-        public void ProcessSuccessTest()
-        {
-            InstallReceiver receiver = new InstallReceiver();
-            receiver.AddOutput("Success");
-            receiver.Flush();
+    [Fact]
+    public void ProcessSuccessTest()
+    {
+        InstallReceiver receiver = new();
+        receiver.AddOutput("Success");
+        receiver.Flush();
 
-            Assert.True(receiver.Success);
-        }
+        Assert.True(receiver.Success);
     }
 }

@@ -1,28 +1,26 @@
 ﻿using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Tests;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions;
+
+public class ShellCommandUnresponsiveExceptionTests
 {
-    public class ShellCommandUnresponsiveExceptionTests
+    [Fact]
+    public void TestEmptyConstructor()
     {
-        [Fact]
-        public void TestEmptyConstructor()
-        {
-            ExceptionTester<ShellCommandUnresponsiveException>.TestEmptyConstructor(() => new ShellCommandUnresponsiveException());
-        }
+        ExceptionTester<ShellCommandUnresponsiveException>.TestEmptyConstructor(() => new ShellCommandUnresponsiveException());
+    }
 
-        [Fact]
-        public void TestMessageConstructor()
-        {
-            ExceptionTester<ShellCommandUnresponsiveException>.TestMessageConstructor((message) => new ShellCommandUnresponsiveException(message));
-        }
+    [Fact]
+    public void TestMessageConstructor()
+    {
+        ExceptionTester<ShellCommandUnresponsiveException>.TestMessageConstructor((message) => new ShellCommandUnresponsiveException(message));
+    }
 
-        [Fact]
-        public void TestMessageAndInnerConstructor()
-        {
-            ExceptionTester<ShellCommandUnresponsiveException>.TestMessageAndInnerConstructor((message, inner) => new ShellCommandUnresponsiveException(message, inner));
-        }
+    [Fact]
+    public void TestMessageAndInnerConstructor()
+    {
+        ExceptionTester<ShellCommandUnresponsiveException>.TestMessageAndInnerConstructor((message, inner) => new ShellCommandUnresponsiveException(message, inner));
     }
 }

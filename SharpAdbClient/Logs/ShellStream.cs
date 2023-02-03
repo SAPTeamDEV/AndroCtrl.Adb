@@ -2,336 +2,302 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs;
+/// <summary>
+/// <para>
+/// Represents a <see cref="Stream"/> that wraps around an inner <see cref="Stream"/> that contains
+/// output from an Android shell command. In the shell output, the LF character is replaced by a
+/// CR LF character. This stream undoes that change.
+/// </para>
+/// </summary>
+/// <seealso href="http://stackoverflow.com/questions/13578416/read-binary-stdout-data-from-adb-shell"/>
+public class ShellStream : Stream
 {
-    using System;
-    using System.IO;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly bool closeStream;
+    private byte? pendingByte;
 
     /// <summary>
-    /// <para>
-    /// Represents a <see cref="Stream"/> that wraps around an inner <see cref="Stream"/> that contains
-    /// output from an Android shell command. In the shell output, the LF character is replaced by a
-    /// CR LF character. This stream undoes that change.
-    /// </para>
+    /// Initializes a new instance of the <seealso cref="ShellStream"/> class.
     /// </summary>
-    /// <seealso href="http://stackoverflow.com/questions/13578416/read-binary-stdout-data-from-adb-shell"/>
-    public class ShellStream : Stream
+    /// <param name="inner">
+    /// The inner stream that contains the raw data retrieved from the shell. This stream
+    /// must be readable.
+    /// </param>
+    /// <param name="closeStream">
+    /// <see langword="true"/> if the <see cref="ShellStream"/> should close the <paramref name="inner"/>
+    /// stream when closed; otherwise, <see langword="false"/>.
+    /// </param>
+    public ShellStream(Stream inner, bool closeStream)
     {
-        private readonly bool closeStream;
-        private byte? pendingByte;
-
-        /// <summary>
-        /// Initializes a new instance of the <seealso cref="ShellStream"/> class.
-        /// </summary>
-        /// <param name="inner">
-        /// The inner stream that contains the raw data retrieved from the shell. This stream
-        /// must be readable.
-        /// </param>
-        /// <param name="closeStream">
-        /// <see langword="true"/> if the <see cref="ShellStream"/> should close the <paramref name="inner"/>
-        /// stream when closed; otherwise, <see langword="false"/>.
-        /// </param>
-        public ShellStream(Stream inner, bool closeStream)
+        if (inner == null)
         {
-            if (inner == null)
-            {
-                throw new ArgumentNullException(nameof(inner));
-            }
-
-            if (!inner.CanRead)
-            {
-                throw new ArgumentOutOfRangeException(nameof(inner));
-            }
-
-            Inner = inner;
-            this.closeStream = closeStream;
+            throw new ArgumentNullException(nameof(inner));
         }
 
-        /// <summary>
-        /// Gets the inner stream from which data is being read.
-        /// </summary>
-        public Stream Inner
+        if (!inner.CanRead)
         {
-            get;
-            private set;
+            throw new ArgumentOutOfRangeException(nameof(inner));
         }
 
-        /// <inheritdoc/>
-        public override bool CanRead
+        Inner = inner;
+        this.closeStream = closeStream;
+    }
+
+    /// <summary>
+    /// Gets the inner stream from which data is being read.
+    /// </summary>
+    public Stream Inner
+    {
+        get;
+        private set;
+    }
+
+    /// <inheritdoc/>
+    public override bool CanRead => true;
+
+    /// <inheritdoc/>
+    public override bool CanSeek => false;
+
+    /// <inheritdoc/>
+    public override bool CanWrite => false;
+
+    /// <inheritdoc/>
+    public override long Length => throw new NotImplementedException();
+
+    /// <inheritdoc/>
+    public override long Position
+    {
+        get => throw new NotImplementedException();
+
+        set => throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public override int Read(byte[] buffer, int offset, int count)
+    {
+        if (count == 0)
         {
-            get
-            {
-                return true;
-            }
+            return 0;
         }
 
-        /// <inheritdoc/>
-        public override bool CanSeek
+        // Read the raw data from the base stream. There may be a
+        // 'pending byte' from a previous operation; if that's the case,
+        // consume it.
+        int read;
+        if (pendingByte != null)
         {
-            get
-            {
-                return false;
-            }
+            buffer[offset] = pendingByte.Value;
+            read = Inner.Read(buffer, offset + 1, count - 1);
+            read++;
+            pendingByte = null;
+        }
+        else
+        {
+            read = Inner.Read(buffer, offset, count);
         }
 
-        /// <inheritdoc/>
-        public override bool CanWrite
+        // Loop over the data, and find a LF (0x0d) character. If it is
+        // followed by a CR (0x0a) character, remove the LF chracter and
+        // keep only the LF character intact.
+        for (int i = offset; i < offset + read - 1; i++)
         {
-            get
+            if (buffer[i] == 0x0d && buffer[i + 1] == 0x0a)
             {
-                return false;
-            }
-        }
+                buffer[i] = 0x0a;
 
-        /// <inheritdoc/>
-        public override long Length
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        /// <inheritdoc/>
-        public override long Position
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        /// <inheritdoc/>
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            if (count == 0)
-            {
-                return 0;
-            }
-
-            // Read the raw data from the base stream. There may be a
-            // 'pending byte' from a previous operation; if that's the case,
-            // consume it.
-            int read = 0;
-
-            if (pendingByte != null)
-            {
-                buffer[offset] = pendingByte.Value;
-                read = Inner.Read(buffer, offset + 1, count - 1);
-                read++;
-                pendingByte = null;
-            }
-            else
-            {
-                read = Inner.Read(buffer, offset, count);
-            }
-
-            // Loop over the data, and find a LF (0x0d) character. If it is
-            // followed by a CR (0x0a) character, remove the LF chracter and
-            // keep only the LF character intact.
-            for (int i = offset; i < offset + read - 1; i++)
-            {
-                if (buffer[i] == 0x0d && buffer[i + 1] == 0x0a)
+                for (int j = i + 1; j < offset + read - 1; j++)
                 {
-                    buffer[i] = 0x0a;
-
-                    for (int j = i + 1; j < offset + read - 1; j++)
-                    {
-                        buffer[j] = buffer[j + 1];
-                    }
-
-                    // Reset unused data to \0
-                    buffer[offset + read - 1] = 0;
-
-                    // We have removed one byte from the array of bytes which has
-                    // been read; but the caller asked for a fixed number of bytes.
-                    // So we need to get the next byte from the base stream.
-                    // If less bytes were received than asked, we know no more data is
-                    // available so we can skip this step
-                    if (read < count)
-                    {
-                        read--;
-                        continue;
-                    }
-
-                    byte[] minibuffer = new byte[1];
-                    int miniRead = Inner.Read(minibuffer, 0, 1);
-
-                    if (miniRead == 0)
-                    {
-                        // If no byte was read, no more data is (currently) available, and reduce the
-                        // number of bytes by 1.
-                        read--;
-                    }
-                    else
-                    {
-                        // Append the byte to the buffer.
-                        buffer[offset + read - 1] = minibuffer[0];
-                    }
+                    buffer[j] = buffer[j + 1];
                 }
-            }
 
-            // The last byte is a special case, to find out if the next byte is 0x0a
-            // we need to read one more byte from the inner stream.
-            if (read > 0 && buffer[offset + read - 1] == 0x0d)
-            {
-                int nextByte = Inner.ReadByte();
+                // Reset unused data to \0
+                buffer[offset + read - 1] = 0;
 
-                if (nextByte == 0x0a)
+                // We have removed one byte from the array of bytes which has
+                // been read; but the caller asked for a fixed number of bytes.
+                // So we need to get the next byte from the base stream.
+                // If less bytes were received than asked, we know no more data is
+                // available so we can skip this step
+                if (read < count)
                 {
-                    // If the next byte is 0x0a, set the last byte to 0x0a. The underlying
-                    // stream has already advanced because of the ReadByte call, so all is good.
-                    buffer[offset + read - 1] = 0x0a;
+                    read--;
+                    continue;
+                }
+
+                byte[] minibuffer = new byte[1];
+                int miniRead = Inner.Read(minibuffer, 0, 1);
+
+                if (miniRead == 0)
+                {
+                    // If no byte was read, no more data is (currently) available, and reduce the
+                    // number of bytes by 1.
+                    read--;
                 }
                 else
                 {
-                    // If the next byte was not 0x0a, store it as the 'pending byte' --
-                    // the next read operation will fetch this byte. We can't do a Seek here,
-                    // because e.g. the network stream doesn't support seeking.
-                    pendingByte = (byte)nextByte;
+                    // Append the byte to the buffer.
+                    buffer[offset + read - 1] = minibuffer[0];
                 }
             }
-
-            return read;
         }
 
-        /// <inheritdoc/>
-        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        // The last byte is a special case, to find out if the next byte is 0x0a
+        // we need to read one more byte from the inner stream.
+        if (read > 0 && buffer[offset + read - 1] == 0x0d)
         {
-            if (count == 0)
-            {
-                return 0;
-            }
+            int nextByte = Inner.ReadByte();
 
-            // Read the raw data from the base stream. There may be a
-            // 'pending byte' from a previous operation; if that's the case,
-            // consume it.
-            int read = 0;
-
-            if (pendingByte != null)
+            if (nextByte == 0x0a)
             {
-                buffer[offset] = pendingByte.Value;
-                read = await Inner.ReadAsync(buffer, offset + 1, count - 1, cancellationToken).ConfigureAwait(false);
-                read++;
-                pendingByte = null;
+                // If the next byte is 0x0a, set the last byte to 0x0a. The underlying
+                // stream has already advanced because of the ReadByte call, so all is good.
+                buffer[offset + read - 1] = 0x0a;
             }
             else
             {
-                read = await Inner.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+                // If the next byte was not 0x0a, store it as the 'pending byte' --
+                // the next read operation will fetch this byte. We can't do a Seek here,
+                // because e.g. the network stream doesn't support seeking.
+                pendingByte = (byte)nextByte;
             }
+        }
 
-            byte[] minibuffer = new byte[1];
+        return read;
+    }
 
-            // Loop over the data, and find a LF (0x0d) character. If it is
-            // followed by a CR (0x0a) character, remove the LF chracter and
-            // keep only the LF character intact.
-            for (int i = offset; i < offset + read - 1; i++)
+    /// <inheritdoc/>
+    public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+    {
+        if (count == 0)
+        {
+            return 0;
+        }
+
+        // Read the raw data from the base stream. There may be a
+        // 'pending byte' from a previous operation; if that's the case,
+        // consume it.
+        int read;
+        if (pendingByte != null)
+        {
+            buffer[offset] = pendingByte.Value;
+            read = await Inner.ReadAsync(buffer.AsMemory(offset + 1, count - 1), cancellationToken).ConfigureAwait(false);
+            read++;
+            pendingByte = null;
+        }
+        else
+        {
+            read = await Inner.ReadAsync(buffer.AsMemory(offset, count), cancellationToken).ConfigureAwait(false);
+        }
+
+        byte[] minibuffer = new byte[1];
+
+        // Loop over the data, and find a LF (0x0d) character. If it is
+        // followed by a CR (0x0a) character, remove the LF chracter and
+        // keep only the LF character intact.
+        for (int i = offset; i < offset + read - 1; i++)
+        {
+            if (buffer[i] == 0x0d && buffer[i + 1] == 0x0a)
             {
-                if (buffer[i] == 0x0d && buffer[i + 1] == 0x0a)
+                buffer[i] = 0x0a;
+
+                for (int j = i + 1; j < offset + read - 1; j++)
                 {
-                    buffer[i] = 0x0a;
-
-                    for (int j = i + 1; j < offset + read - 1; j++)
-                    {
-                        buffer[j] = buffer[j + 1];
-                    }
-
-                    // Reset unused data to \0
-                    buffer[offset + read - 1] = 0;
-
-                    // We have removed one byte from the array of bytes which has
-                    // been read; but the caller asked for a fixed number of bytes.
-                    // So we need to get the next byte from the base stream.
-                    // If less bytes were received than asked, we know no more data is
-                    // available so we can skip this step
-                    if (read < count)
-                    {
-                        read--;
-                        continue;
-                    }
-
-                    int miniRead = await Inner.ReadAsync(minibuffer, 0, 1, cancellationToken).ConfigureAwait(false);
-
-                    if (miniRead == 0)
-                    {
-                        // If no byte was read, no more data is (currently) available, and reduce the
-                        // number of bytes by 1.
-                        read--;
-                    }
-                    else
-                    {
-                        // Append the byte to the buffer.
-                        buffer[offset + read - 1] = minibuffer[0];
-                    }
+                    buffer[j] = buffer[j + 1];
                 }
-            }
 
-            // The last byte is a special case, to find out if the next byte is 0x0a
-            // we need to read one more byte from the inner stream.
-            if (read > 0 && buffer[offset + read - 1] == 0x0d)
-            {
-                int miniRead = await Inner.ReadAsync(minibuffer, 0, 1, cancellationToken).ConfigureAwait(false);
-                int nextByte = minibuffer[0];
+                // Reset unused data to \0
+                buffer[offset + read - 1] = 0;
 
-                if (nextByte == 0x0a)
+                // We have removed one byte from the array of bytes which has
+                // been read; but the caller asked for a fixed number of bytes.
+                // So we need to get the next byte from the base stream.
+                // If less bytes were received than asked, we know no more data is
+                // available so we can skip this step
+                if (read < count)
                 {
-                    // If the next byte is 0x0a, set the last byte to 0x0a. The underlying
-                    // stream has already advanced because of the ReadByte call, so all is good.
-                    buffer[offset + read - 1] = 0x0a;
+                    read--;
+                    continue;
+                }
+
+                int miniRead = await Inner.ReadAsync(minibuffer.AsMemory(0, 1), cancellationToken).ConfigureAwait(false);
+
+                if (miniRead == 0)
+                {
+                    // If no byte was read, no more data is (currently) available, and reduce the
+                    // number of bytes by 1.
+                    read--;
                 }
                 else
                 {
-                    // If the next byte was not 0x0a, store it as the 'pending byte' --
-                    // the next read operation will fetch this byte. We can't do a Seek here,
-                    // because e.g. the network stream doesn't support seeking.
-                    pendingByte = (byte)nextByte;
+                    // Append the byte to the buffer.
+                    buffer[offset + read - 1] = minibuffer[0];
                 }
             }
-
-            return read;
         }
 
-        /// <inheritdoc/>
-        public override void Flush()
+        // The last byte is a special case, to find out if the next byte is 0x0a
+        // we need to read one more byte from the inner stream.
+        if (read > 0 && buffer[offset + read - 1] == 0x0d)
         {
-            throw new NotImplementedException();
-        }
+            _ = await Inner.ReadAsync(minibuffer.AsMemory(0, 1), cancellationToken).ConfigureAwait(false);
+            int nextByte = minibuffer[0];
 
-        /// <inheritdoc/>
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public override void SetLength(long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        protected override void Dispose(bool disposing)
-        {
-            if (closeStream && Inner != null)
+            if (nextByte == 0x0a)
             {
-                Inner.Dispose();
-                Inner = null;
+                // If the next byte is 0x0a, set the last byte to 0x0a. The underlying
+                // stream has already advanced because of the ReadByte call, so all is good.
+                buffer[offset + read - 1] = 0x0a;
             }
-
-            base.Dispose(disposing);
+            else
+            {
+                // If the next byte was not 0x0a, store it as the 'pending byte' --
+                // the next read operation will fetch this byte. We can't do a Seek here,
+                // because e.g. the network stream doesn't support seeking.
+                pendingByte = (byte)nextByte;
+            }
         }
+
+        return read;
+    }
+
+    /// <inheritdoc/>
+    public override void Flush()
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public override void SetLength(long value)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public override void Write(byte[] buffer, int offset, int count)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    protected override void Dispose(bool disposing)
+    {
+        if (closeStream && Inner != null)
+        {
+            Inner.Dispose();
+            Inner = null;
+        }
+
+        base.Dispose(disposing);
     }
 }

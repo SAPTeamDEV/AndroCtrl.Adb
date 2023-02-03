@@ -2,40 +2,39 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
+
+using System.Collections.ObjectModel;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs;
+/// <summary>
+/// Represents an entry in event buffer of the the Android log.
+/// </summary>
+/// <seealso href="https://android.googlesource.com/platform/system/core/+/master/include/log/log.h#482"/>
+public class EventLogEntry : LogEntry
 {
-    using System.Collections.ObjectModel;
+    /// <summary>
+    /// Initializes a new instance of the <seealso cref="EventLogEntry"/> class.
+    /// </summary>
+    public EventLogEntry()
+    {
+        Values = new Collection<object>();
+    }
 
     /// <summary>
-    /// Represents an entry in event buffer of the the Android log.
+    /// Gets or sets the 4 bytes integer key from "/system/etc/event-log-tags" file.
     /// </summary>
-    /// <seealso href="https://android.googlesource.com/platform/system/core/+/master/include/log/log.h#482"/>
-    public class EventLogEntry : LogEntry
+    public int Tag
     {
-        /// <summary>
-        /// Initializes a new instance of the <seealso cref="EventLogEntry"/> class.
-        /// </summary>
-        public EventLogEntry()
-        {
-            Values = new Collection<object>();
-        }
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets or sets the 4 bytes integer key from "/system/etc/event-log-tags" file.
-        /// </summary>
-        public int Tag
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the values of this event log entry.
-        /// </summary>
-        public Collection<object> Values
-        {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets or sets the values of this event log entry.
+    /// </summary>
+    public Collection<object> Values
+    {
+        get;
+        set;
     }
 }

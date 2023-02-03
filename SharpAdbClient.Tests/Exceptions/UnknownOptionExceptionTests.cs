@@ -1,35 +1,34 @@
-﻿using Xunit;
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Tests;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
+using Xunit;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions;
+
+public class UnknownOptionExceptionTests
 {
-    public class UnknownOptionExceptionTests
+    [Fact]
+    public void TestEmptyConstructor()
     {
-        [Fact]
-        public void TestEmptyConstructor()
-        {
-            ExceptionTester<UnknownOptionException>.TestEmptyConstructor(() => new UnknownOptionException());
-        }
+        ExceptionTester<UnknownOptionException>.TestEmptyConstructor(() => new UnknownOptionException());
+    }
 
-        [Fact]
-        public void TestMessageConstructor()
-        {
-            ExceptionTester<UnknownOptionException>.TestMessageConstructor((message) => new UnknownOptionException(message));
-        }
+    [Fact]
+    public void TestMessageConstructor()
+    {
+        ExceptionTester<UnknownOptionException>.TestMessageConstructor((message) => new UnknownOptionException(message));
+    }
 
-        [Fact]
-        public void TestMessageAndInnerConstructor()
-        {
-            ExceptionTester<UnknownOptionException>.TestMessageAndInnerConstructor((message, inner) => new UnknownOptionException(message, inner));
-        }
+    [Fact]
+    public void TestMessageAndInnerConstructor()
+    {
+        ExceptionTester<UnknownOptionException>.TestMessageAndInnerConstructor((message, inner) => new UnknownOptionException(message, inner));
+    }
 
 #if !NETCOREAPP1_1
-        [Fact]
-        public void TestSerializationConstructor()
-        {
-            ExceptionTester<UnknownOptionException>.TestSerializationConstructor((info, context) => new UnknownOptionException(info, context));
-        }
-#endif
+    [Fact]
+    public void TestSerializationConstructor()
+    {
+        ExceptionTester<UnknownOptionException>.TestSerializationConstructor((info, context) => new UnknownOptionException(info, context));
     }
+#endif
 }

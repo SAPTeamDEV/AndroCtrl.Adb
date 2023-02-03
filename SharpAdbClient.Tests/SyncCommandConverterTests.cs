@@ -1,33 +1,32 @@
-﻿using Xunit;
-using System;
-using AndroCtrl.Protocols.AndroidDebugBridge;
+﻿using System;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+using Xunit;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
+
+public class SyncCommandConverterTests
 {
-    public class SyncCommandConverterTests
+    [Fact]
+    public void GetCommandNullTest()
     {
-        [Fact]
-        public void GetCommandNullTest()
-        {
-            Assert.Throws<ArgumentNullException>(() => SyncCommandConverter.GetCommand(null));
-        }
+        Assert.Throws<ArgumentNullException>(() => SyncCommandConverter.GetCommand(null));
+    }
 
-        [Fact]
-        public void GetCommandInvalidNumberOfBytesTest()
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => SyncCommandConverter.GetCommand(new byte[] { }));
-        }
+    [Fact]
+    public void GetCommandInvalidNumberOfBytesTest()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => SyncCommandConverter.GetCommand(Array.Empty<byte>()));
+    }
 
-        [Fact]
-        public void GetCommandInvalidCommandTest()
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => SyncCommandConverter.GetCommand(new byte[] { (byte)'Q', (byte)'M', (byte)'T', (byte)'V' }));
-        }
+    [Fact]
+    public void GetCommandInvalidCommandTest()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => SyncCommandConverter.GetCommand(new byte[] { (byte)'Q', (byte)'M', (byte)'T', (byte)'V' }));
+    }
 
-        [Fact]
-        public void GetBytesInvalidCommandTest()
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => SyncCommandConverter.GetBytes((SyncCommand)99));
-        }
+    [Fact]
+    public void GetBytesInvalidCommandTest()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => SyncCommandConverter.GetBytes((SyncCommand)99));
     }
 }

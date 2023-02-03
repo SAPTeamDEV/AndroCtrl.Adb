@@ -1,35 +1,34 @@
-﻿using Xunit;
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Tests;
+﻿using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
+using Xunit;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions;
+
+public class PermissionDeniedExceptionTests
 {
-    public class PermissionDeniedExceptionTests
+    [Fact]
+    public void TestEmptyConstructor()
     {
-        [Fact]
-        public void TestEmptyConstructor()
-        {
-            ExceptionTester<PermissionDeniedException>.TestEmptyConstructor(() => new PermissionDeniedException());
-        }
+        ExceptionTester<PermissionDeniedException>.TestEmptyConstructor(() => new PermissionDeniedException());
+    }
 
-        [Fact]
-        public void TestMessageConstructor()
-        {
-            ExceptionTester<PermissionDeniedException>.TestMessageConstructor((message) => new PermissionDeniedException(message));
-        }
+    [Fact]
+    public void TestMessageConstructor()
+    {
+        ExceptionTester<PermissionDeniedException>.TestMessageConstructor((message) => new PermissionDeniedException(message));
+    }
 
-        [Fact]
-        public void TestMessageAndInnerConstructor()
-        {
-            ExceptionTester<PermissionDeniedException>.TestMessageAndInnerConstructor((message, inner) => new PermissionDeniedException(message, inner));
-        }
+    [Fact]
+    public void TestMessageAndInnerConstructor()
+    {
+        ExceptionTester<PermissionDeniedException>.TestMessageAndInnerConstructor((message, inner) => new PermissionDeniedException(message, inner));
+    }
 
 #if !NETCOREAPP1_1
-        [Fact]
-        public void TestSerializationConstructor()
-        {
-            ExceptionTester<PermissionDeniedException>.TestSerializationConstructor((info, context) => new PermissionDeniedException(info, context));
-        }
-#endif
+    [Fact]
+    public void TestSerializationConstructor()
+    {
+        ExceptionTester<PermissionDeniedException>.TestSerializationConstructor((info, context) => new PermissionDeniedException(info, context));
     }
+#endif
 }

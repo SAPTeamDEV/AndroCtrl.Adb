@@ -2,28 +2,27 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+
+using System;
+
+namespace AndroCtrl.Protocols.AndroidDebugBridge;
+/// <summary>
+/// The event arguments that are passed when a device event occurs.
+/// </summary>
+public class DeviceDataEventArgs : EventArgs
 {
-    using System;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DeviceDataEventArgs"/> class.
+    /// </summary>
+    /// <param name="device">The device.</param>
+    public DeviceDataEventArgs(DeviceData device)
+    {
+        Device = device;
+    }
 
     /// <summary>
-    /// The event arguments that are passed when a device event occurs.
+    /// Gets the device.
     /// </summary>
-    public class DeviceDataEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceDataEventArgs"/> class.
-        /// </summary>
-        /// <param name="device">The device.</param>
-        public DeviceDataEventArgs(DeviceData device)
-        {
-            Device = device;
-        }
-
-        /// <summary>
-        /// Gets the device.
-        /// </summary>
-        /// <value>The device.</value>
-        public DeviceData Device { get; private set; }
-    }
+    /// <value>The device.</value>
+    public DeviceData Device { get; private set; }
 }
