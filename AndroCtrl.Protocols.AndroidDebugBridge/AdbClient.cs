@@ -445,6 +445,12 @@ public class AdbClient : IAdbClient
         using IAdbSocket socket = adbSocketFactory(EndPoint);
         socket.SendAdbRequest($"host:pair:{pairKey}:{endpoint.Host}:{endpoint.Port}");
         AdbResponse response = socket.ReadAdbResponse();
+        string message = socket.ReadString();
+
+        if (message.StartsWith("Failed:"))
+        {
+            throw new AdbException(message);
+        }
     }
 
     /// <inheritdoc/>
