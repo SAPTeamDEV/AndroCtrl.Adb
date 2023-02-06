@@ -28,7 +28,7 @@ public class AdbServer : IAdbServer
     /// <summary>
     /// The minum version of <c>adb.exe</c> that is supported by this library.
     /// </summary>
-    public static readonly Version RequiredAdbVersion = new(1, 0, 20);
+    public static readonly Version RequiredAdbVersion = new(1, 0, 41);
 
     /// <summary>
     /// The error code that is returned by the <see cref="SocketException"/> when the connection is refused.
