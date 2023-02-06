@@ -435,6 +435,19 @@ public class AdbClient : IAdbClient
     }
 
     /// <inheritdoc/>
+    public void Pair(DnsEndPoint endpoint, int pairKey)
+    {
+        if (endpoint == null)
+        {
+            throw new ArgumentNullException(nameof(endpoint));
+        }
+
+        using IAdbSocket socket = adbSocketFactory(EndPoint);
+        socket.SendAdbRequest($"host:pair:{pairKey}:{endpoint.Host}:{endpoint.Port}");
+        AdbResponse response = socket.ReadAdbResponse();
+    }
+
+    /// <inheritdoc/>
     public void Root(DeviceData device)
     {
         Root("root:", device);

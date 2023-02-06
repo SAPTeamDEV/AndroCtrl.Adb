@@ -413,6 +413,14 @@ public interface IAdbClient
     void Disconnect(DnsEndPoint endpoint);
 
     /// <summary>
+    /// Pair a device with Adb WiFi feature.
+    /// </summary>
+    /// <param name="endpoint">
+    /// The DNS endpoint at which the <c>adb pair</c> address on the device is shown.
+    /// </param>
+    void Pair(DnsEndPoint endpoint, int pairKey);
+
+    /// <summary>
     /// Restarts the ADB daemon running on the device with root privileges.
     /// </summary>
     /// <param name="device">
