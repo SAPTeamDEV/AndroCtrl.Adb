@@ -237,4 +237,16 @@ public interface IAdbSocket : IDisposable
     /// does nothing.
     /// </remarks>
     void SetDevice(DeviceData device);
+
+    /// <summary>
+    /// Ask to switch the connection to the device/emulator identified by
+    /// <paramref name="device"/> Then run specified <paramref name="command"/>.
+    /// </summary>
+    /// <param name="device">
+    /// The device to which to connect.
+    /// </param>
+    /// <param name="command">
+    /// The command to execute.
+    /// </param>
+    void SendDeviceRequest(DeviceData device, string command);
 }

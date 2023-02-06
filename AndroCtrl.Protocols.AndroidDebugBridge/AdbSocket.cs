@@ -418,6 +418,16 @@ public class AdbSocket : IAdbSocket, IDisposable
     }
 
     /// <inheritdoc/>
+    public void SendDeviceRequest(DeviceData device, string command)
+    {
+        if (device != null)
+        {
+            SetDevice(device);
+            SendAdbRequest(command);
+        }
+    }
+
+    /// <inheritdoc/>
     public Stream GetShellStream()
     {
         Stream stream = socket.GetStream();
