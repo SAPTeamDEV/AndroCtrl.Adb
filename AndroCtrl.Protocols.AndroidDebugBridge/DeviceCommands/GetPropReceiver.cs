@@ -18,7 +18,7 @@ public sealed class GetPropReceiver : MultiLineReceiver
     /// <summary>
     /// The path to the <c>getprop</c> executable to run on the device.
     /// </summary>
-    public const string GetpropCommand = "/system/bin/getprop";
+    public const string GetpropCommand = "getprop";
 
     /// <summary>
     /// A regular expression which can be used to parse the getprop output.
