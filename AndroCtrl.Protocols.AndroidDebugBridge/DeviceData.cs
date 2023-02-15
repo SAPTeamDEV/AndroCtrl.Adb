@@ -140,6 +140,18 @@ public class DeviceData
         return Serial;
     }
 
+    /// <inheritdoc/>
+    public override bool Equals(object obj)
+    {
+        return obj is DeviceData dev && dev.Serial == Serial;
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return Serial != null ? Serial.GetHashCode() * State.GetHashCode() : base.GetHashCode();
+    }
+
     /// <summary>
     /// Get the device state from the string value
     /// </summary>
