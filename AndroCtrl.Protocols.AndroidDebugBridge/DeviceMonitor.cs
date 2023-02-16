@@ -111,9 +111,12 @@ public class DeviceMonitor : IDeviceMonitor, IDisposable
     /// </value>
     public bool IsRunning { get; private set; }
 
+    public bool IsListening { get; private set; }
+
     /// <inheritdoc/>
     public void Start()
     {
+        IsListening = true;
         if (monitorTask == null)
         {
             firstDeviceListParsed.Reset();
@@ -163,7 +166,10 @@ public class DeviceMonitor : IDeviceMonitor, IDisposable
     /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
     protected void OnDeviceChanged(DeviceDataEventArgs e)
     {
-        DeviceChanged?.Invoke(this, e);
+        if (IsListening)
+        {
+            DeviceChanged?.Invoke(this, e);
+        }
     }
 
     /// <summary>
@@ -172,7 +178,10 @@ public class DeviceMonitor : IDeviceMonitor, IDisposable
     /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
     protected void OnDeviceConnected(DeviceDataEventArgs e)
     {
-        DeviceConnected?.Invoke(this, e);
+        if (IsListening)
+        {
+            DeviceConnected?.Invoke(this, e);
+        }
     }
 
     /// <summary>
@@ -181,7 +190,10 @@ public class DeviceMonitor : IDeviceMonitor, IDisposable
     /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
     protected void OnDeviceDisconnected(DeviceDataEventArgs e)
     {
-        DeviceDisconnected?.Invoke(this, e);
+        if (IsListening)
+        {
+            DeviceDisconnected?.Invoke(this, e);
+        }
     }
 
     /// <summary>
@@ -316,5 +328,10 @@ public class DeviceMonitor : IDeviceMonitor, IDisposable
                 OnDeviceDisconnected(new DeviceDataEventArgs(device));
             }
         }
+    }
+
+    public void Stop()
+    {
+        IsListening = false;
     }
 }
