@@ -336,6 +336,20 @@ public class AdbClient : IAdbClient
     }
 
     /// <inheritdoc/>
+    public Stream StartShell(DeviceData device)
+    {
+        EnsureDevice(device);
+
+        IAdbSocket socket = adbSocketFactory(EndPoint);
+
+        socket.SetDevice(device);
+        socket.SendAdbRequest("shell:");
+        AdbResponse response = socket.ReadAdbResponse();
+
+        return socket.GetShellStream();
+    }
+
+    /// <inheritdoc/>
     public Framebuffer CreateRefreshableFramebuffer(DeviceData device)
     {
         EnsureDevice(device);

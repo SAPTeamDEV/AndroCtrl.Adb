@@ -296,6 +296,15 @@ public interface IAdbClient
     Task ExecuteRemoteCommandAsync(string command, DeviceData device, IShellOutputReceiver receiver, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Starts a new Shell and return it's <see cref="Stream"/>.
+    /// </summary>
+    /// <param name="device">
+    /// The device to start shell.
+    /// </param>
+    /// <returns>a <see cref="Stream"/> for communicating with device.</returns>
+    Stream StartShell(DeviceData device);
+
+    /// <summary>
     /// Executes a command on the device.
     /// </summary>
     /// <param name="command">
