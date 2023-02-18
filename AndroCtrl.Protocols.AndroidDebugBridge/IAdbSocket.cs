@@ -24,6 +24,11 @@ public interface IAdbSocket : IDisposable
     bool Connected { get; }
 
     /// <summary>
+    /// Gets the amount of data that has been received from the network and is available to be read.
+    /// </summary>
+    int Available { get; }
+
+    /// <summary>
     /// Reconnects the <see cref="IAdbSocket"/> to the same endpoint it was initially connected to.
     /// Use this when the socket was disconnected by adb and you have restarted adb.
     /// </summary>

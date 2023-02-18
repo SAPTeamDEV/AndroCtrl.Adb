@@ -39,6 +39,9 @@ public class TcpSocket : ITcpSocket
         set => socket.ReceiveBufferSize = value;
     }
 
+    ///<inheritdoc/>
+    public int Available => socket.Available;
+
     /// <inheritdoc/>
     public void Connect(EndPoint endPoint)
     {

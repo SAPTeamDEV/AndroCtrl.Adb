@@ -37,6 +37,11 @@ public interface ITcpSocket : IDisposable
     }
 
     /// <summary>
+    /// Gets the amount of data that has been received from the network and is available to be read.
+    /// </summary>
+    int Available { get; }
+
+    /// <summary>
     /// Establishes a connection to a remote host.
     /// </summary>
     /// <param name="endPoint">

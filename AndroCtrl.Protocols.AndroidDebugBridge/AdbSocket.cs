@@ -91,6 +91,9 @@ public class AdbSocket : IAdbSocket, IDisposable
     /// <inheritdoc/>
     public bool Connected => socket.Connected;
 
+    /// <inheritdoc/>
+    public int Available => socket.Available;
+
     /// <summary>
     /// Determines whether the specified reply is okay.
     /// </summary>
