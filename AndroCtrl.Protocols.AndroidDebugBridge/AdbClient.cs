@@ -336,7 +336,7 @@ public class AdbClient : IAdbClient
     }
 
     /// <inheritdoc/>
-    public AdbSocket StartShell(DeviceData device)
+    public ShellSocket StartShell(DeviceData device)
     {
         EnsureDevice(device);
 
@@ -346,7 +346,7 @@ public class AdbClient : IAdbClient
         socket.SendAdbRequest("shell:");
         AdbResponse response = socket.ReadAdbResponse();
 
-        return (AdbSocket)socket;
+        return new(socket);
     }
 
     /// <inheritdoc/>

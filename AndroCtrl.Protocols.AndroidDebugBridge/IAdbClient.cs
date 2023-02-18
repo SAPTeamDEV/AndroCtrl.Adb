@@ -302,7 +302,7 @@ public interface IAdbClient
     /// The device to start shell.
     /// </param>
     /// <returns>a <see cref="Stream"/> for communicating with device.</returns>
-    AdbSocket StartShell(DeviceData device);
+    ShellSocket StartShell(DeviceData device);
 
     /// <summary>
     /// Executes a command on the device.
