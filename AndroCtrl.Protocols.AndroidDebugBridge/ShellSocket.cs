@@ -54,6 +54,33 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         }
 
         /// <summary>
+        /// Reads all data until reach to end of data.
+        /// </summary>
+        /// <returns>
+        /// A string containing all received data.
+        /// </returns>
+        public string ReadToEnd()
+        {
+            string result = "";
+
+            while (true)
+            {
+                var data = ReadAvailable(false);
+                if (data != string.Empty)
+                {
+                    result += data;
+                }
+                else
+                {
+                    break;
+                }
+                Thread.Sleep(1);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Formats and converts command to ASCII encoding and send it.
         /// </summary>
         /// <param name="command">
