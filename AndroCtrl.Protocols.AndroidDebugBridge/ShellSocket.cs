@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,11 +14,37 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
     /// </summary>
     public class ShellSocket
     {
+        readonly Regex Regex = new(@"(?<num>[1-9]*)\W*\b(?<host>\w+):(?<directory>.*)\s(?<user>\$|#) $");
+        Match Match;
+        bool validMatch;
+
+        string message;
+        bool showNsg;
+
+        public string Message
+        {
+            get
+            {
+                showNsg = false;
+                return message;
+            }
+
+            private set
+            {
+                message = value;
+                showNsg = true;
+            }
+        }
+
         public IAdbSocket Socket { get; }
+
+        public string CurrentDirectory => Match.Groups["directory"].Value;
 
         public ShellSocket(IAdbSocket socket)
         {
             Socket = socket;
+
+            GetPrompt();
         }
 
         /// <summary>
@@ -28,7 +56,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <returns>
         /// a string created from read bytes.
         /// </returns>
-        public string ReadAvailable(bool blocking)
+        public string ReadAvailable(bool blocking = false)
         {
             while (true)
             {
@@ -38,7 +66,13 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 {
                     var resp = new byte[count];
                     Socket.Read(resp);
-                    return Encoding.ASCII.GetString(resp);
+                    Invalidate();
+                    string result = Encoding.ASCII.GetString(resp);
+                    if (result[^2] is '$' or '#')
+                    {
+                        CheckPrompt(result);
+                    }
+                    return result;
                 }
                 else if (blocking)
                 {
@@ -70,7 +104,8 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 {
                     result += data;
                 }
-                else
+
+                if (validMatch && Match.Success)
                 {
                     break;
                 }
@@ -91,6 +126,43 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             string formedCommand = command + "\n";
             byte[] data = Encoding.ASCII.GetBytes(formedCommand);
             Socket.Send(data, 0, data.Length);
+        }
+
+        /// <summary>
+        /// Reads console prompt and returns it, if pending data is available ignores them and wait until receives prompt message.
+        /// </summary>
+        /// <returns>
+        /// Console prompt message.
+        /// </returns>
+        public string GetPrompt()
+        {
+            if (showNsg && Socket.Available == 0)
+            {
+                return Message;
+            }
+            else
+            {
+                ReadToEnd();
+                return message;
+            }
+        }
+
+        void Invalidate()
+        {
+            showNsg = false;
+            validMatch = false;
+        }
+
+        void CheckPrompt(string result)
+        {
+            Match m = Regex.Match(result);
+
+            if (m.Success)
+            {
+                Match = m;
+                Message = result;
+                validMatch = true;
+            }
         }
     }
 }
