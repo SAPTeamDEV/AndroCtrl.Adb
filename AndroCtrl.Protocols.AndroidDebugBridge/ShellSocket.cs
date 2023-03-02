@@ -92,7 +92,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             while (true)
             {
-                var data = ReadAvailable();
+                var data = ReadAvailable(true);
                 if (data != string.Empty && (!noPrompt || (noPrompt && !validMatch)))
                 {
                     result += data;
