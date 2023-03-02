@@ -109,10 +109,11 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             while (true)
             {
-                var data = ReadAvailable(stream: stream);
+                var data = ReadAvailable();
                 if (data != string.Empty && (!noPrompt || (noPrompt && !validMatch)))
                 {
                     result += data;
+                    stream?.Write(data);
                 }
 
                 if (validMatch)
