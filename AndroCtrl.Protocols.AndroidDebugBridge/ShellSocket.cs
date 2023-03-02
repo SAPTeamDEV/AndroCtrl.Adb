@@ -94,25 +94,28 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <summary>
         /// Reads all data until reach to end of data.
         /// </summary>
+        /// <param name="noPrompt">
+        /// Determines that console prompt included with response or not.
+        /// </param>
         /// <param name="stream">
         /// An instance of <see cref="StreamWriter"/> for writing data to it.
         /// </param>
         /// <returns>
         /// A string containing all received data.
         /// </returns>
-        public string ReadToEnd(StreamWriter stream = null)
+        public string ReadToEnd(bool noPrompt = false, StreamWriter stream = null)
         {
             string result = "";
 
             while (true)
             {
                 var data = ReadAvailable(stream: stream);
-                if (data != string.Empty)
+                if (data != string.Empty && (!noPrompt || (noPrompt && !validMatch)))
                 {
                     result += data;
                 }
 
-                if (validMatch && Match.Success)
+                if (validMatch)
                 {
                     break;
                 }
