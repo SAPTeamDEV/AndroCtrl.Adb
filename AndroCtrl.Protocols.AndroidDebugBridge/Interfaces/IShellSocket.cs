@@ -42,13 +42,13 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// <param name="command">
         /// a shell command without EL.
         /// </param>
-        /// <param name="stream">
-        /// An instance of <see cref="StreamWriter"/> for writing data to it.
+        /// <param name="writer">
+        /// An instance of <see cref="TextWriter"/> for writing data to it.
         /// </param>
         /// <returns>
         /// A <see langword="string"/> that contains response without prompt.
         /// </returns>
-        string Interact(string command, StreamWriter stream);
+        string Interact(string command, TextWriter writer);
 
         /// <summary>
         /// Reads all available data and converts it to string.
@@ -56,13 +56,13 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// <param name="wait">
         /// Determines wait for receiving data from socket.
         /// </param>
-        /// <param name="stream">
-        /// An instance of <see cref="StreamWriter"/> for writing data to it.
+        /// <param name="writer">
+        /// An instance of <see cref="TextWriter"/> for writing data to it.
         /// </param>
         /// <returns>
         /// a string created from read bytes.
         /// </returns>
-        string ReadAvailable(bool wait = false, StreamWriter stream = null);
+        string ReadAvailable(bool wait = false, TextWriter writer = null);
 
         /// <summary>
         /// Reads all data until reach to end of data.
@@ -70,13 +70,13 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// <param name="noPrompt">
         /// Determines that console prompt included with response or not.
         /// </param>
-        /// <param name="stream">
-        /// An instance of <see cref="StreamWriter"/> for writing data to it.
+        /// <param name="writer">
+        /// An instance of <see cref="TextWriter"/> for writing data to it.
         /// </param>
         /// <returns>
         /// A string containing all received data.
         /// </returns>
-        string ReadToEnd(bool noPrompt = false, StreamWriter stream = null);
+        string ReadToEnd(bool noPrompt = false, TextWriter writer = null);
 
         /// <summary>
         /// Formats and converts command to ASCII encoding and send it.

@@ -56,7 +56,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         }
 
         /// <inheritdoc/>
-        public string ReadAvailable(bool wait = false, StreamWriter stream = null)
+        public string ReadAvailable(bool wait = false, TextWriter writer = null)
         {
             while (true)
             {
@@ -73,7 +73,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                         CheckPrompt(result);
                     }
 
-                    stream?.Write(result);
+                    writer?.Write(result);
                     return result;
                 }
                 else if (!wait)
@@ -86,7 +86,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         }
 
         /// <inheritdoc/>
-        public string ReadToEnd(bool noPrompt = false, StreamWriter stream = null)
+        public string ReadToEnd(bool noPrompt = false, TextWriter writer = null)
         {
             string result = "";
 
@@ -96,7 +96,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 if (data != string.Empty && (!noPrompt || (noPrompt && !validMatch)))
                 {
                     result += data;
-                    stream?.Write(data);
+                    writer?.Write(data);
                 }
 
                 if (validMatch)
@@ -105,7 +105,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 }
             }
 
-            stream?.Flush();
+            writer?.Flush();
             return result;
         }
 
@@ -118,7 +118,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         }
 
         /// <inheritdoc/>
-        public string Interact(string command, StreamWriter stream)
+        public string Interact(string command, TextWriter writer)
         {
             // Clear pending data
             GetPrompt();
@@ -127,7 +127,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             SendCommand(command);
 
             // Receive data without prompt
-            return ReadToEnd(true, stream);
+            return ReadToEnd(true, writer);
         }
 
         /// <inheritdoc/>
