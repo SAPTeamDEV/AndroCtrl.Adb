@@ -82,11 +82,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                     stream?.Write(result);
                     return result;
                 }
-                else if (wait)
-                {
-                    Thread.Sleep(1);
-                }
-                else
+                else if (!wait)
                 {
                     break;
                 }
@@ -120,8 +116,6 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 {
                     break;
                 }
-
-                Thread.Sleep(1);
             }
 
             stream?.Flush();
