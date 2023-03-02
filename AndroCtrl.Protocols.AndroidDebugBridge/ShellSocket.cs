@@ -139,6 +139,30 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         }
 
         /// <summary>
+        /// Sends a command and wait for Receiving data.
+        /// </summary>
+        /// <param name="command">
+        /// a shell command without EL.
+        /// </param>
+        /// <param name="stream">
+        /// An instance of <see cref="StreamWriter"/> for writing data to it.
+        /// </param>
+        /// <returns>
+        /// A <see langword="string"/> that contains response without prompt.
+        /// </returns>
+        public string Interact(string command, StreamWriter stream)
+        {
+            // Clear pending data
+            GetPrompt();
+
+            // Send command
+            SendCommand(command);
+
+            // Receive data without prompt
+            return ReadToEnd(true, stream);
+        }
+
+        /// <summary>
         /// Reads console prompt and returns it, if pending data is available ignores them and wait until receives prompt message.
         /// </summary>
         /// <returns>
