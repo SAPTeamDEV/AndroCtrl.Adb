@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -52,13 +53,16 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <summary>
         /// Reads all available data and converts it to string.
         /// </summary>
-        /// <param name="blocking">
-        /// determines wait for receiving data from socket.
+        /// <param name="wait">
+        /// Determines wait for receiving data from socket.
+        /// </param>
+        /// <param name="stream">
+        /// An instance of <see cref="StreamWriter"/> for writing data to it.
         /// </param>
         /// <returns>
         /// a string created from read bytes.
         /// </returns>
-        public string ReadAvailable(bool blocking = false)
+        public string ReadAvailable(bool wait = false, StreamWriter stream = null)
         {
             while (true)
             {
@@ -74,9 +78,11 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                     {
                         CheckPrompt(result);
                     }
+
+                    stream?.Write(result);
                     return result;
                 }
-                else if (blocking)
+                else if (wait)
                 {
                     Thread.Sleep(1);
                 }
@@ -92,16 +98,19 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <summary>
         /// Reads all data until reach to end of data.
         /// </summary>
+        /// <param name="stream">
+        /// An instance of <see cref="StreamWriter"/> for writing data to it.
+        /// </param>
         /// <returns>
         /// A string containing all received data.
         /// </returns>
-        public string ReadToEnd()
+        public string ReadToEnd(StreamWriter stream = null)
         {
             string result = "";
 
             while (true)
             {
-                var data = ReadAvailable(false);
+                var data = ReadAvailable(stream: stream);
                 if (data != string.Empty)
                 {
                     result += data;
@@ -111,9 +120,11 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 {
                     break;
                 }
+
                 Thread.Sleep(1);
             }
 
+            stream?.Flush();
             return result;
         }
 
