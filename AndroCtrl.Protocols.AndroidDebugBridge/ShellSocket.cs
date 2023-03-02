@@ -40,6 +40,8 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
         public string CurrentDirectory => Match.Groups["directory"].Value;
 
+        public ShellAccess Access { get; private set; }
+
         public ShellSocket(IAdbSocket socket)
         {
             Socket = socket;
@@ -160,7 +162,17 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             if (m.Success)
             {
                 Match = m;
+
                 Message = result;
+                if (Match.Groups["access"].Value == "#")
+                {
+                    Access = ShellAccess.Root;
+                }
+                else
+                {
+                    Access = ShellAccess.Adb;
+                }
+
                 validMatch = true;
             }
         }
