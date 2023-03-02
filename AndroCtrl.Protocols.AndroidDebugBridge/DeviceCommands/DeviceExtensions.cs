@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;

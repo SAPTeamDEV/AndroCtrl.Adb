@@ -5,7 +5,7 @@
 
 using System;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 /// <summary>
 /// Provides a common interface for any class that provides access to the
 /// <c>adb.exe</c> executable.

@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge;
 /// <summary>

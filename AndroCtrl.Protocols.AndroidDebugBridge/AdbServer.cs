@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.Sockets;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge;
 /// <summary>

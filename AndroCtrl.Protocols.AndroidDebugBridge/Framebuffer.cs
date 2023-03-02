@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge;
 /// <summary>

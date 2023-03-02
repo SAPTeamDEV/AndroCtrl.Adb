@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 /// <summary>
 /// Provides a common interface for any class that allows you to monitor the list of
 /// devices that are currently connected to the adb server.

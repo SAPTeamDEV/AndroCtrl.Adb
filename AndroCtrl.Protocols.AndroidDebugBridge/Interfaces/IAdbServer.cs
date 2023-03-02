@@ -5,7 +5,7 @@
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 /// <summary>
 /// Represents a common interface for any class that allows starting or stopping the Android Debug Bridge (adb)
 /// server/deamon.

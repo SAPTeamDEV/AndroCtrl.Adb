@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
 {
     /// <summary>
     /// Provides Interface for interact with Adb shell session.

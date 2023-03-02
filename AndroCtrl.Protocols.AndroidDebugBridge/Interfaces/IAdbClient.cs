@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
 using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 /// <summary>
 /// A common interface for any class that allows you to interact with the
 /// adb server and devices that are connected to that adb server.

@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 /// <summary>
 /// Provides an interface that allows access to the standard .NET <see cref="Socket"/>
 /// class. The main purpose of this interface is to enable mocking of the <see cref="Socket"/>

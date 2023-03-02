@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge
 {

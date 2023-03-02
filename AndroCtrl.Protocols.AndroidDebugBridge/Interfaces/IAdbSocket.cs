@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 /// <summary>
 /// Provides a common interface for any class that acts as a client for the
 /// Android Debug Bridge.

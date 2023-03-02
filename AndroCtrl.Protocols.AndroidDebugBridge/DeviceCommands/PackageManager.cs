@@ -9,7 +9,7 @@ using System.IO;
 using System.Threading;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 

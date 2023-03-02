@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 

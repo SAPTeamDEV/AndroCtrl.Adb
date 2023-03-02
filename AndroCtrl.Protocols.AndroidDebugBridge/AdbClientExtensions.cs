@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge;
