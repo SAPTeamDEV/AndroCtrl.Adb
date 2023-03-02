@@ -13,7 +13,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
     /// <summary>
     /// Provides methods to interact with Adb shell session.
     /// </summary>
-    public class ShellSocket
+    public class ShellSocket : IShellSocket
     {
         readonly Regex Regex = new(@"(?<num>[1-9]*)\W*\b(?<host>\w+):(?<directory>.*)\s(?<user>\$|#) $");
         Match Match;
@@ -22,6 +22,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         string message;
         bool showNsg;
 
+        /// <inheritdoc/>
         public string Message
         {
             get
@@ -37,10 +38,13 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             }
         }
 
+        /// <inheritdoc/>
         public IAdbSocket Socket { get; }
 
+        /// <inheritdoc/>
         public string CurrentDirectory => Match.Groups["directory"].Value;
 
+        /// <inheritdoc/>
         public ShellAccess Access { get; private set; }
 
         public ShellSocket(IAdbSocket socket)
@@ -50,18 +54,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             GetPrompt();
         }
 
-        /// <summary>
-        /// Reads all available data and converts it to string.
-        /// </summary>
-        /// <param name="wait">
-        /// Determines wait for receiving data from socket.
-        /// </param>
-        /// <param name="stream">
-        /// An instance of <see cref="StreamWriter"/> for writing data to it.
-        /// </param>
-        /// <returns>
-        /// a string created from read bytes.
-        /// </returns>
+        /// <inheritdoc/>
         public string ReadAvailable(bool wait = false, StreamWriter stream = null)
         {
             while (true)
@@ -91,18 +84,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             return string.Empty;
         }
 
-        /// <summary>
-        /// Reads all data until reach to end of data.
-        /// </summary>
-        /// <param name="noPrompt">
-        /// Determines that console prompt included with response or not.
-        /// </param>
-        /// <param name="stream">
-        /// An instance of <see cref="StreamWriter"/> for writing data to it.
-        /// </param>
-        /// <returns>
-        /// A string containing all received data.
-        /// </returns>
+        /// <inheritdoc/>
         public string ReadToEnd(bool noPrompt = false, StreamWriter stream = null)
         {
             string result = "";
@@ -126,12 +108,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             return result;
         }
 
-        /// <summary>
-        /// Formats and converts command to ASCII encoding and send it.
-        /// </summary>
-        /// <param name="command">
-        /// a shell command without EL.
-        /// </param>
+        /// <inheritdoc/>
         public void SendCommand(string command)
         {
             string formedCommand = command + "\n";
@@ -139,18 +116,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             Socket.Send(data, 0, data.Length);
         }
 
-        /// <summary>
-        /// Sends a command and wait for Receiving data.
-        /// </summary>
-        /// <param name="command">
-        /// a shell command without EL.
-        /// </param>
-        /// <param name="stream">
-        /// An instance of <see cref="StreamWriter"/> for writing data to it.
-        /// </param>
-        /// <returns>
-        /// A <see langword="string"/> that contains response without prompt.
-        /// </returns>
+        /// <inheritdoc/>
         public string Interact(string command, StreamWriter stream)
         {
             // Clear pending data
@@ -163,12 +129,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             return ReadToEnd(true, stream);
         }
 
-        /// <summary>
-        /// Reads console prompt and returns it, if pending data is available ignores them and wait until receives prompt message.
-        /// </summary>
-        /// <returns>
-        /// Console prompt message.
-        /// </returns>
+        /// <inheritdoc/>
         public string GetPrompt()
         {
             if (showNsg && Socket.Available == 0)
