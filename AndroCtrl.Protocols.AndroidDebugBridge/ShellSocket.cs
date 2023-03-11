@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+
 using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge
@@ -20,24 +24,29 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         Match Match;
         bool validMatch;
 
+        StreamReader reader;
+
+        List<string> lines = new();
         string message;
-        bool showNsg;
+        bool showMsg;
 
         /// <inheritdoc/>
         public string Message
         {
             get
             {
-                showNsg = false;
+                showMsg = false;
                 return message;
             }
 
             private set
             {
                 message = value;
-                showNsg = true;
+                showMsg = true;
             }
         }
+
+        public bool HasPendingData => lines.Count > 0;
 
         /// <inheritdoc/>
         public IAdbSocket Socket { get; }
@@ -51,13 +60,33 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         public ShellSocket(IAdbSocket socket)
         {
             Socket = socket;
+            reader = new(socket.GetShellStream());
 
             GetPrompt();
+        }
+
+        string CheckLine(TextWriter writer)
+        {
+            string line = lines[0];
+            lines.RemoveAt(0);
+
+            if (!CheckPrompt(line))
+            {
+                line += Environment.NewLine;
+            }
+
+            writer?.Write(line);
+            return line;
         }
 
         /// <inheritdoc/>
         public string ReadAvailable(bool wait = false, TextWriter writer = null)
         {
+            if (HasPendingData)
+            {
+                return CheckLine(writer);
+            }
+
             while (true)
             {
                 int count = Socket.Available;
@@ -68,13 +97,8 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                     Socket.Read(resp);
                     Invalidate();
                     string result = Encoding.ASCII.GetString(resp);
-                    if (result[^2] is '$' or '#')
-                    {
-                        CheckPrompt(result);
-                    }
-
-                    writer?.Write(result);
-                    return result;
+                    lines = result.Split(Environment.NewLine).ToList();
+                    return CheckLine(writer);
                 }
                 else if (!wait)
                 {
@@ -84,6 +108,38 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             return string.Empty;
         }
+
+        /*
+        /// <inheritdoc/>
+        public string ReadAvailable(bool wait = false, TextWriter writer = null)
+        {
+            while (true)
+            {
+                if (Socket.Available == 0 && wait)
+                {
+                    continue;
+                }
+
+                string line = reader.ReadLine();
+                if (line == null)
+                {
+                    break;
+                }
+                else
+                {
+                    if (line[^2] is '$' or '#')
+                    {
+                        CheckPrompt(line);
+                    }
+
+                    writer?.Write(line);
+                    return line;
+                }
+            }
+
+            return String.Empty;
+        }
+        */
 
         /// <inheritdoc/>
         public string ReadToEnd(bool noPrompt = false, TextWriter writer = null)
@@ -133,12 +189,12 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <inheritdoc/>
         public string GetPrompt(bool invalidation = true)
         {
-            if (showNsg && Socket.Available == 0)
+            if (showMsg && Socket.Available == 0)
             {
                 string msg = Message;
                 if (!invalidation)
                 {
-                    showNsg = true;
+                    showMsg = true;
                 }
 
                 return msg;
@@ -152,11 +208,11 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
         void Invalidate()
         {
-            showNsg = false;
+            showMsg = false;
             validMatch = false;
         }
 
-        void CheckPrompt(string result)
+        bool CheckPrompt(string result)
         {
             Match m = Regex.Match(result);
 
@@ -176,6 +232,8 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
                 validMatch = true;
             }
+
+            return m.Success;
         }
     }
 }
