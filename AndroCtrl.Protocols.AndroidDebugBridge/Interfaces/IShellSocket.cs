@@ -34,13 +34,13 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// <returns>
         /// Console prompt message.
         /// </returns>
-        string GetPrompt();
+        string GetPrompt(bool invalidation);
 
         /// <summary>
         /// Sends a command and wait for Receiving data.
         /// </summary>
         /// <param name="command">
-        /// a shell command without EL.
+        /// a shell command without LF.
         /// </param>
         /// <param name="writer">
         /// An instance of <see cref="TextWriter"/> for writing data to it.

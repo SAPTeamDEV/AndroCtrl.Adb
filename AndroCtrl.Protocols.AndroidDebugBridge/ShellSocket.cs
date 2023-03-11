@@ -131,11 +131,17 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         }
 
         /// <inheritdoc/>
-        public string GetPrompt()
+        public string GetPrompt(bool invalidation = true)
         {
             if (showNsg && Socket.Available == 0)
             {
-                return Message;
+                string msg = Message;
+                if (!invalidation)
+                {
+                    showNsg = true;
+                }
+
+                return msg;
             }
             else
             {
