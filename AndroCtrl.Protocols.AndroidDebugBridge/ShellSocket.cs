@@ -28,6 +28,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
         List<string> lines = new();
         string message;
+        string command;
         bool showMsg;
 
         /// <inheritdoc/>
@@ -97,7 +98,18 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                     Socket.Read(resp);
                     Invalidate();
                     string result = Encoding.ASCII.GetString(resp);
-                    lines = result.Split(Environment.NewLine).ToList();
+                    
+                    lines = result.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    if (!string.IsNullOrEmpty(command))
+                    {
+                        lines.Remove(command);
+                    }
+
+                    if (lines.Count == 0)
+                    {
+                        break;
+                    }
+
                     return CheckLine(writer);
                 }
                 else if (!wait)
@@ -168,6 +180,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <inheritdoc/>
         public void SendCommand(string command)
         {
+            this.command = command;
             string formedCommand = command + "\n";
             byte[] data = Encoding.ASCII.GetBytes(formedCommand);
             Socket.Send(data, 0, data.Length);
