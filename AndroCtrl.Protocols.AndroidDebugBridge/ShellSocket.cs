@@ -54,6 +54,9 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         public IAdbSocket Socket { get; }
 
         /// <inheritdoc/>
+        public bool Connected => Socket.Connected;
+
+        /// <inheritdoc/>
         public string CurrentDirectory => Match.Groups["directory"].Value;
 
         /// <inheritdoc/>

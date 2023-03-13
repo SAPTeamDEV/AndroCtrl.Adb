@@ -29,6 +29,12 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         IAdbSocket Socket { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the<see cref="AdbSocket"/> is connected to a remote
+        /// host as of the latest send or receive operation.
+        /// </summary>
+        bool Connected { get; }
+
+        /// <summary>
         /// Reads console prompt and returns it, if pending data is available ignores them and wait until receives prompt message.
         /// </summary>
         /// <returns>
