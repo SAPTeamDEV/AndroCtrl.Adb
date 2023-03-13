@@ -5,6 +5,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -90,6 +91,11 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             while (true)
             {
+                if (!Socket.Connected)
+                {
+                    throw new SocketException((int)SocketError.NotConnected);
+                }
+
                 int count = Socket.Available;
 
                 if (count > 0)
