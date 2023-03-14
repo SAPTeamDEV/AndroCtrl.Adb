@@ -193,6 +193,10 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             string formedCommand = command + "\n";
             byte[] data = Encoding.ASCII.GetBytes(formedCommand);
             Socket.Send(data, 0, data.Length);
+            if (command == "exit" && Access == ShellAccess.Adb)
+            {
+                Socket.Dispose();
+            }
         }
 
         /// <inheritdoc/>
