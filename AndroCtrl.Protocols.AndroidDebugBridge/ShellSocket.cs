@@ -206,7 +206,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         }
 
         /// <inheritdoc/>
-        public string Interact(string command, TextWriter writer)
+        public string Interact(string command, TextWriter writer = null)
         {
             // Clear pending data
             GetPrompt();
