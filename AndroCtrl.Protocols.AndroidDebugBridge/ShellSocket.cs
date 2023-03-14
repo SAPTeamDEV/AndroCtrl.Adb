@@ -84,6 +84,14 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             return line;
         }
 
+        void CheckAlive()
+        {
+            if (!Socket.Connected)
+            {
+                throw new SocketException((int)SocketError.NotConnected);
+            }
+        }
+
         /// <inheritdoc/>
         public string ReadAvailable(bool wait = false, TextWriter writer = null)
         {
@@ -94,10 +102,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             while (true)
             {
-                if (!Socket.Connected)
-                {
-                    throw new SocketException((int)SocketError.NotConnected);
-                }
+                CheckAlive();
 
                 int count = Socket.Available;
 
@@ -189,6 +194,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <inheritdoc/>
         public void SendCommand(string command)
         {
+            CheckAlive();
             this.command = command;
             string formedCommand = command + "\n";
             byte[] data = Encoding.ASCII.GetBytes(formedCommand);
