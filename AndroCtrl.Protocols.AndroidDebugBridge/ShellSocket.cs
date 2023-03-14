@@ -253,7 +253,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 Match = m;
 
                 Message = result;
-                if (Match.Groups["access"].Value == "#")
+                if (Match.Groups["user"].Value == "#")
                 {
                     Access = ShellAccess.Root;
                 }
