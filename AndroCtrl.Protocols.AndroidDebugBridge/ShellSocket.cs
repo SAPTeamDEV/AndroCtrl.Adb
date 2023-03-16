@@ -19,7 +19,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
     /// <summary>
     /// Provides methods to interact with Adb shell session.
     /// </summary>
-    public class ShellSocket : IShellSocket
+    public class ShellSocket : IShellSocket, IDisposable
     {
         readonly Regex Regex = new(@"(?<num>[1-9]*)\W*\b(?<host>\w+):(?<directory>.*)\s(?<user>\$|#) $");
         Match Match;
@@ -31,6 +31,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         string message;
         string command;
         bool showMsg;
+        private bool disposedValue;
 
         /// <inheritdoc/>
         public string Message
@@ -266,6 +267,12 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             }
 
             return m.Success;
+        }
+
+        /// <inheritdoc/>
+        public virtual void Dispose()
+        {
+            Socket.Dispose();
         }
     }
 }
