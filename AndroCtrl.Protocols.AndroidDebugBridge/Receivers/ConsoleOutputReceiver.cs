@@ -44,6 +44,9 @@ public class ConsoleOutputReceiver : MultiLineReceiver
         this.logger = logger ?? NullLogger<ConsoleOutputReceiver>.Instance;
     }
 
+    /// <inheritdoc/>
+    public override bool ParsesErrors => true;
+
     /// <summary>
     /// Gets a <see cref="string"/> that represents the current <see cref="ConsoleOutputReceiver"/>.
     /// </summary>
@@ -122,6 +125,7 @@ public class ConsoleOutputReceiver : MultiLineReceiver
                 continue;
             }
 
+            ThrowOnError(line);
             output.AppendLine(line);
 
             logger.LogDebug(line);

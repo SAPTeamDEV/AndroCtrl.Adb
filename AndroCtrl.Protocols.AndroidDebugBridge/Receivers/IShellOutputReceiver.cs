@@ -16,7 +16,7 @@ public interface IShellOutputReceiver
     ///     <see langword="true"/> if this receiver parsers error messages; otherwise <see langword="false"/>.
     /// </value>
     /// <remarks>
-    /// The default value is <see langword="false"/>. If set to <see langword="false"/>, the <see cref="AdbClient"/>
+    /// The default value is <see langword="false"/>. If set to <see langword="true"/>, this class
     /// will detect common error messages and throw an exception.
     /// </remarks>
     bool ParsesErrors { get; }
