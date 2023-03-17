@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
@@ -71,12 +72,12 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             GetPrompt();
         }
 
-        string CheckLine(TextWriter writer)
+        string CheckLine(TextWriter writer, bool newLine = true)
         {
             string line = lines[0];
             lines.RemoveAt(0);
 
-            if (!CheckPrompt(line))
+            if (newLine && !CheckPrompt(line))
             {
                 line += Environment.NewLine;
             }
@@ -125,7 +126,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                         break;
                     }
 
-                    return CheckLine(writer);
+                    return CheckLine(writer, lines.Count > 1);
                 }
                 else if (!wait)
                 {
