@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Xml;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
 namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
@@ -218,6 +219,20 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             // Receive data without prompt
             return ReadToEnd(true, writer);
+        }
+
+        /// <inheritdoc/>
+        public string Interact(string command, IShellOutputReceiver receiver)
+        {
+            string result = Interact(command);
+
+            foreach (var line in result.Split(Environment.NewLine))
+            {
+                receiver.AddOutput(line);
+            }
+
+            receiver.Flush();
+            return result;
         }
 
         /// <inheritdoc/>

@@ -1,5 +1,7 @@
 ﻿using System.IO;
 
+using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+
 namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
 {
     /// <summary>
@@ -55,6 +57,20 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// A <see langword="string"/> that contains response without prompt.
         /// </returns>
         string Interact(string command, TextWriter writer);
+
+        /// <summary>
+        /// Sends a command and wait for Receiving data.
+        /// </summary>
+        /// <param name="command">
+        /// a shell command without LF.
+        /// </param>
+        /// <param name="receiver">
+        /// An instance of a class that implement <see cref="IShellOutputReceiver"/> for receiving data.
+        /// </param>
+        /// <returns>
+        /// A <see langword="string"/> that contains response without prompt.
+        /// </returns>
+        string Interact(string command, IShellOutputReceiver receiver);
 
         /// <summary>
         /// Reads all available data and converts it to string.
