@@ -222,16 +222,20 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         }
 
         /// <inheritdoc/>
-        public string Interact(string command, IShellOutputReceiver receiver)
+        public string Interact(string command, IShellOutputReceiver[] receivers)
         {
             string result = Interact(command);
 
-            foreach (var line in result.Split(Environment.NewLine))
+            foreach (var receiver in receivers)
             {
-                receiver.AddOutput(line);
+                foreach (var line in result.Split(Environment.NewLine))
+                {
+                    receiver.AddOutput(line);
+                }
+
+                receiver.Flush();
             }
 
-            receiver.Flush();
             return result;
         }
 

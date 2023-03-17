@@ -64,8 +64,8 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// <param name="command">
         /// a shell command without LF.
         /// </param>
-        /// <param name="receiver">
-        /// An instance of a class that implement <see cref="IShellOutputReceiver"/> for receiving data.
+        /// <param name="receivers">
+        /// An array of class instances that implement <see cref="IShellOutputReceiver"/> for receiving data.
         /// </param>
         /// <returns>
         /// A <see langword="string"/> that contains response without prompt.
