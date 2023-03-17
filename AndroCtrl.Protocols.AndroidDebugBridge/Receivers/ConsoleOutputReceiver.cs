@@ -66,7 +66,7 @@ public class ConsoleOutputReceiver : MultiLineReceiver
     /// </param>
     public void ThrowOnError(string line)
     {
-        if (!ParsesErrors)
+        if (ParsesErrors)
         {
             if (line.EndsWith(": not found"))
             {
