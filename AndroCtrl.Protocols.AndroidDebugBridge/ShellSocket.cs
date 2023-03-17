@@ -78,7 +78,9 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             string line = lines[0];
             lines.RemoveAt(0);
 
-            if (newLine && !CheckPrompt(line))
+            bool isPrompt = CheckPrompt(line);
+
+            if (newLine && !isPrompt)
             {
                 line += Environment.NewLine;
             }
