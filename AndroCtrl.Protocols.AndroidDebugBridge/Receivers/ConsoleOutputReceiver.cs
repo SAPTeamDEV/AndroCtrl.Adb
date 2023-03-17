@@ -68,15 +68,9 @@ public class ConsoleOutputReceiver : MultiLineReceiver
     {
         if (ParsesErrors)
         {
-            if (line.EndsWith(": not found"))
+            if (line.EndsWith(": not found") || line.EndsWith("No such file or directory") || line.EndsWith("inaccessible or not found"))
             {
                 logger.LogWarning($"The remote execution returned: '{line}'");
-                throw new FileNotFoundException($"The remote execution returned: '{line}'");
-            }
-
-            if (line.EndsWith("No such file or directory"))
-            {
-                logger.LogWarning($"The remote execution returned: {line}");
                 throw new FileNotFoundException($"The remote execution returned: '{line}'");
             }
 
