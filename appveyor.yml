@@ -2,6 +2,21 @@ image: Visual Studio 2022
 
 version: 1.0.{build}
 
+branches:
+  only:
+  - master
+  - beta
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  version_prefix: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\AndroCtrl.Protocols.AndroidDebugBridge
   - cmd: dotnet restore
@@ -23,5 +38,5 @@ deploy:
   on:
     branch: master
   api_key:
-    secure: oy2cfozgvkc2ovlnewca7dijuo33qvqetiokfobh5uespy
+    secure: 2JgiRhKTzQyXmzR9JYLL6f9aNfxEKvr0pF0NxqQ1YY59O1Z5xQqI9kmDgFEiJe4y
   skip_symbols: true
