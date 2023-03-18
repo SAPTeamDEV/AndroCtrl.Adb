@@ -16,10 +16,10 @@ public class AdbCommandLineClientTests
     {
         DummyAdbCommandLineClient commandLine = new()
         {
-            Version = new Version(1, 0, 32)
+            Version = new Version(1, 0, 41)
         };
 
-        Assert.Equal(new Version(1, 0, 32), commandLine.GetVersion());
+        Assert.Equal(new Version(1, 0, 41), commandLine.GetVersion());
     }
 
     [Fact]

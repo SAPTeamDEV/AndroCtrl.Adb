@@ -15,7 +15,7 @@ public class GetPropReceiverTests
         };
 
         DummyAdbClient client = new();
-        client.Commands.Add("/system/bin/getprop", @"[init.svc.BGW]: [running]
+        client.Commands.Add("getprop", @"[init.svc.BGW]: [running]
 [init.svc.MtkCodecService]: [running]
 [init.svc.bootanim]: [stopped]");
 

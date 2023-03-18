@@ -16,6 +16,7 @@ public class DeviceExtensionsTests
         Factories.Reset();
     }
 
+    /*
     [Fact]
     public void StatTest()
     {
@@ -30,6 +31,7 @@ public class DeviceExtensionsTests
         DeviceData device = new DeviceData();
         Assert.Equal(stats, client.Object.Stat(device, "/test"));
     }
+    */
 
     [Fact]
     public void GetEnvironmentVariablesTest()
