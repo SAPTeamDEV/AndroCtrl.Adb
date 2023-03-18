@@ -130,6 +130,37 @@ void EchoTest()
 }
 ```
 
+### Pair a Wi-Fi Device
+Google in Android 11 added a new feature called `Wireless Debugging`. With this feature you can connect to a Device that in the same network as your machine.
+
+Before you can connect to your device, You must pair it. Before pair, you must see ip address, port and pair code in your device.
+
+```
+void PairDevice()
+{
+    var client = new AdbClient();
+    client.Pair(new("192.168.1.1", 12345), 123456);
+}
+```
+
+### Run an Interactive Shell
+You can now start a shell session and Communicate with your device by Using a `ShellSocket` class instance.
+
+This class has various methods for communicating with your device, The simplest way is to use `ShellSocket.Interact` method that Sends a command and wait for Receiving data from your device.
+
+```
+void ListDirs()
+{
+    var client = new AdbClient();
+    var device = client.GetDevices().First();
+    using (ShellSocket shell = client.StartShell(device))
+    {
+        Console.WriteLine(shell.Interact("ls"));
+        Console.WriteLine(shell.Interact("ls /data/"));
+    }
+}
+```
+
 ## History
 This library continues development of [SharpAdbClient](https://github.com/quamotion/madb) which is a fork of [madb](https://github.com/camalot/madb); which in itself is a .NET port of the 
 [ddmlib Java Library](https://android.googlesource.com/platform/tools/base/+/master/ddmlib/). Credits for porting 
