@@ -1,30 +1,28 @@
-| build | coverage | NuGet |
-|-------|----------|-------|
-| [![Build Status](https://ci.appveyor.com/api/projects/status/github/quamotion/madb)](https://ci.appveyor.com/project/qmfrederik/madb/) | [![codecov.io](https://codecov.io/github/quamotion/madb/coverage.svg?branch=master)](https://codecov.io/github/quamotion/madb?branch=master) | [![NuGet Status](http://img.shields.io/nuget/v/SharpAdbClient.svg?style=flat)](https://www.nuget.org/packages/SharpAdbClient/)
+# A .NET client for the Android Debug Bridge
 
-# A .NET client for adb, the Android Debug Bridge (SharpAdbClient)
+[![Build status](https://ci.appveyor.com/api/projects/status/o60gc1bdp5y4tbxd?svg=true)](https://ci.appveyor.com/project/SAPTeamDEV/androctrl-protocols-androiddebugbridge)
+[![NuGet Status](http://img.shields.io/nuget/v/AndroCtrl.Protocols.AndroidDebugBridge.svg?style=flat)](https://www.nuget.org/packages/AndroCtrl.Protocols.AndroidDebugBridge/)
 
-SharpAdbClient is a .NET library that allows .NET applications to communicate with Android devices. 
+This library allows .NET applications to communicate with Android devices. 
 It provides a .NET implementation of the `adb` protocol, giving more flexibility to the developer than launching an 
 `adb.exe` process and parsing the console output.
 
 ## Installation
-To install SharpAdbClient install the [SharpAdbClient NuGetPackage](https://www.nuget.org/packages/SharpAdbClient). If you're
+To install this library to your Project, install the [AndroCtrl.Protocols.AndroidDebugBridge NuGetPackage](https://www.nuget.org/packages/AndroCtrl.Protocols.AndroidDebugBridge). If you're
 using Visual Studio, you can run the following command in the [Package Manager Console](http://docs.nuget.org/consume/package-manager-console):
 
 ```
-PM> Install-Package SharpAdbClient
+PM> Install-Package AndroCtrl.Protocols.AndroidDebugBridge
 ```
 
 ## Getting Started
 
-All of the adb functionality is exposed through the `SharpAdbClient.AdbClient` class. You can create your own instance of that class,
-or just use the instance we provide for you at `SharpAdbClient.AdbClient.Instance`.
+All of the adb functionality is exposed through the `AdbClient` class. You can create an instance of that class and use it.
 
 This class provides various methods that allow you to interact with Android devices.
 
 ### Starting the `adb` server
-SharpAdbClient does not communicate directly with your Android devices, but uses the `adb.exe` server process as an intermediate. Before you can connect to your Android device, you must first start the `adb.exe` server.
+We don't communicate directly with your Android devices, this class uses the `adb.exe` server process as an intermediate. Before you can connect to your Android device, you must first start the `adb.exe` server.
 
 You can do so by either running `adb.exe` yourself (it comes as a part of the ADK, the Android Development Kit), or you can use the `AdbServer.StartServer` method like this:
 
@@ -37,7 +35,8 @@ var result = server.StartServer(@"C:\Program Files (x86)\android-sdk\platform-to
 To list all Android devices that are connected to your PC, you can use the following code:
 
 ```
-var devices = AdbClient.Instance.GetDevices();
+var client = new AdbClient();
+var devices = client.GetDevices();
 
 foreach(var device in devices)
 {
@@ -68,7 +67,8 @@ To install or uninstall applications, you can use the `PackageManager` class:
 ```
 void InstallApplication()
 {
-    var device = AdbClient.Instance.GetDevices().First();
+    var client = new AdbClient();
+    var device = client.GetDevices().First();
     PackageManager manager = new PackageManager(device);
     manager.InstallPackage(@"C:\Users\me\Documents\mypackage.apk", reinstall: false);
 }
@@ -82,7 +82,8 @@ give everyone write permissions. You also need to specify the date at which the 
 ```
 void DownloadFile()
 {
-    var device = AdbClient.Instance.GetDevices().First();
+    var client = new AdbClient();
+    var device = client.GetDevices().First();
     
     using (SyncService service = new SyncService(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)), device))
     using (Stream stream = File.OpenWrite(@"C:\MyFile.txt"))
@@ -93,7 +94,8 @@ void DownloadFile()
 
 void UploadFile()
 {
-    var device = AdbClient.Instance.GetDevices().First();
+    var client = new AdbClient();
+    var device = client.GetDevices().First();
     
     using (SyncService service = new SyncService(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)), device))
     using (Stream stream = File.OpenRead(@"C:\MyFile.txt"))
@@ -104,10 +106,10 @@ void UploadFile()
 ```
 
 ### Run shell commands
-To run shell commands on an Android device, you can use the `AdbClient.Instance.ExecuteRemoteCommand` method.
+To run shell commands on an Android device, you can use the `AdbClient.ExecuteRemoteCommand` method.
 
 You need to pass a `DeviceData` object which specifies the device on which you want to run your command. You
-can get a `DeviceData` object by calling `AdbClient.Instance.GetDevices()`, which will run one `DeviceData`
+can get a `DeviceData` object by calling `AdbClient.GetDevices()`, which will run one `DeviceData`
 object for each device Android connected to your PC.
 
 You'll also need to pass an `IOutputReceiver` object. Output receivers are classes that receive and parse the data
@@ -117,25 +119,19 @@ output and allows you to retrieve it as a single string. You can also use other 
 ```
 void EchoTest()
 {
-    var device = AdbClient.Instance.GetDevices().First();
+    var client = new AdbClient();
+    var device = client.GetDevices().First();
     var receiver = new ConsoleOutputReceiver();
 
-    AdbClient.Instance.ExecuteRemoteCommand("echo Hello, World", device, receiver);
+    client.ExecuteRemoteCommand("echo Hello, World", device, receiver);
 
     Console.WriteLine("The device responded:");
     Console.WriteLine(receiver.ToString());
 }
 ```
 
-## Consulting, Training and Support
-This repository is maintained by [Quamotion](http://quamotion.mobi). Quamotion develops test software for iOS and 
-Android applications, based on the WebDriver protocol.
-
-In certain cases, Quamotion also offers professional services - such as consulting, training and support - related
-to SharpAdbClient. Contact us at [info@quamotion.mobi](mailto:info@quamotion.mobi) for more information.
-
 ## History
-SharpAdbClient is a fork of [madb](https://github.com/camalot/madb); which in itself is a .NET port of the 
+This library continues development of [SharpAdbClient](https://github.com/quamotion/madb) which is a fork of [madb](https://github.com/camalot/madb); which in itself is a .NET port of the 
 [ddmlib Java Library](https://android.googlesource.com/platform/tools/base/+/master/ddmlib/). Credits for porting 
 this library go to [Ryan Conrad](https://github.com/camalot).
 
