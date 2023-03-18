@@ -1,27 +1,27 @@
 image: Visual Studio 2019
 
-version: 2.2.{build}.0
+version: 1.0.{build}.0
 
 build_script:
-  - cmd: cd %APPVEYOR_BUILD_FOLDER%\SharpAdbClient
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\AndroCtrl.Protocols.AndroidDebugBridge
   - cmd: dotnet restore
   - cmd: dotnet build -c Release
   - cmd: dotnet pack -c Release
 
 test_script:
-  - cmd: cd %APPVEYOR_BUILD_FOLDER%\SharpAdbClient.Tests\
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\AndroCtrl.Protocols.AndroidDebugBridge.Tests\
   - cmd: dotnet restore
   - cmd: dotnet build
-  - cmd: dotnet test SharpAdbClient.Tests.csproj --filter "TestCategory!=IntegrationTest & TestCategory!=PerformanceTest" "--logger:trx;LogFileName=testresults.trx" /p:CollectCoverage=true
+  - cmd: dotnet test AndroCtrl.Protocols.AndroidDebugBridge.Tests.csproj --filter "TestCategory!=IntegrationTest & TestCategory!=PerformanceTest" "--logger:trx;LogFileName=testresults.trx" /p:CollectCoverage=true
   - ps: '& (Join-Path $env:APPVEYOR_BUILD_FOLDER "appveyor-testresults.ps1")'
 
 artifacts:
-  - path: SharpAdbClient\bin\Release\SharpAdbClient.*.nupkg
+  - path: AndroCtrl.Protocols.AndroidDebugBridge\bin\Release\AndroCtrl.Protocols.AndroidDebugBridge.*.nupkg
 
 deploy:
   provider: NuGet
   on:
     branch: master
   api_key:
-    secure: 3Z1cZ+ujL18XthqITiDYlTD5aQu7om7wHY7z8G4LRa1KN7/rvOe8jzDs1gFPdhWm
+    secure: oy2cfozgvkc2ovlnewca7dijuo33qvqetiokfobh5uespy
   skip_symbols: true
