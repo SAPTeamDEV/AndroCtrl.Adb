@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
 
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+
 namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
 
 /// <summary>

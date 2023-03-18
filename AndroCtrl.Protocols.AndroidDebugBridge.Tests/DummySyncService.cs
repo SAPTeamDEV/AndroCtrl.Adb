@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+
 namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
 
 internal class DummySyncService : ISyncService

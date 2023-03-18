@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
 using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
@@ -167,6 +168,16 @@ internal class DummyAdbClient : IAdbClient
     }
 
     public Task ExecuteRemoteCommandAsync(string command, DeviceData device, IShellOutputReceiver receiver, Encoding encoding, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ShellSocket StartShell(DeviceData device)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Pair(DnsEndPoint endpoint, int pairKey)
     {
         throw new NotImplementedException();
     }

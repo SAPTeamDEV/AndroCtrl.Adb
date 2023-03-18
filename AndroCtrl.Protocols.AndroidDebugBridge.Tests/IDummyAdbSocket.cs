@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+
 namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
 
 public interface IDummyAdbSocket : IAdbSocket

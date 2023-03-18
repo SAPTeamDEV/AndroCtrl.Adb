@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+
 namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
 
 internal class DummyTcpSocket : ITcpSocket
@@ -26,6 +28,8 @@ internal class DummyTcpSocket : ITcpSocket
 
     public int ReceiveBufferSize
     { get; set; } = 1024;
+
+    public int Available => throw new NotImplementedException();
 
     public void Close()
     {

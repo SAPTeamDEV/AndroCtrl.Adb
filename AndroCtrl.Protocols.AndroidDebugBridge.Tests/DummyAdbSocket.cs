@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
 using Xunit;
 
@@ -83,6 +84,8 @@ internal class DummyAdbSocket : IAdbSocket, IDummyAdbSocket
     }
 
     public Socket Socket => throw new NotImplementedException();
+
+    public int Available => throw new NotImplementedException();
 
     public void Dispose()
     {
@@ -259,5 +262,10 @@ internal class DummyAdbSocket : IAdbSocket, IDummyAdbSocket
                 }
             }
         }
+    }
+
+    public void SendDeviceRequest(DeviceData device, string command)
+    {
+        throw new NotImplementedException();
     }
 }

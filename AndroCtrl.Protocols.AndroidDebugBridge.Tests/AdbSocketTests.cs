@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
 
 using Xunit;
