@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
 using Moq;
 
