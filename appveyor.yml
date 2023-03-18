@@ -5,17 +5,6 @@ version: 1.0.{build}
 branches:
   only:
   - master
-  - beta
-
-dotnet_csproj:
-  patch: true
-  file: '**\*.csproj'
-  version: '{version}'
-  version_prefix: '{version}'
-  package_version: '{version}'
-  assembly_version: '{version}'
-  file_version: '{version}'
-  informational_version: '{version}'
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\AndroCtrl.Protocols.AndroidDebugBridge
