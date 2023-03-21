@@ -63,9 +63,12 @@ public interface IAdbServer
     /// <summary>
     /// Gets the status of the adb server.
     /// </summary>
+    /// <param name="throwOnException">
+    /// Determines that method is able to throw an exception when needed or just repot offline status.
+    /// </param>
     /// <returns>
     /// A <see cref="AdbServerStatus"/> object that describes the status of the
     /// adb server.
     /// </returns>
-    AdbServerStatus GetStatus();
+    AdbServerStatus GetStatus(bool throwOnException);
 }

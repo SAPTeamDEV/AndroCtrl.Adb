@@ -169,7 +169,7 @@ public class AdbServer : IAdbServer
     }
 
     /// <inheritdoc/>
-    public AdbServerStatus GetStatus()
+    public AdbServerStatus GetStatus(bool throwOnException = true)
     {
         // Try to connect to a running instance of the adb server
         try
@@ -182,9 +182,9 @@ public class AdbServer : IAdbServer
                 Version = new Version(1, 0, versionCode)
             };
         }
-        catch (SocketException ex)
+        catch (Exception e)
         {
-            if (ex.SocketErrorCode == SocketError.ConnectionRefused)
+            if (!throwOnException || e is SocketException ex && ex.SocketErrorCode == SocketError.ConnectionRefused)
             {
                 return new AdbServerStatus()
                 {
