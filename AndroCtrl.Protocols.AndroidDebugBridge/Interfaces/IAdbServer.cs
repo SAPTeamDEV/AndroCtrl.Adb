@@ -13,6 +13,19 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 public interface IAdbServer
 {
     /// <summary>
+    /// Check whether that current instance has a cached adb file path or not.
+    /// </summary>
+    public bool HasAdbPath { get; }
+
+    /// <summary>
+    /// Updates path of adb executable.
+    /// </summary>
+    /// <param name="adbPath">
+    /// Full path of new file.
+    /// </param>
+    public void UpdateAdbPath(string adbPath);
+
+    /// <summary>
     /// Starts the adb server if it was not previously running.
     /// </summary>
     /// <param name="adbPath">

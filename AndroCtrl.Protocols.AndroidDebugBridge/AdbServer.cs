@@ -97,6 +97,9 @@ public class AdbServer : IAdbServer
     public static IAdbServer Instance
     { get; set; } = new AdbServer();
 
+    ///<inheritdoc/>
+    public bool HasAdbPath => cachedAdbPath != null;
+
     /// <inheritdoc/>
     public StartServerResult StartServer(string adbPath, bool restartServerIfNewer)
     {
@@ -197,6 +200,19 @@ public class AdbServer : IAdbServer
                 // An unexpected exception occurred; re-throw the exception
                 throw;
             }
+        }
+    }
+
+    ///<inheritdoc/>
+    public void UpdateAdbPath(string adbPath)
+    {
+        if (File.Exists(adbPath))
+        {
+            cachedAdbPath = adbPath;
+        }
+        else
+        {
+            throw new FileNotFoundException(adbPath);
         }
     }
 }
