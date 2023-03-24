@@ -31,7 +31,16 @@ internal class DummyAdbServer : IAdbServer
     { get; private set; }
 
     /// <inheritdoc/>
-    public AdbServerStatus GetStatus()
+	public bool HasAdbPath { get; }
+	
+	/// <inheritdoc/>
+	public void UpdateAdbPath(string adbPath)
+	{
+		
+	}
+
+    /// <inheritdoc/>
+    public AdbServerStatus GetStatus(bool throwOnError)
     {
         return Status;
     }
