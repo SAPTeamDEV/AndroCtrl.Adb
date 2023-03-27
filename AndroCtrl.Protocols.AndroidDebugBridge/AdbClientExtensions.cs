@@ -12,173 +12,175 @@ using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
-/// <summary>
-/// Provides extension methods for the <see cref="IAdbClient"/> interface. Provides overloads
-/// for commonly used funtions.
-/// </summary>
-public static class AdbClientExtensions
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     /// <summary>
-    ///  Creates a port forwarding between a local and a remote port.
+    /// Provides extension methods for the <see cref="IAdbClient"/> interface. Provides overloads
+    /// for commonly used funtions.
     /// </summary>
-    /// <param name="client">
-    /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
-    /// </param>
-    /// <param name="device">
-    /// The device to which to forward the connections.
-    /// </param>
-    /// <param name="localPort">
-    /// The local port to forward.
-    /// </param>
-    /// <param name="remotePort">
-    /// The remote port to forward to
-    /// </param>
-    /// <exception cref="AdbException">
-    /// failed to submit the forward command.
-    /// or
-    /// Device rejected command:  + resp.Message
-    /// </exception>
-    public static int CreateForward(this IAdbClient client, DeviceData device, int localPort, int remotePort)
+    public static class AdbClientExtensions
     {
-        return client.CreateForward(device, $"tcp:{localPort}", $"tcp:{remotePort}", true);
-    }
-
-    /// <summary>
-    /// Forwards a remote Unix socket to a local TCP socket.
-    /// </summary>
-    /// <param name="client">
-    /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
-    /// </param>
-    /// <param name="device">
-    /// The device to which to forward the connections.
-    /// </param>
-    /// <param name="localPort">
-    /// The local port to forward.
-    /// </param>
-    /// <param name="remoteSocket">
-    /// The remote Unix socket.
-    /// </param>
-    /// <exception cref="AdbException">
-    /// The client failed to submit the forward command.
-    /// </exception>
-    /// <exception cref="AdbException">
-    /// The device rejected command. The error message will include the error message provided by the device.
-    /// </exception>
-    public static int CreateForward(this IAdbClient client, DeviceData device, int localPort, string remoteSocket)
-    {
-        return client.CreateForward(device, $"tcp:{localPort}", $"local:{remoteSocket}", true);
-    }
-
-    /// <summary>
-    /// Executes a shell command on the remote device
-    /// </summary>
-    /// <param name="client">
-    /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
-    /// </param>
-    /// <param name="command">The command to execute</param>
-    /// <param name="device">The device to execute on</param>
-    /// <param name="rcvr">The shell output receiver</param>
-    public static void ExecuteRemoteCommand(this IAdbClient client, string command, DeviceData device, IShellOutputReceiver rcvr)
-    {
-        client.ExecuteRemoteCommand(command, device, rcvr, AdbClient.Encoding);
-    }
-
-    /// <summary>
-    /// Executes a shell command on the remote device
-    /// </summary>
-    /// <param name="client">
-    /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
-    /// </param>
-    /// <param name="command">The command to execute</param>
-    /// <param name="device">The device to execute on</param>
-    /// <param name="rcvr">The shell output receiver</param>
-    /// <param name="encoding">The encoding to use.</param>
-    public static void ExecuteRemoteCommand(this IAdbClient client, string command, DeviceData device, IShellOutputReceiver rcvr, Encoding encoding)
-    {
-        try
+        /// <summary>
+        ///  Creates a port forwarding between a local and a remote port.
+        /// </summary>
+        /// <param name="client">
+        /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
+        /// </param>
+        /// <param name="device">
+        /// The device to which to forward the connections.
+        /// </param>
+        /// <param name="localPort">
+        /// The local port to forward.
+        /// </param>
+        /// <param name="remotePort">
+        /// The remote port to forward to
+        /// </param>
+        /// <exception cref="AdbException">
+        /// failed to submit the forward command.
+        /// or
+        /// Device rejected command:  + resp.Message
+        /// </exception>
+        public static int CreateForward(this IAdbClient client, DeviceData device, int localPort, int remotePort)
         {
-            client.ExecuteRemoteCommandAsync(command, device, rcvr, CancellationToken.None).Wait();
+            return client.CreateForward(device, $"tcp:{localPort}", $"tcp:{remotePort}", true);
         }
-        catch (AggregateException ex)
+
+        /// <summary>
+        /// Forwards a remote Unix socket to a local TCP socket.
+        /// </summary>
+        /// <param name="client">
+        /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
+        /// </param>
+        /// <param name="device">
+        /// The device to which to forward the connections.
+        /// </param>
+        /// <param name="localPort">
+        /// The local port to forward.
+        /// </param>
+        /// <param name="remoteSocket">
+        /// The remote Unix socket.
+        /// </param>
+        /// <exception cref="AdbException">
+        /// The client failed to submit the forward command.
+        /// </exception>
+        /// <exception cref="AdbException">
+        /// The device rejected command. The error message will include the error message provided by the device.
+        /// </exception>
+        public static int CreateForward(this IAdbClient client, DeviceData device, int localPort, string remoteSocket)
         {
-            if (ex.InnerExceptions.Count == 1)
+            return client.CreateForward(device, $"tcp:{localPort}", $"local:{remoteSocket}", true);
+        }
+
+        /// <summary>
+        /// Executes a shell command on the remote device
+        /// </summary>
+        /// <param name="client">
+        /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
+        /// </param>
+        /// <param name="command">The command to execute</param>
+        /// <param name="device">The device to execute on</param>
+        /// <param name="rcvr">The shell output receiver</param>
+        public static void ExecuteRemoteCommand(this IAdbClient client, string command, DeviceData device, IShellOutputReceiver rcvr)
+        {
+            client.ExecuteRemoteCommand(command, device, rcvr, AdbClient.Encoding);
+        }
+
+        /// <summary>
+        /// Executes a shell command on the remote device
+        /// </summary>
+        /// <param name="client">
+        /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
+        /// </param>
+        /// <param name="command">The command to execute</param>
+        /// <param name="device">The device to execute on</param>
+        /// <param name="rcvr">The shell output receiver</param>
+        /// <param name="encoding">The encoding to use.</param>
+        public static void ExecuteRemoteCommand(this IAdbClient client, string command, DeviceData device, IShellOutputReceiver rcvr, Encoding encoding)
+        {
+            try
             {
-                throw ex.InnerException;
+                client.ExecuteRemoteCommandAsync(command, device, rcvr, CancellationToken.None).Wait();
             }
-            else
+            catch (AggregateException ex)
             {
-                throw;
+                if (ex.InnerExceptions.Count == 1)
+                {
+                    throw ex.InnerException;
+                }
+                else
+                {
+                    throw;
+                }
             }
         }
-    }
 
-    /// <summary>
-    /// Reboots the specified adb socket address.
-    /// </summary>
-    /// <param name="client">
-    /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
-    /// </param>
-    /// <param name="device">The device.</param>
-    public static void Reboot(this IAdbClient client, DeviceData device)
-    {
-        client.Reboot(string.Empty, device);
-    }
-
-    /// <summary>
-    /// Connect to a device via TCP/IP.
-    /// </summary>
-    /// <param name="client">
-    /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
-    /// </param>
-    /// <param name="address">
-    /// The IP address of the remote device.
-    /// </param>
-    public static void Connect(this IAdbClient client, IPAddress address)
-    {
-        if (address == null)
+        /// <summary>
+        /// Reboots the specified adb socket address.
+        /// </summary>
+        /// <param name="client">
+        /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
+        /// </param>
+        /// <param name="device">The device.</param>
+        public static void Reboot(this IAdbClient client, DeviceData device)
         {
-            throw new ArgumentNullException(nameof(address));
+            client.Reboot(string.Empty, device);
         }
 
-        client.Connect(new IPEndPoint(address, AdbClient.DefaultPort));
-    }
-
-    /// <summary>
-    /// Connect to a device via TCP/IP.
-    /// </summary>
-    /// <param name="client">
-    /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
-    /// </param>
-    /// <param name="host">
-    /// The host address of the remote device.
-    /// </param>
-    public static void Connect(this IAdbClient client, string host)
-    {
-        if (string.IsNullOrEmpty(host))
+        /// <summary>
+        /// Connect to a device via TCP/IP.
+        /// </summary>
+        /// <param name="client">
+        /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
+        /// </param>
+        /// <param name="address">
+        /// The IP address of the remote device.
+        /// </param>
+        public static void Connect(this IAdbClient client, IPAddress address)
         {
-            throw new ArgumentNullException(nameof(host));
+            if (address == null)
+            {
+                throw new ArgumentNullException(nameof(address));
+            }
+
+            client.Connect(new IPEndPoint(address, AdbClient.DefaultPort));
         }
 
-        client.Connect(new DnsEndPoint(host, AdbClient.DefaultPort));
-    }
-
-    /// <summary>
-    /// Connect to a device via TCP/IP.
-    /// </summary>
-    /// <param name="client">
-    /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
-    /// </param>
-    /// <param name="endpoint">
-    /// The IP endpoint at which the <c>adb</c> server on the device is running.
-    /// </param>
-    public static void Connect(this IAdbClient client, IPEndPoint endpoint)
-    {
-        if (endpoint == null)
+        /// <summary>
+        /// Connect to a device via TCP/IP.
+        /// </summary>
+        /// <param name="client">
+        /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
+        /// </param>
+        /// <param name="host">
+        /// The host address of the remote device.
+        /// </param>
+        public static void Connect(this IAdbClient client, string host)
         {
-            throw new ArgumentNullException(nameof(endpoint));
+            if (string.IsNullOrEmpty(host))
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
+
+            client.Connect(new DnsEndPoint(host, AdbClient.DefaultPort));
         }
 
-        client.Connect(new DnsEndPoint(endpoint.Address.ToString(), endpoint.Port));
+        /// <summary>
+        /// Connect to a device via TCP/IP.
+        /// </summary>
+        /// <param name="client">
+        /// An instance of a class that implements the <see cref="IAdbClient"/> interface.
+        /// </param>
+        /// <param name="endpoint">
+        /// The IP endpoint at which the <c>adb</c> server on the device is running.
+        /// </param>
+        public static void Connect(this IAdbClient client, IPEndPoint endpoint)
+        {
+            if (endpoint == null)
+            {
+                throw new ArgumentNullException(nameof(endpoint));
+            }
+
+            client.Connect(new DnsEndPoint(endpoint.Address.ToString(), endpoint.Port));
+        }
     }
 }

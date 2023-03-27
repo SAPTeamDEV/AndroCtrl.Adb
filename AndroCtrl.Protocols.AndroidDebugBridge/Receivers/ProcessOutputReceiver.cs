@@ -9,36 +9,38 @@ using System.Collections.ObjectModel;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
-/// <summary>
-/// Parses the output of a <c>cat /proc/[pid]/stat</c> command.
-/// </summary>
-internal class ProcessOutputReceiver : MultiLineReceiver
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
 {
     /// <summary>
-    /// Gets a list of all processes that have been received.
+    /// Parses the output of a <c>cat /proc/[pid]/stat</c> command.
     /// </summary>
-    public Collection<AndroidProcess> Processes
-    { get; private set; } = new Collection<AndroidProcess>();
-
-    /// <inheritdoc/>
-    protected override void ProcessNewLines(IEnumerable<string> lines)
+    internal class ProcessOutputReceiver : MultiLineReceiver
     {
-        foreach (string line in lines)
-        {
-            // Process has already died (e.g. the cat process itself)
-            if (line.Contains("No such file or directory"))
-            {
-                continue;
-            }
+        /// <summary>
+        /// Gets a list of all processes that have been received.
+        /// </summary>
+        public Collection<AndroidProcess> Processes
+        { get; private set; } = new Collection<AndroidProcess>();
 
-            try
+        /// <inheritdoc/>
+        protected override void ProcessNewLines(IEnumerable<string> lines)
+        {
+            foreach (string line in lines)
             {
-                Processes.Add(AndroidProcess.Parse(line, cmdLinePrefix: true));
-            }
-            catch (Exception)
-            {
-                // Swallow
+                // Process has already died (e.g. the cat process itself)
+                if (line.Contains("No such file or directory"))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    Processes.Add(AndroidProcess.Parse(line, cmdLinePrefix: true));
+                }
+                catch (Exception)
+                {
+                    // Swallow
+                }
             }
         }
     }

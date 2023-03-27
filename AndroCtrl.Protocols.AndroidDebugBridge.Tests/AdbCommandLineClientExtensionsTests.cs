@@ -7,24 +7,25 @@ using Moq;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-public class AdbCommandLineClientExtensionsTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    [Fact]
-    public void EnsureIsValidAdbFileNullValueTest()
+    public class AdbCommandLineClientExtensionsTests
     {
-        Assert.Throws<ArgumentNullException>(() => AdbCommandLineClientExtensions.EnsureIsValidAdbFile(null, "adb.exe"));
-    }
+        [Fact]
+        public void EnsureIsValidAdbFileNullValueTest()
+        {
+            Assert.Throws<ArgumentNullException>(() => AdbCommandLineClientExtensions.EnsureIsValidAdbFile(null, "adb.exe"));
+        }
 
-    [Fact]
-    public void EnsureIsValidAdbFileInvalidFileTest()
-    {
-        Mock<IAdbCommandLineClient> clientMock = new Mock<IAdbCommandLineClient>();
-        clientMock.Setup(c => c.IsValidAdbFile(It.IsAny<string>())).Returns(false);
+        [Fact]
+        public void EnsureIsValidAdbFileInvalidFileTest()
+        {
+            Mock<IAdbCommandLineClient> clientMock = new Mock<IAdbCommandLineClient>();
+            clientMock.Setup(c => c.IsValidAdbFile(It.IsAny<string>())).Returns(false);
 
-        IAdbCommandLineClient client = clientMock.Object;
+            IAdbCommandLineClient client = clientMock.Object;
 
-        Assert.Throws<FileNotFoundException>(() => client.EnsureIsValidAdbFile("xyz.exe"));
+            Assert.Throws<FileNotFoundException>(() => client.EnsureIsValidAdbFile("xyz.exe"));
+        }
     }
 }

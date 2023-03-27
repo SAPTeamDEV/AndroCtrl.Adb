@@ -2,36 +2,37 @@
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-public class PackageManagerReceiverTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    [Fact]
-    public void ParseThirdPartyPackage()
+    public class PackageManagerReceiverTests
     {
-        // Arrange
-        DeviceData device = new()
+        [Fact]
+        public void ParseThirdPartyPackage()
         {
-            State = DeviceState.Online
-        };
+            // Arrange
+            DeviceData device = new()
+            {
+                State = DeviceState.Online
+            };
 
-        DummyAdbClient client = new();
+            DummyAdbClient client = new();
 
-        PackageManager manager = new(client, device, thirdPartyOnly: false, syncServiceFactory: null, skipInit: true);
-        PackageManagerReceiver receiver = new(device, manager);
+            PackageManager manager = new(client, device, thirdPartyOnly: false, syncServiceFactory: null, skipInit: true);
+            PackageManagerReceiver receiver = new(device, manager);
 
-        // Act
-        receiver.AddOutput("package:/data/app/com.google.android.apps.plus-qQaDuXCpNqJuQSbIS6OxGA==/base.apk=com.google.android.apps.plus");
-        receiver.AddOutput("package:/system/app/LegacyCamera.apk=com.android.camera");
-        receiver.AddOutput("package:mwc2015.be");
-        receiver.Flush();
+            // Act
+            receiver.AddOutput("package:/data/app/com.google.android.apps.plus-qQaDuXCpNqJuQSbIS6OxGA==/base.apk=com.google.android.apps.plus");
+            receiver.AddOutput("package:/system/app/LegacyCamera.apk=com.android.camera");
+            receiver.AddOutput("package:mwc2015.be");
+            receiver.Flush();
 
-        // Assert
-        Assert.Equal(3, manager.Packages.Count);
-        Assert.True(manager.Packages.ContainsKey("com.google.android.apps.plus"));
-        Assert.True(manager.Packages.ContainsKey("com.android.camera"));
-        Assert.True(manager.Packages.ContainsKey("mwc2015.be"));
+            // Assert
+            Assert.Equal(3, manager.Packages.Count);
+            Assert.True(manager.Packages.ContainsKey("com.google.android.apps.plus"));
+            Assert.True(manager.Packages.ContainsKey("com.android.camera"));
+            Assert.True(manager.Packages.ContainsKey("mwc2015.be"));
 
-        Assert.Equal("/data/app/com.google.android.apps.plus-qQaDuXCpNqJuQSbIS6OxGA==/base.apk", manager.Packages["com.google.android.apps.plus"]);
+            Assert.Equal("/data/app/com.google.android.apps.plus-qQaDuXCpNqJuQSbIS6OxGA==/base.apk", manager.Packages["com.google.android.apps.plus"]);
+        }
     }
 }

@@ -2,60 +2,61 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-/// <summary>
-/// 
-/// </summary>
-internal class DummyAdbCommandLineClient : AdbCommandLineClient
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    public DummyAdbCommandLineClient()
-        : base(ServerName)
+    /// <summary>
+    /// 
+    /// </summary>
+    internal class DummyAdbCommandLineClient : AdbCommandLineClient
     {
-    }
-
-    public Version Version
-    {
-        get;
-        set;
-    }
-
-    public bool ServerStarted
-    {
-        get;
-        private set;
-    }
-
-    public override bool IsValidAdbFile(string adbPath)
-    {
-        // No validation done in the dummy adb client.
-        return true;
-    }
-
-    protected override int RunAdbProcessInner(string command, List<string> errorOutput, List<string> standardOutput)
-    {
-        errorOutput?.Add(null);
-
-        standardOutput?.Add(null);
-
-        if (command == "start-server")
+        public DummyAdbCommandLineClient()
+            : base(ServerName)
         {
-            ServerStarted = true;
         }
-        else if (command == "version")
+
+        public Version Version
         {
-            if (standardOutput != null && Version != null)
+            get;
+            set;
+        }
+
+        public bool ServerStarted
+        {
+            get;
+            private set;
+        }
+
+        public override bool IsValidAdbFile(string adbPath)
+        {
+            // No validation done in the dummy adb client.
+            return true;
+        }
+
+        protected override int RunAdbProcessInner(string command, List<string> errorOutput, List<string> standardOutput)
+        {
+            errorOutput?.Add(null);
+
+            standardOutput?.Add(null);
+
+            if (command == "start-server")
             {
-                standardOutput.Add($"Android Debug Bridge version {Version.ToString(3)}");
+                ServerStarted = true;
             }
-        }
-        else
-        {
-            throw new ArgumentOutOfRangeException(nameof(command));
+            else if (command == "version")
+            {
+                if (standardOutput != null && Version != null)
+                {
+                    standardOutput.Add($"Android Debug Bridge version {Version.ToString(3)}");
+                }
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(command));
+            }
+
+            return 0;
         }
 
-        return 0;
+        private static string ServerName => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "adb.exe" : "adb";
     }
-
-    private static string ServerName => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "adb.exe" : "adb";
 }

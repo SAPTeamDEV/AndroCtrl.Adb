@@ -5,24 +5,26 @@
 
 using System;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
-/// <summary>
-/// The event arguments that are passed when a device event occurs.
-/// </summary>
-public class DeviceDataEventArgs : EventArgs
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeviceDataEventArgs"/> class.
+    /// The event arguments that are passed when a device event occurs.
     /// </summary>
-    /// <param name="device">The device.</param>
-    public DeviceDataEventArgs(DeviceData device)
+    public class DeviceDataEventArgs : EventArgs
     {
-        Device = device;
-    }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeviceDataEventArgs"/> class.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        public DeviceDataEventArgs(DeviceData device)
+        {
+            Device = device;
+        }
 
-    /// <summary>
-    /// Gets the device.
-    /// </summary>
-    /// <value>The device.</value>
-    public DeviceData Device { get; private set; }
+        /// <summary>
+        /// Gets the device.
+        /// </summary>
+        /// <value>The device.</value>
+        public DeviceData Device { get; private set; }
+    }
 }

@@ -2,23 +2,24 @@
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-public class AdbServerStatusTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    [Fact]
-    public void ToStringTest()
+    public class AdbServerStatusTests
     {
-        AdbServerStatus s = new()
+        [Fact]
+        public void ToStringTest()
         {
-            IsRunning = true,
-            Version = new Version(1, 0, 32)
-        };
+            AdbServerStatus s = new()
+            {
+                IsRunning = true,
+                Version = new Version(1, 0, 32)
+            };
 
-        Assert.Equal("Version 1.0.32 of the adb daemon is running.", s.ToString());
+            Assert.Equal("Version 1.0.32 of the adb daemon is running.", s.ToString());
 
-        s.IsRunning = false;
+            s.IsRunning = false;
 
-        Assert.Equal("The adb daemon is not running.", s.ToString());
+            Assert.Equal("The adb daemon is not running.", s.ToString());
+        }
     }
 }

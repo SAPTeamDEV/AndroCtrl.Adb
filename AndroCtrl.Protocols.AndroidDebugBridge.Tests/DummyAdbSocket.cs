@@ -11,261 +11,262 @@ using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-internal class DummyAdbSocket : IAdbSocket, IDummyAdbSocket
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    /// <summary>
-    /// Use this message to cause <see cref="ReadString"/> and <see cref="ReadStringAsync(CancellationToken)"/> to throw
-    /// a <see cref="AdbException"/> indicating that the adb server has forcefully closed the connection.
-    /// </summary>
-    public const string ServerDisconnected = "ServerDisconnected";
-
-    public DummyAdbSocket()
+    internal class DummyAdbSocket : IAdbSocket, IDummyAdbSocket
     {
-        IsConnected = true;
-    }
+        /// <summary>
+        /// Use this message to cause <see cref="ReadString"/> and <see cref="ReadStringAsync(CancellationToken)"/> to throw
+        /// a <see cref="AdbException"/> indicating that the adb server has forcefully closed the connection.
+        /// </summary>
+        public const string ServerDisconnected = "ServerDisconnected";
 
-    public Stream ShellStream
-    {
-        get;
-        set;
-    }
-
-    public Queue<AdbResponse> Responses
-    {
-        get;
-    } = new Queue<AdbResponse>();
-
-    public Queue<SyncCommand> SyncResponses
-    {
-        get;
-    } = new Queue<SyncCommand>();
-
-    public Queue<byte[]> SyncDataReceived
-    {
-        get;
-    } = new Queue<byte[]>();
-
-    public Queue<byte[]> SyncDataSent
-    {
-        get;
-    } = new Queue<byte[]>();
-
-    public Queue<string> ResponseMessages
-    { get; } = new Queue<string>();
-
-    public List<string> Requests
-    { get; } = new List<string>();
-
-    public List<Tuple<SyncCommand, string>> SyncRequests
-    { get; } = new List<Tuple<SyncCommand, string>>();
-
-    public bool IsConnected
-    {
-        get;
-        set;
-    }
-
-    public bool WaitForNewData
-    {
-        get;
-        set;
-    }
-
-    public bool Connected => IsConnected
-                && (WaitForNewData || Responses.Count > 0 || ResponseMessages.Count > 0 || SyncResponses.Count > 0 || SyncDataReceived.Count > 0);
-
-    /// <inheritdoc/>
-    public bool DidReconnect
-    {
-        get;
-        private set;
-    }
-
-    public Socket Socket => throw new NotImplementedException();
-
-    public int Available => throw new NotImplementedException();
-
-    public void Dispose()
-    {
-        IsConnected = false;
-    }
-
-    public int Read(byte[] data)
-    {
-        byte[] actual = SyncDataReceived.Dequeue();
-
-        for (int i = 0; i < data.Length && i < actual.Length; i++)
+        public DummyAdbSocket()
         {
-            data[i] = actual[i];
+            IsConnected = true;
         }
 
-        return actual.Length;
-    }
-
-    public Task ReadAsync(byte[] data, CancellationToken cancellationToken)
-    {
-        Read(data);
-
-        return Task.FromResult(true);
-    }
-
-    public AdbResponse ReadAdbResponse()
-    {
-        AdbResponse response = Responses.Dequeue();
-
-        return !response.Okay ? throw new AdbException(response.Message, response) : response;
-    }
-
-    public string ReadString()
-    {
-        return ReadStringAsync(CancellationToken.None).Result;
-    }
-
-    public string ReadSyncString()
-    {
-        return ResponseMessages.Dequeue();
-    }
-
-    public async Task<string> ReadStringAsync(CancellationToken cancellationToken)
-    {
-        if (WaitForNewData)
+        public Stream ShellStream
         {
-            while (ResponseMessages.Count == 0)
+            get;
+            set;
+        }
+
+        public Queue<AdbResponse> Responses
+        {
+            get;
+        } = new Queue<AdbResponse>();
+
+        public Queue<SyncCommand> SyncResponses
+        {
+            get;
+        } = new Queue<SyncCommand>();
+
+        public Queue<byte[]> SyncDataReceived
+        {
+            get;
+        } = new Queue<byte[]>();
+
+        public Queue<byte[]> SyncDataSent
+        {
+            get;
+        } = new Queue<byte[]>();
+
+        public Queue<string> ResponseMessages
+        { get; } = new Queue<string>();
+
+        public List<string> Requests
+        { get; } = new List<string>();
+
+        public List<Tuple<SyncCommand, string>> SyncRequests
+        { get; } = new List<Tuple<SyncCommand, string>>();
+
+        public bool IsConnected
+        {
+            get;
+            set;
+        }
+
+        public bool WaitForNewData
+        {
+            get;
+            set;
+        }
+
+        public bool Connected => IsConnected
+                    && (WaitForNewData || Responses.Count > 0 || ResponseMessages.Count > 0 || SyncResponses.Count > 0 || SyncDataReceived.Count > 0);
+
+        /// <inheritdoc/>
+        public bool DidReconnect
+        {
+            get;
+            private set;
+        }
+
+        public Socket Socket => throw new NotImplementedException();
+
+        public int Available => throw new NotImplementedException();
+
+        public void Dispose()
+        {
+            IsConnected = false;
+        }
+
+        public int Read(byte[] data)
+        {
+            byte[] actual = SyncDataReceived.Dequeue();
+
+            for (int i = 0; i < data.Length && i < actual.Length; i++)
             {
-                await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
+                data[i] = actual[i];
+            }
+
+            return actual.Length;
+        }
+
+        public Task ReadAsync(byte[] data, CancellationToken cancellationToken)
+        {
+            Read(data);
+
+            return Task.FromResult(true);
+        }
+
+        public AdbResponse ReadAdbResponse()
+        {
+            AdbResponse response = Responses.Dequeue();
+
+            return !response.Okay ? throw new AdbException(response.Message, response) : response;
+        }
+
+        public string ReadString()
+        {
+            return ReadStringAsync(CancellationToken.None).Result;
+        }
+
+        public string ReadSyncString()
+        {
+            return ResponseMessages.Dequeue();
+        }
+
+        public async Task<string> ReadStringAsync(CancellationToken cancellationToken)
+        {
+            if (WaitForNewData)
+            {
+                while (ResponseMessages.Count == 0)
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+            }
+
+            string message = ResponseMessages.Dequeue();
+
+            if (message == ServerDisconnected)
+            {
+                SocketException socketException = new SocketException(AdbServer.ConnectionReset);
+                throw new AdbException(socketException.Message, socketException);
+            }
+            else
+            {
+                return message;
             }
         }
 
-        string message = ResponseMessages.Dequeue();
-
-        if (message == ServerDisconnected)
+        public void SendAdbRequest(string request)
         {
-            SocketException socketException = new SocketException(AdbServer.ConnectionReset);
-            throw new AdbException(socketException.Message, socketException);
+            Requests.Add(request);
         }
-        else
+
+        public void Close()
         {
-            return message;
+            IsConnected = false;
         }
-    }
 
-    public void SendAdbRequest(string request)
-    {
-        Requests.Add(request);
-    }
-
-    public void Close()
-    {
-        IsConnected = false;
-    }
-
-    public void SendSyncRequest(string command, int value)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Send(byte[] data, int length)
-    {
-        SyncDataSent.Enqueue(data.Take(length).ToArray());
-    }
-
-    public int Read(byte[] data, int length)
-    {
-        byte[] actual = SyncDataReceived.Dequeue();
-
-        Assert.Equal(actual.Length, length);
-
-        Buffer.BlockCopy(actual, 0, data, 0, length);
-
-        return actual.Length;
-    }
-
-    public void SendSyncRequest(SyncCommand command, string path)
-    {
-        SyncRequests.Add(new Tuple<SyncCommand, string>(command, path));
-    }
-
-    public SyncCommand ReadSyncResponse()
-    {
-        return SyncResponses.Dequeue();
-    }
-
-    public void SendSyncRequest(SyncCommand command, int length)
-    {
-        SyncRequests.Add(new Tuple<SyncCommand, string>(command, length.ToString()));
-    }
-
-    public void SendSyncRequest(SyncCommand command, string path, int permissions)
-    {
-        SyncRequests.Add(new Tuple<SyncCommand, string>(command, $"{path},{permissions}"));
-    }
-
-    public Stream GetShellStream()
-    {
-        if (ShellStream != null)
-        {
-            return ShellStream;
-        }
-        else
-        {
-            // Simulate the device failing to respond properly.
-            throw new SocketException();
-        }
-    }
-
-    public void Reconnect()
-    {
-        DidReconnect = true;
-    }
-
-    public Task<int> ReadAsync(byte[] data, int length, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Send(byte[] data, int offset, int length)
-    {
-        if (offset == 0)
-        {
-            Send(data, length);
-        }
-        else
+        public void SendSyncRequest(string command, int value)
         {
             throw new NotImplementedException();
         }
-    }
 
-    public void SetDevice(DeviceData device)
-    {
-        // if the device is not null, then we first tell adb we're looking to talk
-        // to a specific device
-        if (device != null)
+        public void Send(byte[] data, int length)
         {
-            SendAdbRequest($"host:transport:{device.Serial}");
+            SyncDataSent.Enqueue(data.Take(length).ToArray());
+        }
 
-            try
+        public int Read(byte[] data, int length)
+        {
+            byte[] actual = SyncDataReceived.Dequeue();
+
+            Assert.Equal(actual.Length, length);
+
+            Buffer.BlockCopy(actual, 0, data, 0, length);
+
+            return actual.Length;
+        }
+
+        public void SendSyncRequest(SyncCommand command, string path)
+        {
+            SyncRequests.Add(new Tuple<SyncCommand, string>(command, path));
+        }
+
+        public SyncCommand ReadSyncResponse()
+        {
+            return SyncResponses.Dequeue();
+        }
+
+        public void SendSyncRequest(SyncCommand command, int length)
+        {
+            SyncRequests.Add(new Tuple<SyncCommand, string>(command, length.ToString()));
+        }
+
+        public void SendSyncRequest(SyncCommand command, string path, int permissions)
+        {
+            SyncRequests.Add(new Tuple<SyncCommand, string>(command, $"{path},{permissions}"));
+        }
+
+        public Stream GetShellStream()
+        {
+            if (ShellStream != null)
             {
-                AdbResponse response = ReadAdbResponse();
+                return ShellStream;
             }
-            catch (AdbException e)
+            else
             {
-                if (string.Equals("device not found", e.AdbError, StringComparison.OrdinalIgnoreCase))
+                // Simulate the device failing to respond properly.
+                throw new SocketException();
+            }
+        }
+
+        public void Reconnect()
+        {
+            DidReconnect = true;
+        }
+
+        public Task<int> ReadAsync(byte[] data, int length, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Send(byte[] data, int offset, int length)
+        {
+            if (offset == 0)
+            {
+                Send(data, length);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void SetDevice(DeviceData device)
+        {
+            // if the device is not null, then we first tell adb we're looking to talk
+            // to a specific device
+            if (device != null)
+            {
+                SendAdbRequest($"host:transport:{device.Serial}");
+
+                try
                 {
-                    throw new DeviceNotFoundException(device.Serial);
+                    AdbResponse response = ReadAdbResponse();
                 }
-                else
+                catch (AdbException e)
                 {
-                    throw;
+                    if (string.Equals("device not found", e.AdbError, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new DeviceNotFoundException(device.Serial);
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
         }
-    }
 
-    public void SendDeviceRequest(DeviceData device, string command)
-    {
-        throw new NotImplementedException();
+        public void SendDeviceRequest(DeviceData device, string command)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

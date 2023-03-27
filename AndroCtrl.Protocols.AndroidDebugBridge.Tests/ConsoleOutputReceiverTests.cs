@@ -6,72 +6,73 @@ using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-public class ConsoleOutputReceiverTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    [Fact]
-    public void ToStringTest()
+    public class ConsoleOutputReceiverTests
     {
-        ConsoleOutputReceiver receiver = new();
-        receiver.AddOutput("Hello, World!");
-        receiver.AddOutput("See you!");
+        [Fact]
+        public void ToStringTest()
+        {
+            ConsoleOutputReceiver receiver = new();
+            receiver.AddOutput("Hello, World!");
+            receiver.AddOutput("See you!");
 
-        receiver.Flush();
+            receiver.Flush();
 
-        Assert.Equal("Hello, World!\r\nSee you!\r\n",
-            receiver.ToString(),
-            ignoreLineEndingDifferences: true);
-    }
+            Assert.Equal("Hello, World!\r\nSee you!\r\n",
+                receiver.ToString(),
+                ignoreLineEndingDifferences: true);
+        }
 
-    [Fact]
-    public void ToStringIgnoredLineTest()
-    {
-        ConsoleOutputReceiver receiver = new();
-        receiver.AddOutput("#Hello, World!");
-        receiver.AddOutput("See you!");
+        [Fact]
+        public void ToStringIgnoredLineTest()
+        {
+            ConsoleOutputReceiver receiver = new();
+            receiver.AddOutput("#Hello, World!");
+            receiver.AddOutput("See you!");
 
-        receiver.Flush();
+            receiver.Flush();
 
-        Assert.Equal("See you!\r\n",
-            receiver.ToString(),
-            ignoreLineEndingDifferences: true);
-    }
+            Assert.Equal("See you!\r\n",
+                receiver.ToString(),
+                ignoreLineEndingDifferences: true);
+        }
 
-    [Fact]
-    public void ToStringIgnoredLineTest2()
-    {
-        ConsoleOutputReceiver receiver = new();
-        receiver.AddOutput("Hello, World!");
-        receiver.AddOutput("$See you!");
+        [Fact]
+        public void ToStringIgnoredLineTest2()
+        {
+            ConsoleOutputReceiver receiver = new();
+            receiver.AddOutput("Hello, World!");
+            receiver.AddOutput("$See you!");
 
-        receiver.Flush();
+            receiver.Flush();
 
-        Assert.Equal("Hello, World!\r\n",
-            receiver.ToString(),
-            ignoreLineEndingDifferences: true);
-    }
+            Assert.Equal("Hello, World!\r\n",
+                receiver.ToString(),
+                ignoreLineEndingDifferences: true);
+        }
 
-    [Fact]
-    public void TrowOnErrorTest()
-    {
-        AssertTrowsException<FileNotFoundException>("/dev/test: not found");
-        AssertTrowsException<FileNotFoundException>("No such file or directory");
-        AssertTrowsException<UnknownOptionException>("Unknown option -h");
-        AssertTrowsException<CommandAbortingException>("/dev/test: Aborting.");
-        AssertTrowsException<FileNotFoundException>("/dev/test: applet not found");
-        AssertTrowsException<PermissionDeniedException>("/dev/test: permission denied");
-        AssertTrowsException<PermissionDeniedException>("/dev/test: access denied");
+        [Fact]
+        public void TrowOnErrorTest()
+        {
+            AssertTrowsException<FileNotFoundException>("/dev/test: not found");
+            AssertTrowsException<FileNotFoundException>("No such file or directory");
+            AssertTrowsException<UnknownOptionException>("Unknown option -h");
+            AssertTrowsException<CommandAbortingException>("/dev/test: Aborting.");
+            AssertTrowsException<FileNotFoundException>("/dev/test: applet not found");
+            AssertTrowsException<PermissionDeniedException>("/dev/test: permission denied");
+            AssertTrowsException<PermissionDeniedException>("/dev/test: access denied");
 
-        // Should not thrown an exception
-        ConsoleOutputReceiver receiver = new();
-        receiver.ThrowOnError("Stay calm and watch cat movies.");
-    }
+            // Should not thrown an exception
+            ConsoleOutputReceiver receiver = new();
+            receiver.ThrowOnError("Stay calm and watch cat movies.");
+        }
 
-    private static void AssertTrowsException<T>(string line)
-        where T : Exception
-    {
-        ConsoleOutputReceiver receiver = new();
-        Assert.Throws<T>(() => receiver.ThrowOnError(line));
+        private static void AssertTrowsException<T>(string line)
+            where T : Exception
+        {
+            ConsoleOutputReceiver receiver = new();
+            Assert.Throws<T>(() => receiver.ThrowOnError(line));
+        }
     }
 }

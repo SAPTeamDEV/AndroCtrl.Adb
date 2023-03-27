@@ -8,135 +8,136 @@ using Moq;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-public class PackageManagerTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    [Fact]
-    public void ConstructorNullTest()
+    public class PackageManagerTests
     {
-        Assert.Throws<ArgumentNullException>(() => new PackageManager(null, null));
-        Assert.Throws<ArgumentNullException>(() => new PackageManager(null, new DeviceData()));
-        Assert.Throws<ArgumentNullException>(() => new PackageManager(Mock.Of<IAdbClient>(), null));
-    }
-
-    [Fact]
-    public void PackagesPropertyTest()
-    {
-        DeviceData device = new()
+        [Fact]
+        public void ConstructorNullTest()
         {
-            State = DeviceState.Online
-        };
+            Assert.Throws<ArgumentNullException>(() => new PackageManager(null, null));
+            Assert.Throws<ArgumentNullException>(() => new PackageManager(null, new DeviceData()));
+            Assert.Throws<ArgumentNullException>(() => new PackageManager(Mock.Of<IAdbClient>(), null));
+        }
 
-        DummyAdbClient client = new();
-        client.Commands.Add("pm list packages -f", "package:/system/app/Gallery2/Gallery2.apk=com.android.gallery3d");
-        PackageManager manager = new(client, device);
-
-        Assert.True(manager.Packages.ContainsKey("com.android.gallery3d"));
-        Assert.Equal("/system/app/Gallery2/Gallery2.apk", manager.Packages["com.android.gallery3d"]);
-    }
-
-    [Fact]
-    public void PackagesPropertyTest2()
-    {
-        DeviceData device = new()
+        [Fact]
+        public void PackagesPropertyTest()
         {
-            State = DeviceState.Online
-        };
+            DeviceData device = new()
+            {
+                State = DeviceState.Online
+            };
 
-        DummyAdbClient client = new();
-        client.Commands.Add("pm list packages -f", "package:mwc2015.be");
-        PackageManager manager = new(client, device);
+            DummyAdbClient client = new();
+            client.Commands.Add("pm list packages -f", "package:/system/app/Gallery2/Gallery2.apk=com.android.gallery3d");
+            PackageManager manager = new(client, device);
 
-        Assert.True(manager.Packages.ContainsKey("mwc2015.be"));
-        Assert.Null(manager.Packages["mwc2015.be"]);
-    }
+            Assert.True(manager.Packages.ContainsKey("com.android.gallery3d"));
+            Assert.Equal("/system/app/Gallery2/Gallery2.apk", manager.Packages["com.android.gallery3d"]);
+        }
 
-    [Fact]
-    public void InstallRemotePackageTest()
-    {
-        DummyAdbClient adbClient = new DummyAdbClient();
-
-        adbClient.Commands.Add("pm list packages -f", "package:/system/app/Gallery2/Gallery2.apk=com.android.gallery3d");
-        adbClient.Commands.Add("pm install /data/test.apk", string.Empty);
-        adbClient.Commands.Add("pm install -r /data/test.apk", string.Empty);
-
-        DeviceData device = new()
+        [Fact]
+        public void PackagesPropertyTest2()
         {
-            State = DeviceState.Online
-        };
+            DeviceData device = new()
+            {
+                State = DeviceState.Online
+            };
 
-        PackageManager manager = new(adbClient, device);
-        manager.InstallRemotePackage("/data/test.apk", false);
+            DummyAdbClient client = new();
+            client.Commands.Add("pm list packages -f", "package:mwc2015.be");
+            PackageManager manager = new(client, device);
 
-        Assert.Equal(2, adbClient.ReceivedCommands.Count);
-        Assert.Equal("pm install /data/test.apk", adbClient.ReceivedCommands[1]);
+            Assert.True(manager.Packages.ContainsKey("mwc2015.be"));
+            Assert.Null(manager.Packages["mwc2015.be"]);
+        }
 
-        manager.InstallRemotePackage("/data/test.apk", true);
-
-        Assert.Equal(3, adbClient.ReceivedCommands.Count);
-        Assert.Equal("pm install -r /data/test.apk", adbClient.ReceivedCommands[2]);
-    }
-
-    [Fact]
-    public void InstallPackageTest()
-    {
-        DummySyncService syncService = new DummySyncService();
-        Factories.SyncServiceFactory = (c, d) => syncService;
-
-        DummyAdbClient adbClient = new DummyAdbClient();
-
-        adbClient.Commands.Add("pm list packages -f", "package:/system/app/Gallery2/Gallery2.apk=com.android.gallery3d");
-        adbClient.Commands.Add("pm install /data/local/tmp/test.txt", string.Empty);
-        adbClient.Commands.Add("rm /data/local/tmp/test.txt", string.Empty);
-
-        DeviceData device = new()
+        [Fact]
+        public void InstallRemotePackageTest()
         {
-            State = DeviceState.Online
-        };
+            DummyAdbClient adbClient = new DummyAdbClient();
 
-        PackageManager manager = new(adbClient, device);
-        manager.InstallPackage("test.txt", false);
-        Assert.Equal(3, adbClient.ReceivedCommands.Count);
-        Assert.Equal("pm install /data/local/tmp/test.txt", adbClient.ReceivedCommands[1]);
-        Assert.Equal("rm /data/local/tmp/test.txt", adbClient.ReceivedCommands[2]);
+            adbClient.Commands.Add("pm list packages -f", "package:/system/app/Gallery2/Gallery2.apk=com.android.gallery3d");
+            adbClient.Commands.Add("pm install /data/test.apk", string.Empty);
+            adbClient.Commands.Add("pm install -r /data/test.apk", string.Empty);
 
-        Assert.Single(syncService.UploadedFiles);
-        Assert.True(syncService.UploadedFiles.ContainsKey("/data/local/tmp/test.txt"));
-    }
+            DeviceData device = new()
+            {
+                State = DeviceState.Online
+            };
 
-    [Fact]
-    public void UninstallPackageTest()
-    {
-        DeviceData device = new()
+            PackageManager manager = new(adbClient, device);
+            manager.InstallRemotePackage("/data/test.apk", false);
+
+            Assert.Equal(2, adbClient.ReceivedCommands.Count);
+            Assert.Equal("pm install /data/test.apk", adbClient.ReceivedCommands[1]);
+
+            manager.InstallRemotePackage("/data/test.apk", true);
+
+            Assert.Equal(3, adbClient.ReceivedCommands.Count);
+            Assert.Equal("pm install -r /data/test.apk", adbClient.ReceivedCommands[2]);
+        }
+
+        [Fact]
+        public void InstallPackageTest()
         {
-            State = DeviceState.Online
-        };
+            DummySyncService syncService = new DummySyncService();
+            Factories.SyncServiceFactory = (c, d) => syncService;
 
-        DummyAdbClient client = new();
-        client.Commands.Add("pm list packages -f", "package:/system/app/Gallery2/Gallery2.apk=com.android.gallery3d");
-        client.Commands.Add("pm uninstall com.android.gallery3d", "Success");
-        PackageManager manager = new(client, device);
+            DummyAdbClient adbClient = new DummyAdbClient();
 
-        // Command should execute correctly; if the wrong command is passed an exception
-        // would be thrown.
-        manager.UninstallPackage("com.android.gallery3d");
-    }
+            adbClient.Commands.Add("pm list packages -f", "package:/system/app/Gallery2/Gallery2.apk=com.android.gallery3d");
+            adbClient.Commands.Add("pm install /data/local/tmp/test.txt", string.Empty);
+            adbClient.Commands.Add("rm /data/local/tmp/test.txt", string.Empty);
 
-    [Fact]
-    public void GetPackageVersionInfoTest()
-    {
-        DeviceData device = new()
+            DeviceData device = new()
+            {
+                State = DeviceState.Online
+            };
+
+            PackageManager manager = new(adbClient, device);
+            manager.InstallPackage("test.txt", false);
+            Assert.Equal(3, adbClient.ReceivedCommands.Count);
+            Assert.Equal("pm install /data/local/tmp/test.txt", adbClient.ReceivedCommands[1]);
+            Assert.Equal("rm /data/local/tmp/test.txt", adbClient.ReceivedCommands[2]);
+
+            Assert.Single(syncService.UploadedFiles);
+            Assert.True(syncService.UploadedFiles.ContainsKey("/data/local/tmp/test.txt"));
+        }
+
+        [Fact]
+        public void UninstallPackageTest()
         {
-            State = DeviceState.Online
-        };
+            DeviceData device = new()
+            {
+                State = DeviceState.Online
+            };
 
-        DummyAdbClient client = new();
-        client.Commands.Add("dumpsys package com.google.android.gms", File.ReadAllText("gapps.txt"));
-        PackageManager manager = new(client, device, skipInit: true);
+            DummyAdbClient client = new();
+            client.Commands.Add("pm list packages -f", "package:/system/app/Gallery2/Gallery2.apk=com.android.gallery3d");
+            client.Commands.Add("pm uninstall com.android.gallery3d", "Success");
+            PackageManager manager = new(client, device);
 
-        VersionInfo versionInfo = manager.GetVersionInfo("com.google.android.gms");
-        Assert.Equal(11062448, versionInfo.VersionCode);
-        Assert.Equal("11.0.62 (448-160311229)", versionInfo.VersionName);
+            // Command should execute correctly; if the wrong command is passed an exception
+            // would be thrown.
+            manager.UninstallPackage("com.android.gallery3d");
+        }
+
+        [Fact]
+        public void GetPackageVersionInfoTest()
+        {
+            DeviceData device = new()
+            {
+                State = DeviceState.Online
+            };
+
+            DummyAdbClient client = new();
+            client.Commands.Add("dumpsys package com.google.android.gms", File.ReadAllText("gapps.txt"));
+            PackageManager manager = new(client, device, skipInit: true);
+
+            VersionInfo versionInfo = manager.GetVersionInfo("com.google.android.gms");
+            Assert.Equal(11062448, versionInfo.VersionCode);
+            Assert.Equal("11.0.62 (448-160311229)", versionInfo.VersionName);
+        }
     }
 }

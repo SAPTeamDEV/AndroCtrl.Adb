@@ -8,102 +8,104 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
-/// <summary>
-/// Processes command line output of the <c>dumpsys package</c> command.
-/// </summary>
-public class VersionInfoReceiver : InfoReceiver
+namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 {
     /// <summary>
-    /// The name of the version code property.
+    /// Processes command line output of the <c>dumpsys package</c> command.
     /// </summary>
-    private static readonly string versionCode = "VersionCode";
-
-    /// <summary>
-    /// The name of the version name property.
-    /// </summary>
-    private static readonly string versionName = "VersionName";
-
-    /// <summary>
-    /// Tracks whether we're currently in the packages section or not.
-    /// </summary>
-    private bool inPackagesSection = false;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VersionInfoReceiver"/> class.
-    /// </summary>
-    public VersionInfoReceiver()
+    public class VersionInfoReceiver : InfoReceiver
     {
-        AddPropertyParser(versionCode, GetVersionCode);
-        AddPropertyParser(versionName, GetVersionName);
-    }
+        /// <summary>
+        /// The name of the version code property.
+        /// </summary>
+        private static readonly string versionCode = "VersionCode";
 
-    /// <summary>
-    /// Gets the version code of the specified package
-    /// </summary>
-    public VersionInfo VersionInfo => GetPropertyValue(versionCode) != null && GetPropertyValue(versionName) != null
-                ? new VersionInfo((int)GetPropertyValue(versionCode), (string)GetPropertyValue(versionName))
-                : null;
+        /// <summary>
+        /// The name of the version name property.
+        /// </summary>
+        private static readonly string versionName = "VersionName";
 
-    private void CheckPackagesSection(string line)
-    {
-        // This method check whether we're in the packages section of the dumpsys package output.
-        // See gapps.txt for what the output looks for. Each section starts with a header
-        // which looks like:
-        //
-        // HeaderName:
-        //
-        // and then there's indented data.
+        /// <summary>
+        /// Tracks whether we're currently in the packages section or not.
+        /// </summary>
+        private bool inPackagesSection = false;
 
-        // We check whether the line is indented. If it's not, and it's not an empty line, we take it is
-        // a section header line and update the data accordingly.
-        if (string.IsNullOrWhiteSpace(line))
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VersionInfoReceiver"/> class.
+        /// </summary>
+        public VersionInfoReceiver()
         {
-            return;
+            AddPropertyParser(versionCode, GetVersionCode);
+            AddPropertyParser(versionName, GetVersionName);
         }
 
-        if (char.IsWhiteSpace(line[0]))
+        /// <summary>
+        /// Gets the version code of the specified package
+        /// </summary>
+        public VersionInfo VersionInfo => GetPropertyValue(versionCode) != null && GetPropertyValue(versionName) != null
+                    ? new VersionInfo((int)GetPropertyValue(versionCode), (string)GetPropertyValue(versionName))
+                    : null;
+
+        private void CheckPackagesSection(string line)
         {
-            return;
+            // This method check whether we're in the packages section of the dumpsys package output.
+            // See gapps.txt for what the output looks for. Each section starts with a header
+            // which looks like:
+            //
+            // HeaderName:
+            //
+            // and then there's indented data.
+
+            // We check whether the line is indented. If it's not, and it's not an empty line, we take it is
+            // a section header line and update the data accordingly.
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                return;
+            }
+
+            if (char.IsWhiteSpace(line[0]))
+            {
+                return;
+            }
+
+            inPackagesSection = string.Equals("Packages:", line, StringComparison.OrdinalIgnoreCase);
         }
 
-        inPackagesSection = string.Equals("Packages:", line, StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// Parses the given line and extracts the version name if possible.
-    /// </summary>
-    /// <param name="line">The line to be parsed.</param>
-    /// <returns>The extracted version name.</returns>
-    public object GetVersionName(string line)
-    {
-        CheckPackagesSection(line);
-
-        return !inPackagesSection ? null : line != null && line.Trim().StartsWith("versionName=") ? line.Trim()[12..].Trim() : (object)null;
-    }
-
-    /// <summary>
-    /// Parses the given line and extracts the version code if possible.
-    /// </summary>
-    /// <param name="line">The line to be parsed.</param>
-    /// <returns>The extracted version code.</returns>
-    public object GetVersionCode(string line)
-    {
-        CheckPackagesSection(line);
-
-        if (!inPackagesSection)
+        /// <summary>
+        /// Parses the given line and extracts the version name if possible.
+        /// </summary>
+        /// <param name="line">The line to be parsed.</param>
+        /// <returns>The extracted version name.</returns>
+        public object GetVersionName(string line)
         {
-            return null;
+            CheckPackagesSection(line);
+
+            return !inPackagesSection ? null : line != null && line.Trim().StartsWith("versionName=") ? line.Trim()[12..].Trim() : (object)null;
         }
 
-        if (line == null)
+        /// <summary>
+        /// Parses the given line and extracts the version code if possible.
+        /// </summary>
+        /// <param name="line">The line to be parsed.</param>
+        /// <returns>The extracted version code.</returns>
+        public object GetVersionCode(string line)
         {
-            return null;
-        }
+            CheckPackagesSection(line);
 
-        // versionCode=4 minSdk=9 targetSdk=22
-        string versionCodeRegex = @"versionCode=(\d*)( minSdk=(\d*))?( targetSdk=(\d*))?$";
-        Match match = Regex.Match(line, versionCodeRegex);
-        return match.Success ? int.Parse(match.Groups[1].Value.Trim()) : null;
+            if (!inPackagesSection)
+            {
+                return null;
+            }
+
+            if (line == null)
+            {
+                return null;
+            }
+
+            // versionCode=4 minSdk=9 targetSdk=22
+            string versionCodeRegex = @"versionCode=(\d*)( minSdk=(\d*))?( targetSdk=(\d*))?$";
+            Match match = Regex.Match(line, versionCodeRegex);
+            return match.Success ? int.Parse(match.Groups[1].Value.Trim()) : null;
+        }
     }
 }

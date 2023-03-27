@@ -5,11 +5,13 @@
 
 using System.Runtime.CompilerServices;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs;
-/// <summary>
-/// The classes in this namespace provide access to the Android system log.
-/// </summary>
-[CompilerGenerated]
-internal class NamespaceDoc
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
 {
+    /// <summary>
+    /// The classes in this namespace provide access to the Android system log.
+    /// </summary>
+    [CompilerGenerated]
+    internal class NamespaceDoc
+    {
+    }
 }

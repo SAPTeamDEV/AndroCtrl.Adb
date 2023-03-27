@@ -5,36 +5,38 @@
 
 using System.Collections.ObjectModel;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs;
-/// <summary>
-/// Represents an entry in event buffer of the the Android log.
-/// </summary>
-/// <seealso href="https://android.googlesource.com/platform/system/core/+/master/include/log/log.h#482"/>
-public class EventLogEntry : LogEntry
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
 {
     /// <summary>
-    /// Initializes a new instance of the <seealso cref="EventLogEntry"/> class.
+    /// Represents an entry in event buffer of the the Android log.
     /// </summary>
-    public EventLogEntry()
+    /// <seealso href="https://android.googlesource.com/platform/system/core/+/master/include/log/log.h#482"/>
+    public class EventLogEntry : LogEntry
     {
-        Values = new Collection<object>();
-    }
+        /// <summary>
+        /// Initializes a new instance of the <seealso cref="EventLogEntry"/> class.
+        /// </summary>
+        public EventLogEntry()
+        {
+            Values = new Collection<object>();
+        }
 
-    /// <summary>
-    /// Gets or sets the 4 bytes integer key from "/system/etc/event-log-tags" file.
-    /// </summary>
-    public int Tag
-    {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets the 4 bytes integer key from "/system/etc/event-log-tags" file.
+        /// </summary>
+        public int Tag
+        {
+            get;
+            set;
+        }
 
-    /// <summary>
-    /// Gets or sets the values of this event log entry.
-    /// </summary>
-    public Collection<object> Values
-    {
-        get;
-        set;
+        /// <summary>
+        /// Gets or sets the values of this event log entry.
+        /// </summary>
+        public Collection<object> Values
+        {
+            get;
+            set;
+        }
     }
 }

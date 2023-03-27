@@ -6,7 +6,7 @@
     <Title>.NET client for adb, Android Debug Bridge (AndroCtrl)</Title>
     <VersionPrefix>1.0.0</VersionPrefix>
     <Authors>The Android Open Source Project, Ryan Conrad, Quamotion, Alireza Poodineh</Authors>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <AssemblyName>AndroCtrl.Protocols.AndroidDebugBridge</AssemblyName>
     <SignAssembly>False</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>

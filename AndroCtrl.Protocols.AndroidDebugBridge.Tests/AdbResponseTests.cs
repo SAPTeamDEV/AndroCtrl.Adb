@@ -1,59 +1,60 @@
 ﻿using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-public class AdbResponseTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    [Fact]
-    public void EqualsTest()
+    public class AdbResponseTests
     {
-        AdbResponse first = new()
+        [Fact]
+        public void EqualsTest()
         {
-            IOSuccess = false,
-            Message = "Hi",
-            Okay = false,
-            Timeout = false
-        };
+            AdbResponse first = new()
+            {
+                IOSuccess = false,
+                Message = "Hi",
+                Okay = false,
+                Timeout = false
+            };
 
-        AdbResponse second = new()
+            AdbResponse second = new()
+            {
+                IOSuccess = true,
+                Message = "Hi",
+                Okay = false,
+                Timeout = false
+            };
+
+            Assert.False(first.Equals("some string"));
+            Assert.False(first.Equals(second));
+            Assert.True(first.Equals(first));
+        }
+
+        [Fact]
+        public void GetHashCodeTest()
         {
-            IOSuccess = true,
-            Message = "Hi",
-            Okay = false,
-            Timeout = false
-        };
+            AdbResponse first = new()
+            {
+                IOSuccess = false,
+                Message = "Hi",
+                Okay = false,
+                Timeout = false
+            };
 
-        Assert.False(first.Equals("some string"));
-        Assert.False(first.Equals(second));
-        Assert.True(first.Equals(first));
-    }
+            AdbResponse second = new()
+            {
+                IOSuccess = false,
+                Message = "Hi",
+                Okay = false,
+                Timeout = false
+            };
 
-    [Fact]
-    public void GetHashCodeTest()
-    {
-        AdbResponse first = new()
+            Assert.Equal(first.GetHashCode(), second.GetHashCode());
+        }
+
+        [Fact]
+        public void ToStringTest()
         {
-            IOSuccess = false,
-            Message = "Hi",
-            Okay = false,
-            Timeout = false
-        };
-
-        AdbResponse second = new()
-        {
-            IOSuccess = false,
-            Message = "Hi",
-            Okay = false,
-            Timeout = false
-        };
-
-        Assert.Equal(first.GetHashCode(), second.GetHashCode());
-    }
-
-    [Fact]
-    public void ToStringTest()
-    {
-        Assert.Equal("OK", AdbResponse.OK.ToString());
-        Assert.Equal("Error: Huh?", AdbResponse.FromError("Huh?").ToString());
+            Assert.Equal("OK", AdbResponse.OK.ToString());
+            Assert.Equal("Error: Huh?", AdbResponse.FromError("Huh?").ToString());
+        }
     }
 }

@@ -5,39 +5,40 @@ using System.Threading;
 
 using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-internal class DummySyncService : ISyncService
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    public Dictionary<string, Stream> UploadedFiles
-    { get; private set; } = new Dictionary<string, Stream>();
-
-    public bool IsOpen => true;
-
-    public void Dispose()
+    internal class DummySyncService : ISyncService
     {
-    }
+        public Dictionary<string, Stream> UploadedFiles
+        { get; private set; } = new Dictionary<string, Stream>();
 
-    public IEnumerable<FileStatistics> GetDirectoryListing(string remotePath)
-    {
-        throw new NotImplementedException();
-    }
+        public bool IsOpen => true;
 
-    public void Open()
-    {
-    }
+        public void Dispose()
+        {
+        }
 
-    public void Pull(string remotePath, Stream stream, IProgress<int> progress, CancellationToken cancellationToken)
-    {
-    }
+        public IEnumerable<FileStatistics> GetDirectoryListing(string remotePath)
+        {
+            throw new NotImplementedException();
+        }
 
-    public void Push(Stream stream, string remotePath, int permissions, DateTimeOffset timestamp, IProgress<int> progress, CancellationToken cancellationToken)
-    {
-        UploadedFiles.Add(remotePath, stream);
-    }
+        public void Open()
+        {
+        }
 
-    public FileStatistics Stat(string remotePath)
-    {
-        throw new NotImplementedException();
+        public void Pull(string remotePath, Stream stream, IProgress<int> progress, CancellationToken cancellationToken)
+        {
+        }
+
+        public void Push(Stream stream, string remotePath, int permissions, DateTimeOffset timestamp, IProgress<int> progress, CancellationToken cancellationToken)
+        {
+            UploadedFiles.Add(remotePath, stream);
+        }
+
+        public FileStatistics Stat(string remotePath)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

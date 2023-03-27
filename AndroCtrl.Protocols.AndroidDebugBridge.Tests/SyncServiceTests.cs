@@ -8,179 +8,180 @@ using AndroCtrl.Protocols.AndroidDebugBridge.Extensions;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-public class SyncServiceTests : SocketBasedTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    // Toggle the integration test flag to true to run on an actual adb server
-    // (and to build/validate the test cases), set to false to use the mocked
-    // adb sockets.
-    // In release mode, this flag is ignored and the mocked adb sockets are always used.
-    public SyncServiceTests()
-        : base(integrationTest: false, doDispose: false)
+    public class SyncServiceTests : SocketBasedTests
     {
-    }
-
-    [Fact]
-    public void StatTest()
-    {
-        DeviceData device = new()
+        // Toggle the integration test flag to true to run on an actual adb server
+        // (and to build/validate the test cases), set to false to use the mocked
+        // adb sockets.
+        // In release mode, this flag is ignored and the mocked adb sockets are always used.
+        public SyncServiceTests()
+            : base(integrationTest: false, doDispose: false)
         {
-            Serial = "169.254.109.177:5555",
-            State = DeviceState.Online
-        };
+        }
 
-        FileStatistics value = null;
-
-        RunTest(
-            OkResponses(2),
-            NoResponseMessages,
-            Requests("host:transport:169.254.109.177:5555", "sync:"),
-            SyncRequests(SyncCommand.STAT, "/fstab.donatello"),
-            new SyncCommand[] { SyncCommand.STAT },
-            new byte[][] { new byte[] { 160, 129, 0, 0, 85, 2, 0, 0, 0, 0, 0, 0 } },
-            null,
-            () =>
-            {
-                using SyncService service = new(Socket, device);
-                value = service.Stat("/fstab.donatello");
-            });
-
-        Assert.NotNull(value);
-        Assert.Equal(UnixFileMode.Regular, value.FileMode & UnixFileMode.TypeMask);
-        Assert.Equal(597, value.Size);
-        Assert.Equal(DateTimeHelper.Epoch.ToLocalTime(), value.Time);
-    }
-
-    [Fact]
-    public void GetListingTest()
-    {
-        DeviceData device = new()
+        [Fact]
+        public void StatTest()
         {
-            Serial = "169.254.109.177:5555",
-            State = DeviceState.Online
-        };
-
-        List<FileStatistics> value = null;
-
-        RunTest(
-            OkResponses(2),
-            ResponseMessages(".", "..", "sdcard0", "emulated"),
-            Requests("host:transport:169.254.109.177:5555", "sync:"),
-            SyncRequests(SyncCommand.LIST, "/storage"),
-            new SyncCommand[] { SyncCommand.DENT, SyncCommand.DENT, SyncCommand.DENT, SyncCommand.DENT, SyncCommand.DONE },
-            new byte[][]
+            DeviceData device = new()
             {
+                Serial = "169.254.109.177:5555",
+                State = DeviceState.Online
+            };
+
+            FileStatistics value = null;
+
+            RunTest(
+                OkResponses(2),
+                NoResponseMessages,
+                Requests("host:transport:169.254.109.177:5555", "sync:"),
+                SyncRequests(SyncCommand.STAT, "/fstab.donatello"),
+                new SyncCommand[] { SyncCommand.STAT },
+                new byte[][] { new byte[] { 160, 129, 0, 0, 85, 2, 0, 0, 0, 0, 0, 0 } },
+                null,
+                () =>
+                {
+                    using SyncService service = new(Socket, device);
+                    value = service.Stat("/fstab.donatello");
+                });
+
+            Assert.NotNull(value);
+            Assert.Equal(UnixFileMode.Regular, value.FileMode & UnixFileMode.TypeMask);
+            Assert.Equal(597, value.Size);
+            Assert.Equal(DateTimeHelper.Epoch.ToLocalTime(), value.Time);
+        }
+
+        [Fact]
+        public void GetListingTest()
+        {
+            DeviceData device = new()
+            {
+                Serial = "169.254.109.177:5555",
+                State = DeviceState.Online
+            };
+
+            List<FileStatistics> value = null;
+
+            RunTest(
+                OkResponses(2),
+                ResponseMessages(".", "..", "sdcard0", "emulated"),
+                Requests("host:transport:169.254.109.177:5555", "sync:"),
+                SyncRequests(SyncCommand.LIST, "/storage"),
+                new SyncCommand[] { SyncCommand.DENT, SyncCommand.DENT, SyncCommand.DENT, SyncCommand.DENT, SyncCommand.DONE },
+                new byte[][]
+                {
                 new byte[] { 233, 65, 0, 0, 0, 0, 0, 0, 152, 130, 56, 86 },
                 new byte[] { 237, 65, 0, 0, 0, 0, 0, 0, 152, 130, 56, 86 },
                 new byte[] { 255, 161, 0, 0, 24, 0, 0, 0, 152, 130, 56, 86 },
                 new byte[] { 109, 65, 0, 0, 0, 0, 0, 0, 152, 130, 56, 86 }
-            },
-            null,
-            () =>
-            {
-                using SyncService service = new(Socket, device);
-                value = service.GetDirectoryListing("/storage").ToList();
-            });
+                },
+                null,
+                () =>
+                {
+                    using SyncService service = new(Socket, device);
+                    value = service.GetDirectoryListing("/storage").ToList();
+                });
 
-        Assert.Equal(4, value.Count);
+            Assert.Equal(4, value.Count);
 
-        DateTime time = new DateTime(2015, 11, 3, 9, 47, 4, DateTimeKind.Utc).ToLocalTime();
+            DateTime time = new DateTime(2015, 11, 3, 9, 47, 4, DateTimeKind.Utc).ToLocalTime();
 
-        FileStatistics dir = value[0];
-        Assert.Equal(".", dir.Path);
-        Assert.Equal((UnixFileMode)16873, dir.FileMode);
-        Assert.Equal(0, dir.Size);
-        Assert.Equal(time, dir.Time);
+            FileStatistics dir = value[0];
+            Assert.Equal(".", dir.Path);
+            Assert.Equal((UnixFileMode)16873, dir.FileMode);
+            Assert.Equal(0, dir.Size);
+            Assert.Equal(time, dir.Time);
 
-        FileStatistics parentDir = value[1];
-        Assert.Equal("..", parentDir.Path);
-        Assert.Equal((UnixFileMode)16877, parentDir.FileMode);
-        Assert.Equal(0, parentDir.Size);
-        Assert.Equal(time, parentDir.Time);
+            FileStatistics parentDir = value[1];
+            Assert.Equal("..", parentDir.Path);
+            Assert.Equal((UnixFileMode)16877, parentDir.FileMode);
+            Assert.Equal(0, parentDir.Size);
+            Assert.Equal(time, parentDir.Time);
 
-        FileStatistics sdcard0 = value[2];
-        Assert.Equal("sdcard0", sdcard0.Path);
-        Assert.Equal((UnixFileMode)41471, sdcard0.FileMode);
-        Assert.Equal(24, sdcard0.Size);
-        Assert.Equal(time, sdcard0.Time);
+            FileStatistics sdcard0 = value[2];
+            Assert.Equal("sdcard0", sdcard0.Path);
+            Assert.Equal((UnixFileMode)41471, sdcard0.FileMode);
+            Assert.Equal(24, sdcard0.Size);
+            Assert.Equal(time, sdcard0.Time);
 
-        FileStatistics emulated = value[3];
-        Assert.Equal("emulated", emulated.Path);
-        Assert.Equal((UnixFileMode)16749, emulated.FileMode);
-        Assert.Equal(0, emulated.Size);
-        Assert.Equal(time, emulated.Time);
-    }
+            FileStatistics emulated = value[3];
+            Assert.Equal("emulated", emulated.Path);
+            Assert.Equal((UnixFileMode)16749, emulated.FileMode);
+            Assert.Equal(0, emulated.Size);
+            Assert.Equal(time, emulated.Time);
+        }
 
-    [Fact]
-    public void PullTest()
-    {
-        DeviceData device = new()
+        [Fact]
+        public void PullTest()
         {
-            Serial = "169.254.109.177:5555",
-            State = DeviceState.Online
-        };
-
-        MemoryStream stream = new();
-        byte[] content = File.ReadAllBytes("fstab.bin");
-        byte[] contentLength = BitConverter.GetBytes(content.Length);
-
-        RunTest(
-            OkResponses(2),
-            ResponseMessages(),
-            Requests("host:transport:169.254.109.177:5555", "sync:"),
-            SyncRequests(SyncCommand.STAT, "/fstab.donatello").Union(SyncRequests(SyncCommand.RECV, "/fstab.donatello")),
-            new SyncCommand[] { SyncCommand.STAT, SyncCommand.DATA, SyncCommand.DONE },
-            new byte[][]
+            DeviceData device = new()
             {
+                Serial = "169.254.109.177:5555",
+                State = DeviceState.Online
+            };
+
+            MemoryStream stream = new();
+            byte[] content = File.ReadAllBytes("fstab.bin");
+            byte[] contentLength = BitConverter.GetBytes(content.Length);
+
+            RunTest(
+                OkResponses(2),
+                ResponseMessages(),
+                Requests("host:transport:169.254.109.177:5555", "sync:"),
+                SyncRequests(SyncCommand.STAT, "/fstab.donatello").Union(SyncRequests(SyncCommand.RECV, "/fstab.donatello")),
+                new SyncCommand[] { SyncCommand.STAT, SyncCommand.DATA, SyncCommand.DONE },
+                new byte[][]
+                {
                 new byte[] { 160, 129, 0, 0, 85, 2, 0, 0, 0, 0, 0, 0 },
                 contentLength,
                 content
-            },
-            null,
-            () =>
-            {
-                using SyncService service = new(Socket, device);
-                service.Pull("/fstab.donatello", stream, null, CancellationToken.None);
-            });
+                },
+                null,
+                () =>
+                {
+                    using SyncService service = new(Socket, device);
+                    service.Pull("/fstab.donatello", stream, null, CancellationToken.None);
+                });
 
-        // Make sure the data that has been sent to the stream is the expected data
-        Assert.Equal(content, stream.ToArray());
-    }
+            // Make sure the data that has been sent to the stream is the expected data
+            Assert.Equal(content, stream.ToArray());
+        }
 
-    [Fact]
-    public void PushTest()
-    {
-        DeviceData device = new()
+        [Fact]
+        public void PushTest()
         {
-            Serial = "169.254.109.177:5555",
-            State = DeviceState.Online
-        };
-
-        Stream stream = File.OpenRead("fstab.bin");
-        byte[] content = File.ReadAllBytes("fstab.bin");
-        List<byte> contentMessage = new List<byte>();
-        contentMessage.AddRange(SyncCommandConverter.GetBytes(SyncCommand.DATA));
-        contentMessage.AddRange(BitConverter.GetBytes(content.Length));
-        contentMessage.AddRange(content);
-
-        RunTest(
-            OkResponses(2),
-            ResponseMessages(),
-            Requests("host:transport:169.254.109.177:5555", "sync:"),
-            SyncRequests(
-                SyncCommand.SEND, "/sdcard/test,644",
-                SyncCommand.DONE, "1446505200"),
-            new SyncCommand[] { SyncCommand.OKAY },
-            null,
-            new byte[][]
+            DeviceData device = new()
             {
+                Serial = "169.254.109.177:5555",
+                State = DeviceState.Online
+            };
+
+            Stream stream = File.OpenRead("fstab.bin");
+            byte[] content = File.ReadAllBytes("fstab.bin");
+            List<byte> contentMessage = new List<byte>();
+            contentMessage.AddRange(SyncCommandConverter.GetBytes(SyncCommand.DATA));
+            contentMessage.AddRange(BitConverter.GetBytes(content.Length));
+            contentMessage.AddRange(content);
+
+            RunTest(
+                OkResponses(2),
+                ResponseMessages(),
+                Requests("host:transport:169.254.109.177:5555", "sync:"),
+                SyncRequests(
+                    SyncCommand.SEND, "/sdcard/test,644",
+                    SyncCommand.DONE, "1446505200"),
+                new SyncCommand[] { SyncCommand.OKAY },
+                null,
+                new byte[][]
+                {
                 contentMessage.ToArray()
-            },
-            () =>
-            {
-                using SyncService service = new(Socket, device);
-                service.Push(stream, "/sdcard/test", 0644, new DateTime(2015, 11, 2, 23, 0, 0, DateTimeKind.Utc), null, CancellationToken.None);
-            });
+                },
+                () =>
+                {
+                    using SyncService service = new(Socket, device);
+                    service.Push(stream, "/sdcard/test", 0644, new DateTime(2015, 11, 2, 23, 0, 0, DateTimeKind.Utc), null, CancellationToken.None);
+                });
+        }
     }
 }

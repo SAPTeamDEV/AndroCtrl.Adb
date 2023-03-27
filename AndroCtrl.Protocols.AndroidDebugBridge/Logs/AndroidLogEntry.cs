@@ -4,26 +4,26 @@
 
 using System.Collections.Generic;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs;
-
-/// <summary>
-/// Represents a standard Android log entry (an entry in any Android log buffer
-/// except the Event buffer).
-/// </summary>
-/// <seealso href="https://android.googlesource.com/platform/system/core/+/master/liblog/logprint.c#442"/>
-public class AndroidLogEntry : LogEntry
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
 {
     /// <summary>
-    /// Maps Android log priorities to chars used to represent them in the system log.
+    /// Represents a standard Android log entry (an entry in any Android log buffer
+    /// except the Event buffer).
     /// </summary>
-    private static readonly Dictionary<Priority, char> PriorityFormatters;
-
-    /// <summary>
-    /// Initializes static members of the <see cref="AndroidLogEntry"/> class.
-    /// </summary>
-    static AndroidLogEntry()
+    /// <seealso href="https://android.googlesource.com/platform/system/core/+/master/liblog/logprint.c#442"/>
+    public class AndroidLogEntry : LogEntry
     {
-        PriorityFormatters = new Dictionary<Priority, char>
+        /// <summary>
+        /// Maps Android log priorities to chars used to represent them in the system log.
+        /// </summary>
+        private static readonly Dictionary<Priority, char> PriorityFormatters;
+
+        /// <summary>
+        /// Initializes static members of the <see cref="AndroidLogEntry"/> class.
+        /// </summary>
+        static AndroidLogEntry()
+        {
+            PriorityFormatters = new Dictionary<Priority, char>
         {
             { Priority.Verbose, 'V' },
             { Priority.Debug, 'D' },
@@ -32,53 +32,54 @@ public class AndroidLogEntry : LogEntry
             { Priority.Error, 'E' },
             { Priority.Assert, 'A' }
         };
-    }
+        }
 
-    /// <summary>
-    /// Gets or sets the priority of the log message.
-    /// </summary>
-    public Priority Priority
-    {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets the priority of the log message.
+        /// </summary>
+        public Priority Priority
+        {
+            get;
+            set;
+        }
 
-    /// <summary>
-    /// Gets or sets the log tag of the message. Used to identify the source of a log message.
-    /// It usually identifies the class or activity where the log call occured.
-    /// </summary>
-    public string Tag
-    {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets the log tag of the message. Used to identify the source of a log message.
+        /// It usually identifies the class or activity where the log call occured.
+        /// </summary>
+        public string Tag
+        {
+            get;
+            set;
+        }
 
-    /// <summary>
-    /// Gets or sets the message that has been logged.
-    /// </summary>
-    public string Message
-    {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets the message that has been logged.
+        /// </summary>
+        public string Message
+        {
+            get;
+            set;
+        }
 
-    /// <inheritdoc/>
-    public override string ToString()
-    {
-        return $"{TimeStamp:yy-MM HH:mm:ss.fff} {ProcessId,5} {ProcessId,5} {FormatPriority(Priority)} {Tag,-8}: {Message}";
-    }
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $"{TimeStamp:yy-MM HH:mm:ss.fff} {ProcessId,5} {ProcessId,5} {FormatPriority(Priority)} {Tag,-8}: {Message}";
+        }
 
-    /// <summary>
-    /// Converts a <see cref="Priority"/> value to a char that represents that value in the system log.
-    /// </summary>
-    /// <param name="value">
-    /// The value to convert.
-    /// </param>
-    /// <returns>
-    /// A <see cref="char"/> that represents <paramref name="value"/> in the sysem log.
-    /// </returns>
-    private static char FormatPriority(Priority value)
-    {
-        return PriorityFormatters == null || !PriorityFormatters.ContainsKey(value) ? '?' : PriorityFormatters[value];
+        /// <summary>
+        /// Converts a <see cref="Priority"/> value to a char that represents that value in the system log.
+        /// </summary>
+        /// <param name="value">
+        /// The value to convert.
+        /// </param>
+        /// <returns>
+        /// A <see cref="char"/> that represents <paramref name="value"/> in the sysem log.
+        /// </returns>
+        private static char FormatPriority(Priority value)
+        {
+            return PriorityFormatters == null || !PriorityFormatters.ContainsKey(value) ? '?' : PriorityFormatters[value];
+        }
     }
 }

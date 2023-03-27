@@ -1,19 +1,20 @@
 ﻿using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests;
-
-public class ForwardDataTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
 {
-    [Fact]
-    public void SpecTests()
+    public class ForwardDataTests
     {
-        ForwardData data = new()
+        [Fact]
+        public void SpecTests()
         {
-            Local = "tcp:1234",
-            Remote = "tcp:4321"
-        };
+            ForwardData data = new()
+            {
+                Local = "tcp:1234",
+                Remote = "tcp:4321"
+            };
 
-        Assert.Equal("tcp:1234", data.LocalSpec.ToString());
-        Assert.Equal("tcp:4321", data.RemoteSpec.ToString());
+            Assert.Equal("tcp:1234", data.LocalSpec.ToString());
+            Assert.Equal("tcp:4321", data.RemoteSpec.ToString());
+        }
     }
 }

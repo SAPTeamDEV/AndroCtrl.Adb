@@ -2,33 +2,34 @@
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions;
-
-public class PermissionDeniedExceptionTests
+namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
 {
-    [Fact]
-    public void TestEmptyConstructor()
+    public class PermissionDeniedExceptionTests
     {
-        ExceptionTester<PermissionDeniedException>.TestEmptyConstructor(() => new PermissionDeniedException());
-    }
+        [Fact]
+        public void TestEmptyConstructor()
+        {
+            ExceptionTester<PermissionDeniedException>.TestEmptyConstructor(() => new PermissionDeniedException());
+        }
 
-    [Fact]
-    public void TestMessageConstructor()
-    {
-        ExceptionTester<PermissionDeniedException>.TestMessageConstructor((message) => new PermissionDeniedException(message));
-    }
+        [Fact]
+        public void TestMessageConstructor()
+        {
+            ExceptionTester<PermissionDeniedException>.TestMessageConstructor((message) => new PermissionDeniedException(message));
+        }
 
-    [Fact]
-    public void TestMessageAndInnerConstructor()
-    {
-        ExceptionTester<PermissionDeniedException>.TestMessageAndInnerConstructor((message, inner) => new PermissionDeniedException(message, inner));
-    }
+        [Fact]
+        public void TestMessageAndInnerConstructor()
+        {
+            ExceptionTester<PermissionDeniedException>.TestMessageAndInnerConstructor((message, inner) => new PermissionDeniedException(message, inner));
+        }
 
 #if !NETCOREAPP1_1
-    [Fact]
-    public void TestSerializationConstructor()
-    {
-        ExceptionTester<PermissionDeniedException>.TestSerializationConstructor((info, context) => new PermissionDeniedException(info, context));
-    }
+        [Fact]
+        public void TestSerializationConstructor()
+        {
+            ExceptionTester<PermissionDeniedException>.TestSerializationConstructor((info, context) => new PermissionDeniedException(info, context));
+        }
 #endif
+    }
 }

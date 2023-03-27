@@ -14,324 +14,326 @@ using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge;
-/// <summary>
-/// <para>
-///     A Device monitor. This connects to the Android Debug Bridge and get device and
-///     debuggable process information from it.
-/// </para>
-/// </summary>
-/// <example>
-/// <para>
-///     To receive notifications when devices connect to or disconnect from your PC, you can use the following code:
-/// </para>
-/// <code>
-/// void Test()
-/// {
-///     var monitor = new DeviceMonitor(new AdbSocket());
-///     monitor.DeviceConnected += this.OnDeviceConnected;
-///     monitor.Start();
-/// }
-///
-/// void OnDeviceConnected(object sender, DeviceDataEventArgs e)
-/// {
-///     Console.WriteLine($"The device {e.Device.Name} has connected to this PC");
-/// }
-/// </code>
-/// </example>
-public class DeviceMonitor : IDeviceMonitor, IDisposable
+namespace AndroCtrl.Protocols.AndroidDebugBridge
 {
     /// <summary>
-    /// The logger to use when logging messages.
+    /// <para>
+    ///     A Device monitor. This connects to the Android Debug Bridge and get device and
+    ///     debuggable process information from it.
+    /// </para>
     /// </summary>
-    private readonly ILogger<DeviceMonitor> logger;
-
-    /// <summary>
-    /// The list of devices currently connected to the Android Debug Bridge.
-    /// </summary>
-    private readonly List<DeviceData> devices;
-
-    /// <summary>
-    /// When the <see cref="Start"/> method is called, this <see cref="ManualResetEvent"/>
-    /// is used to block the <see cref="Start"/> method until the <see cref="DeviceMonitorLoopAsync"/>
-    /// has processed the first list of devices.
-    /// </summary>
-    private readonly ManualResetEvent firstDeviceListParsed = new(false);
-
-    /// <summary>
-    /// A <see cref="CancellationToken"/> that can be used to cancel the <see cref="monitorTask"/>.
-    /// </summary>
-    private readonly CancellationTokenSource monitorTaskCancellationTokenSource = new();
-
-    /// <summary>
-    /// The <see cref="Task"/> that monitors the <see cref="Socket"/> and waits for device notifications.
-    /// </summary>
-    private Task monitorTask;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DeviceMonitor"/> class.
-    /// </summary>
-    /// <param name="socket">
-    /// The <see cref="IAdbSocket"/> that manages the connection with the adb server.
-    /// </param>
-    /// <param name="logger">
-    /// The logger to use when logging.
-    /// </param>
-    public DeviceMonitor(IAdbSocket socket, ILogger<DeviceMonitor> logger = null)
+    /// <example>
+    /// <para>
+    ///     To receive notifications when devices connect to or disconnect from your PC, you can use the following code:
+    /// </para>
+    /// <code>
+    /// void Test()
+    /// {
+    ///     var monitor = new DeviceMonitor(new AdbSocket());
+    ///     monitor.DeviceConnected += this.OnDeviceConnected;
+    ///     monitor.Start();
+    /// }
+    ///
+    /// void OnDeviceConnected(object sender, DeviceDataEventArgs e)
+    /// {
+    ///     Console.WriteLine($"The device {e.Device.Name} has connected to this PC");
+    /// }
+    /// </code>
+    /// </example>
+    public class DeviceMonitor : IDeviceMonitor, IDisposable
     {
-        Socket = socket ?? throw new ArgumentNullException(nameof(socket));
-        devices = new List<DeviceData>();
-        Devices = devices.AsReadOnly();
-        this.logger = logger ?? NullLogger<DeviceMonitor>.Instance;
-    }
+        /// <summary>
+        /// The logger to use when logging messages.
+        /// </summary>
+        private readonly ILogger<DeviceMonitor> logger;
 
-    /// <inheritdoc/>
-    public event EventHandler<DeviceDataEventArgs> DeviceChanged;
+        /// <summary>
+        /// The list of devices currently connected to the Android Debug Bridge.
+        /// </summary>
+        private readonly List<DeviceData> devices;
 
-    /// <inheritdoc/>
-    public event EventHandler<DeviceDataEventArgs> DeviceConnected;
+        /// <summary>
+        /// When the <see cref="Start"/> method is called, this <see cref="ManualResetEvent"/>
+        /// is used to block the <see cref="Start"/> method until the <see cref="DeviceMonitorLoopAsync"/>
+        /// has processed the first list of devices.
+        /// </summary>
+        private readonly ManualResetEvent firstDeviceListParsed = new(false);
 
-    /// <inheritdoc/>
-    public event EventHandler<DeviceDataEventArgs> DeviceDisconnected;
+        /// <summary>
+        /// A <see cref="CancellationToken"/> that can be used to cancel the <see cref="monitorTask"/>.
+        /// </summary>
+        private readonly CancellationTokenSource monitorTaskCancellationTokenSource = new();
 
-    /// <inheritdoc/>
-    public IReadOnlyCollection<DeviceData> Devices { get; private set; }
+        /// <summary>
+        /// The <see cref="Task"/> that monitors the <see cref="Socket"/> and waits for device notifications.
+        /// </summary>
+        private Task monitorTask;
 
-    /// <summary>
-    /// Gets the <see cref="IAdbSocket"/> that represents the connection to the
-    /// Android Debug Bridge.
-    /// </summary>
-    public IAdbSocket Socket { get; private set; }
-
-    /// <summary>
-    /// Gets a value indicating whether this instance is running.
-    /// </summary>
-    /// <value>
-    /// <see langword="true"/> if this instance is running; otherwise, <see langword="false"/>.
-    /// </value>
-    public bool IsRunning { get; private set; }
-
-    public bool IsListening { get; private set; }
-
-    /// <inheritdoc/>
-    public void Start()
-    {
-        IsListening = true;
-        if (monitorTask == null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeviceMonitor"/> class.
+        /// </summary>
+        /// <param name="socket">
+        /// The <see cref="IAdbSocket"/> that manages the connection with the adb server.
+        /// </param>
+        /// <param name="logger">
+        /// The logger to use when logging.
+        /// </param>
+        public DeviceMonitor(IAdbSocket socket, ILogger<DeviceMonitor> logger = null)
         {
-            firstDeviceListParsed.Reset();
-
-            monitorTask = Task.Run(() => DeviceMonitorLoopAsync(monitorTaskCancellationTokenSource.Token));
-
-            // Wait for the worker thread to have read the first list
-            // of devices.
-            firstDeviceListParsed.WaitOne();
-        }
-    }
-
-    /// <summary>
-    /// Stops the monitoring
-    /// </summary>
-    public void Dispose()
-    {
-        // First kill the monitor task, which has a dependency on the socket,
-        // then close the socket.
-        if (monitorTask != null)
-        {
-            IsRunning = false;
-
-            // Stop the thread. The tread will keep waiting for updated information from adb
-            // eternally, so we need to forcefully abort it here.
-            monitorTaskCancellationTokenSource.Cancel();
-            monitorTask.Wait();
-
-            monitorTask.Dispose();
-            monitorTask = null;
+            Socket = socket ?? throw new ArgumentNullException(nameof(socket));
+            devices = new List<DeviceData>();
+            Devices = devices.AsReadOnly();
+            this.logger = logger ?? NullLogger<DeviceMonitor>.Instance;
         }
 
-        // Close the connection to adb. To be done after the monitor task exited.
-        if (Socket != null)
+        /// <inheritdoc/>
+        public event EventHandler<DeviceDataEventArgs> DeviceChanged;
+
+        /// <inheritdoc/>
+        public event EventHandler<DeviceDataEventArgs> DeviceConnected;
+
+        /// <inheritdoc/>
+        public event EventHandler<DeviceDataEventArgs> DeviceDisconnected;
+
+        /// <inheritdoc/>
+        public IReadOnlyCollection<DeviceData> Devices { get; private set; }
+
+        /// <summary>
+        /// Gets the <see cref="IAdbSocket"/> that represents the connection to the
+        /// Android Debug Bridge.
+        /// </summary>
+        public IAdbSocket Socket { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is running.
+        /// </summary>
+        /// <value>
+        /// <see langword="true"/> if this instance is running; otherwise, <see langword="false"/>.
+        /// </value>
+        public bool IsRunning { get; private set; }
+
+        public bool IsListening { get; private set; }
+
+        /// <inheritdoc/>
+        public void Start()
         {
-            Socket.Dispose();
-            Socket = null;
-        }
-
-        firstDeviceListParsed.Dispose();
-        monitorTaskCancellationTokenSource.Dispose();
-    }
-
-    /// <summary>
-    /// Raises the <see cref="DeviceChanged"/> event.
-    /// </summary>
-    /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
-    protected void OnDeviceChanged(DeviceDataEventArgs e)
-    {
-        if (IsListening)
-        {
-            DeviceChanged?.Invoke(this, e);
-        }
-    }
-
-    /// <summary>
-    /// Raises the <see cref="DeviceConnected"/> event.
-    /// </summary>
-    /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
-    protected void OnDeviceConnected(DeviceDataEventArgs e)
-    {
-        if (IsListening)
-        {
-            DeviceConnected?.Invoke(this, e);
-        }
-    }
-
-    /// <summary>
-    /// Raises the <see cref="DeviceDisconnected"/> event.
-    /// </summary>
-    /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
-    protected void OnDeviceDisconnected(DeviceDataEventArgs e)
-    {
-        if (IsListening)
-        {
-            DeviceDisconnected?.Invoke(this, e);
-        }
-    }
-
-    /// <summary>
-    /// Monitors the devices. This connects to the Debug Bridge
-    /// </summary>
-    private async Task DeviceMonitorLoopAsync(CancellationToken cancellationToken)
-    {
-        IsRunning = true;
-
-        // Set up the connection to track the list of devices.
-        InitializeSocket();
-
-        do
-        {
-            try
+            IsListening = true;
+            if (monitorTask == null)
             {
-                string value = await Socket.ReadStringAsync(cancellationToken).ConfigureAwait(false);
-                ProcessIncomingDeviceData(value);
+                firstDeviceListParsed.Reset();
 
-                firstDeviceListParsed.Set();
+                monitorTask = Task.Run(() => DeviceMonitorLoopAsync(monitorTaskCancellationTokenSource.Token));
+
+                // Wait for the worker thread to have read the first list
+                // of devices.
+                firstDeviceListParsed.WaitOne();
             }
-            catch (TaskCanceledException ex)
+        }
+
+        /// <summary>
+        /// Stops the monitoring
+        /// </summary>
+        public void Dispose()
+        {
+            // First kill the monitor task, which has a dependency on the socket,
+            // then close the socket.
+            if (monitorTask != null)
             {
-                // We get a TaskCanceledException on Windows
-                if (cancellationToken.IsCancellationRequested)
+                IsRunning = false;
+
+                // Stop the thread. The tread will keep waiting for updated information from adb
+                // eternally, so we need to forcefully abort it here.
+                monitorTaskCancellationTokenSource.Cancel();
+                monitorTask.Wait();
+
+                monitorTask.Dispose();
+                monitorTask = null;
+            }
+
+            // Close the connection to adb. To be done after the monitor task exited.
+            if (Socket != null)
+            {
+                Socket.Dispose();
+                Socket = null;
+            }
+
+            firstDeviceListParsed.Dispose();
+            monitorTaskCancellationTokenSource.Dispose();
+        }
+
+        /// <summary>
+        /// Raises the <see cref="DeviceChanged"/> event.
+        /// </summary>
+        /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
+        protected void OnDeviceChanged(DeviceDataEventArgs e)
+        {
+            if (IsListening)
+            {
+                DeviceChanged?.Invoke(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="DeviceConnected"/> event.
+        /// </summary>
+        /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
+        protected void OnDeviceConnected(DeviceDataEventArgs e)
+        {
+            if (IsListening)
+            {
+                DeviceConnected?.Invoke(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="DeviceDisconnected"/> event.
+        /// </summary>
+        /// <param name="e">The <see cref="DeviceDataEventArgs"/> instance containing the event data.</param>
+        protected void OnDeviceDisconnected(DeviceDataEventArgs e)
+        {
+            if (IsListening)
+            {
+                DeviceDisconnected?.Invoke(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Monitors the devices. This connects to the Debug Bridge
+        /// </summary>
+        private async Task DeviceMonitorLoopAsync(CancellationToken cancellationToken)
+        {
+            IsRunning = true;
+
+            // Set up the connection to track the list of devices.
+            InitializeSocket();
+
+            do
+            {
+                try
                 {
-                    // The DeviceMonitor is shutting down (disposing) and Dispose()
-                    // has called cancellationToken.Cancel(). This exception is expected,
-                    // so we can safely swallow it.
+                    string value = await Socket.ReadStringAsync(cancellationToken).ConfigureAwait(false);
+                    ProcessIncomingDeviceData(value);
+
+                    firstDeviceListParsed.Set();
                 }
-                else
+                catch (TaskCanceledException ex)
+                {
+                    // We get a TaskCanceledException on Windows
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        // The DeviceMonitor is shutting down (disposing) and Dispose()
+                        // has called cancellationToken.Cancel(). This exception is expected,
+                        // so we can safely swallow it.
+                    }
+                    else
+                    {
+                        // The exception was unexpected, so log it & rethrow.
+                        logger.LogError(ex, ex.Message);
+                        throw;
+                    }
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    // ... but an ObjectDisposedException on .NET Core on Linux and macOS.
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        // The DeviceMonitor is shutting down (disposing) and Dispose()
+                        // has called cancellationToken.Cancel(). This exception is expected,
+                        // so we can safely swallow it.
+                    }
+                    else
+                    {
+                        // The exception was unexpected, so log it & rethrow.
+                        logger.LogError(ex, ex.Message);
+                        throw;
+                    }
+                }
+                catch (AdbException adbException)
+                {
+                    if (adbException.ConnectionReset)
+                    {
+                        // The adb server was killed, for whatever reason. Try to restart it and recover from this.
+                        AdbServer.Instance.RestartServer();
+                        Socket.Reconnect();
+                        InitializeSocket();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                catch (Exception ex)
                 {
                     // The exception was unexpected, so log it & rethrow.
                     logger.LogError(ex, ex.Message);
                     throw;
                 }
             }
-            catch (ObjectDisposedException ex)
-            {
-                // ... but an ObjectDisposedException on .NET Core on Linux and macOS.
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    // The DeviceMonitor is shutting down (disposing) and Dispose()
-                    // has called cancellationToken.Cancel(). This exception is expected,
-                    // so we can safely swallow it.
-                }
-                else
-                {
-                    // The exception was unexpected, so log it & rethrow.
-                    logger.LogError(ex, ex.Message);
-                    throw;
-                }
-            }
-            catch (AdbException adbException)
-            {
-                if (adbException.ConnectionReset)
-                {
-                    // The adb server was killed, for whatever reason. Try to restart it and recover from this.
-                    AdbServer.Instance.RestartServer();
-                    Socket.Reconnect();
-                    InitializeSocket();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            catch (Exception ex)
-            {
-                // The exception was unexpected, so log it & rethrow.
-                logger.LogError(ex, ex.Message);
-                throw;
-            }
+            while (!cancellationToken.IsCancellationRequested);
         }
-        while (!cancellationToken.IsCancellationRequested);
-    }
 
-    private void InitializeSocket()
-    {
-        // Set up the connection to track the list of devices.
-        Socket.SendAdbRequest("host:track-devices");
-        Socket.ReadAdbResponse();
-    }
-
-    /// <summary>
-    /// Processes the incoming device data.
-    /// </summary>
-    private void ProcessIncomingDeviceData(string result)
-    {
-        List<DeviceData> list = new();
-
-        string[] deviceValues = result.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-        List<DeviceData> currentDevices = deviceValues.Select(d => DeviceData.CreateFromAdbData(d)).ToList();
-        UpdateDevices(currentDevices);
-    }
-
-    private void UpdateDevices(List<DeviceData> devices)
-    {
-        lock (this.devices)
+        private void InitializeSocket()
         {
-            // For each device in the current list, we look for a matching the new list.
-            // * if we find it, we update the current object with whatever new information
-            //   there is
-            //   (mostly state change, if the device becomes ready, we query for build info).
-            //   We also remove the device from the new list to mark it as "processed"
-            // * if we do not find it, we remove it from the current list.
-            // Once this is done, the new list contains device we aren't monitoring yet, so we
-            // add them to the list, and start monitoring them.
+            // Set up the connection to track the list of devices.
+            Socket.SendAdbRequest("host:track-devices");
+            Socket.ReadAdbResponse();
+        }
 
-            // Add or update existing devices
-            foreach (DeviceData device in devices)
+        /// <summary>
+        /// Processes the incoming device data.
+        /// </summary>
+        private void ProcessIncomingDeviceData(string result)
+        {
+            List<DeviceData> list = new();
+
+            string[] deviceValues = result.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            List<DeviceData> currentDevices = deviceValues.Select(d => DeviceData.CreateFromAdbData(d)).ToList();
+            UpdateDevices(currentDevices);
+        }
+
+        private void UpdateDevices(List<DeviceData> devices)
+        {
+            lock (this.devices)
             {
-                DeviceData existingDevice = Devices.SingleOrDefault(d => d.Serial == device.Serial);
+                // For each device in the current list, we look for a matching the new list.
+                // * if we find it, we update the current object with whatever new information
+                //   there is
+                //   (mostly state change, if the device becomes ready, we query for build info).
+                //   We also remove the device from the new list to mark it as "processed"
+                // * if we do not find it, we remove it from the current list.
+                // Once this is done, the new list contains device we aren't monitoring yet, so we
+                // add them to the list, and start monitoring them.
 
-                if (existingDevice == null)
+                // Add or update existing devices
+                foreach (DeviceData device in devices)
                 {
-                    this.devices.Add(device);
-                    OnDeviceConnected(new DeviceDataEventArgs(device));
-                }
-                else
-                {
-                    existingDevice.State = device.State;
-                    OnDeviceChanged(new DeviceDataEventArgs(existingDevice));
-                }
-            }
+                    DeviceData existingDevice = Devices.SingleOrDefault(d => d.Serial == device.Serial);
 
-            // Remove devices
-            foreach (DeviceData device in Devices.Where(d => !devices.Any(e => e.Serial == d.Serial)).ToArray())
-            {
-                this.devices.Remove(device);
-                OnDeviceDisconnected(new DeviceDataEventArgs(device));
+                    if (existingDevice == null)
+                    {
+                        this.devices.Add(device);
+                        OnDeviceConnected(new DeviceDataEventArgs(device));
+                    }
+                    else
+                    {
+                        existingDevice.State = device.State;
+                        OnDeviceChanged(new DeviceDataEventArgs(existingDevice));
+                    }
+                }
+
+                // Remove devices
+                foreach (DeviceData device in Devices.Where(d => !devices.Any(e => e.Serial == d.Serial)).ToArray())
+                {
+                    this.devices.Remove(device);
+                    OnDeviceDisconnected(new DeviceDataEventArgs(device));
+                }
             }
         }
-    }
 
-    public void Stop()
-    {
-        IsListening = false;
+        public void Stop()
+        {
+            IsListening = false;
+        }
     }
 }
