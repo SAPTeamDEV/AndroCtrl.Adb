@@ -238,21 +238,42 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
         {
             byte[] data = await ReadBytesSafeAsync(2, cancellationToken).ConfigureAwait(false);
 
-            return data == null ? null : BitConverter.ToUInt16(data, 0);
+            if (data == null)
+            {
+                return null;
+            }
+            else
+            {
+                return BitConverter.ToUInt16(data, 0);
+            }
         }
 
         private async Task<uint?> ReadUInt32Async(CancellationToken cancellationToken)
         {
             byte[] data = await ReadBytesSafeAsync(4, cancellationToken).ConfigureAwait(false);
 
-            return data == null ? null : BitConverter.ToUInt32(data, 0);
+            if (data == null)
+            {
+                return null;
+            }
+            else
+            {
+                return BitConverter.ToUInt32(data, 0);
+            }
         }
 
         private async Task<int?> ReadInt32Async(CancellationToken cancellationToken)
         {
             byte[] data = await ReadBytesSafeAsync(4, cancellationToken).ConfigureAwait(false);
 
-            return data == null ? null : BitConverter.ToInt32(data, 0);
+            if (data == null)
+            {
+                return null;
+            }
+            else
+            {
+                return BitConverter.ToInt32(data, 0);
+            }
         }
 
         private async Task<byte[]> ReadBytesSafeAsync(int count, CancellationToken cancellationToken)
@@ -261,7 +282,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
             byte[] data = new byte[count];
 
             int read;
-            while ((read = await stream.ReadAsync(data.AsMemory(totalRead, count - totalRead), cancellationToken).ConfigureAwait(false)) > 0)
+            while ((read = await stream.ReadAsync(data, totalRead, count - totalRead, cancellationToken).ConfigureAwait(false)) > 0)
             {
                 totalRead += read;
             }

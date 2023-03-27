@@ -186,13 +186,13 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
             if (pendingByte != null)
             {
                 buffer[offset] = pendingByte.Value;
-                read = await Inner.ReadAsync(buffer.AsMemory(offset + 1, count - 1), cancellationToken).ConfigureAwait(false);
+                read = await Inner.ReadAsync(buffer, offset + 1, count - 1, cancellationToken).ConfigureAwait(false);
                 read++;
                 pendingByte = null;
             }
             else
             {
-                read = await Inner.ReadAsync(buffer.AsMemory(offset, count), cancellationToken).ConfigureAwait(false);
+                read = await Inner.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             }
 
             byte[] minibuffer = new byte[1];
@@ -225,7 +225,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
                         continue;
                     }
 
-                    int miniRead = await Inner.ReadAsync(minibuffer.AsMemory(0, 1), cancellationToken).ConfigureAwait(false);
+                    int miniRead = await Inner.ReadAsync(minibuffer, 0, 1, cancellationToken).ConfigureAwait(false);
 
                     if (miniRead == 0)
                     {
@@ -245,7 +245,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
             // we need to read one more byte from the inner stream.
             if (read > 0 && buffer[offset + read - 1] == 0x0d)
             {
-                _ = await Inner.ReadAsync(minibuffer.AsMemory(0, 1), cancellationToken).ConfigureAwait(false);
+                _ = await Inner.ReadAsync(minibuffer, 0, 1, cancellationToken).ConfigureAwait(false);
                 int nextByte = minibuffer[0];
 
                 if (nextByte == 0x0a)

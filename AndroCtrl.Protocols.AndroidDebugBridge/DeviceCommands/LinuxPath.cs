@@ -64,7 +64,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
                         capacity += paths[i].Length;
                     }
 
-                    char ch = paths[i][^1];
+                    char ch = paths[i].Last();
                     if (ch != DirectorySeparatorChar)
                     {
                         capacity++;
@@ -83,7 +83,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
                     }
                     else
                     {
-                        char ch2 = builder[^1];
+                        char ch2 = builder[builder.Length - 1];
                         if (ch2 != DirectorySeparatorChar)
                         {
                             builder.Append(DirectorySeparatorChar);
@@ -114,10 +114,10 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
                 {
                     if (tpath.EndsWith(new string(new char[] { DirectorySeparatorChar })))
                     {
-                        return tpath[..];
+                        return tpath.Substring(0, tpath.Length);
                     }
 
-                    tpath = tpath[..(tpath.LastIndexOf(DirectorySeparatorChar) + 1)];
+                    tpath = tpath.Substring(0, tpath.LastIndexOf(DirectorySeparatorChar) + 1);
 
                     return FixupPath(tpath);
                 }

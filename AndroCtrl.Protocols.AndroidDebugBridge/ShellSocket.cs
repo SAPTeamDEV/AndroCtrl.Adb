@@ -229,7 +229,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             foreach (var receiver in receivers)
             {
-                foreach (var line in result.Split(Environment.NewLine))
+                foreach (var line in result.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     receiver.AddOutput(line);
                 }

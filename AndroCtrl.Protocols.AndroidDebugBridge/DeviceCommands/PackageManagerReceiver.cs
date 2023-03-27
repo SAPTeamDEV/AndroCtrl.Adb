@@ -56,7 +56,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
                     // package:mwc2015.be
 
                     // Remove the "package:" prefix
-                    string package = line[8..];
+                    string package = line.Substring(8);
 
                     // If there's a '=' included, use the last instance,
                     // to accomodate for values like
@@ -71,8 +71,8 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
                     }
                     else
                     {
-                        string path = package[..separator];
-                        string name = package[(separator + 1)..];
+                        string path = package.Substring(0, separator);
+                        string name = package.Substring(separator + 1);
 
                         PackageManager.Packages.Add(name, path);
                     }

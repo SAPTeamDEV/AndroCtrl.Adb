@@ -116,7 +116,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 
             if (cmdLinePrefix)
             {
-                string[] cmdLineParts = line[..processNameStart].Split(new char[] { '\0' });
+                string[] cmdLineParts = line.Substring(0, processNameStart).Split(new char[] { '\0' });
 
                 if (cmdLineParts.Length <= 1)
                 {
@@ -124,7 +124,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
                 }
                 else
                 {
-                    pid = int.Parse(cmdLineParts[^1]);
+                    pid = int.Parse(cmdLineParts[cmdLineParts.Length - 1]);
                     comm = cmdLineParts[0];
 
                     // All the other parts are the command line arguments, skip them.
@@ -134,11 +134,11 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
 
             if (!parsedCmdLinePrefix)
             {
-                pid = int.Parse(line[..processNameStart]);
+                pid = int.Parse(line.Substring(0, processNameStart));
                 comm = line.Substring(processNameStart + 1, processNameEnd - processNameStart - 1);
             }
 
-            string[] parts = line[(processNameEnd + 1)..].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = line.Substring(processNameEnd + 1).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length < 35)
             {

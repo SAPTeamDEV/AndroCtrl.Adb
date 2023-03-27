@@ -80,7 +80,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         {
             CheckPackagesSection(line);
 
-            return !inPackagesSection ? null : line != null && line.Trim().StartsWith("versionName=") ? line.Trim()[12..].Trim() : (object)null;
+            return !inPackagesSection ? null : line != null && line.Trim().StartsWith("versionName=") ? line.Trim().Substring(12).Trim() : (object)null;
         }
 
         /// <summary>
@@ -105,7 +105,14 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
             // versionCode=4 minSdk=9 targetSdk=22
             string versionCodeRegex = @"versionCode=(\d*)( minSdk=(\d*))?( targetSdk=(\d*))?$";
             Match match = Regex.Match(line, versionCodeRegex);
-            return match.Success ? int.Parse(match.Groups[1].Value.Trim()) : null;
+            if (match.Success)
+            {
+                return int.Parse(match.Groups[1].Value.Trim());
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
