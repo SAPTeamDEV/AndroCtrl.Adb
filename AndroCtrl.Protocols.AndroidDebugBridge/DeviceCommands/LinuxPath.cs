@@ -72,7 +72,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
                 }
             }
 
-            StringBuilder builder = new(capacity);
+            StringBuilder builder = new StringBuilder(capacity);
             for (int j = num2; j < paths.Length; j++)
             {
                 if (paths[j].Length != 0)

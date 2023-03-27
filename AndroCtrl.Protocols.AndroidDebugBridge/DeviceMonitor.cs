@@ -57,12 +57,12 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// is used to block the <see cref="Start"/> method until the <see cref="DeviceMonitorLoopAsync"/>
         /// has processed the first list of devices.
         /// </summary>
-        private readonly ManualResetEvent firstDeviceListParsed = new(false);
+        private readonly ManualResetEvent firstDeviceListParsed = new ManualResetEvent(false);
 
         /// <summary>
         /// A <see cref="CancellationToken"/> that can be used to cancel the <see cref="monitorTask"/>.
         /// </summary>
-        private readonly CancellationTokenSource monitorTaskCancellationTokenSource = new();
+        private readonly CancellationTokenSource monitorTaskCancellationTokenSource = new CancellationTokenSource();
 
         /// <summary>
         /// The <see cref="Task"/> that monitors the <see cref="Socket"/> and waits for device notifications.
@@ -284,7 +284,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// </summary>
         private void ProcessIncomingDeviceData(string result)
         {
-            List<DeviceData> list = new();
+            List<DeviceData> list = new List<DeviceData>();
 
             string[] deviceValues = result.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 

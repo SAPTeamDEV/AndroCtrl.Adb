@@ -32,7 +32,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
         /// <summary>
         /// A <see cref="StringBuilder"/> which receives all output from the device.
         /// </summary>
-        private readonly StringBuilder output = new();
+        private readonly StringBuilder output = new StringBuilder();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleOutputReceiver"/> class.

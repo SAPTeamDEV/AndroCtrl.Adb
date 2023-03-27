@@ -86,36 +86,38 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         {
             EnsureNotDisposed();
 
-            using IAdbSocket socket = Factories.AdbSocketFactory(client.EndPoint);
-            // Select the target device
-            socket.SetDevice(Device);
-
-            // Send the framebuffer command
-            socket.SendAdbRequest("framebuffer:");
-            socket.ReadAdbResponse();
-
-            // The result first is a FramebufferHeader object,
-            await socket.ReadAsync(headerData, cancellationToken).ConfigureAwait(false);
-
-            if (!headerInitialized)
+            using (IAdbSocket socket = Factories.AdbSocketFactory(client.EndPoint))
             {
-                Header = FramebufferHeader.Read(headerData);
-                headerInitialized = true;
-            }
+                // Select the target device
+                socket.SetDevice(Device);
 
-            if (Data == null || Data.Length < Header.Size)
-            {
-                // Optimization on .NET Core: Use the BufferPool to rent buffers
-                if (Data != null)
+                // Send the framebuffer command
+                socket.SendAdbRequest("framebuffer:");
+                socket.ReadAdbResponse();
+
+                // The result first is a FramebufferHeader object,
+                await socket.ReadAsync(headerData, cancellationToken).ConfigureAwait(false);
+
+                if (!headerInitialized)
                 {
-                    ArrayPool<byte>.Shared.Return(Data, clearArray: false);
+                    Header = FramebufferHeader.Read(headerData);
+                    headerInitialized = true;
                 }
 
-                Data = ArrayPool<byte>.Shared.Rent((int)Header.Size);
-            }
+                if (Data == null || Data.Length < Header.Size)
+                {
+                    // Optimization on .NET Core: Use the BufferPool to rent buffers
+                    if (Data != null)
+                    {
+                        ArrayPool<byte>.Shared.Return(Data, clearArray: false);
+                    }
 
-            // followed by the actual framebuffer content
-            await socket.ReadAsync(Data, (int)Header.Size, cancellationToken).ConfigureAwait(false);
+                    Data = ArrayPool<byte>.Shared.Rent((int)Header.Size);
+                }
+
+                // followed by the actual framebuffer content
+                await socket.ReadAsync(Data, (int)Header.Size, cancellationToken).ConfigureAwait(false);
+            }
         }
 
         /// <summary>

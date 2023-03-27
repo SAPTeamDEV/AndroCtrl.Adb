@@ -18,7 +18,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <summary>
         /// Maps the <see cref="SyncCommand"/> values to their string representations.
         /// </summary>
-        private static readonly Dictionary<SyncCommand, string> Values = new();
+        private static readonly Dictionary<SyncCommand, string> Values = new Dictionary<SyncCommand, string>();
 
         /// <summary>
         /// Initializes static members of the <see cref="SyncCommandConverter"/> class.

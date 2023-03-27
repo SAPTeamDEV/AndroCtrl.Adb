@@ -175,7 +175,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
             // but unfortunately older versions do not handle the -1 parameter well. So we need to branch based
             // on the API level. We do the branching on the device (inside a shell script) to avoid roundtrips.
             // This if/then/else syntax was tested on Android 2.x, 4.x and 7
-            ConsoleOutputReceiver receiver = new();
+            ConsoleOutputReceiver receiver = new ConsoleOutputReceiver();
             client.ExecuteShellCommand(device, @"SDK=""$(/system/bin/getprop ro.build.version.sdk)""
 if [ $SDK -lt 24 ]
 then
@@ -187,7 +187,7 @@ fi".Replace("\r\n", "\n"), receiver);
             Collection<int> pids = new Collection<int>();
 
             string output = receiver.ToString();
-            using (StringReader reader = new(output))
+            using (StringReader reader = new StringReader(output))
             {
                 while (reader.Peek() > 0)
                 {
@@ -209,8 +209,8 @@ fi".Replace("\r\n", "\n"), receiver);
             // Doing cat on each file one by one takes too much time. Doing cat on all of them at the same time doesn't work
             // either, because the command line would be too long.
             // So we do it 25 processes at at time.
-            StringBuilder catBuilder = new();
-            ProcessOutputReceiver processOutputReceiver = new();
+            StringBuilder catBuilder = new StringBuilder();
+            ProcessOutputReceiver processOutputReceiver = new ProcessOutputReceiver();
 
             catBuilder.Append("cat ");
 

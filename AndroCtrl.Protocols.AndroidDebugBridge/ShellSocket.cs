@@ -22,17 +22,16 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
     /// </summary>
     public class ShellSocket : IShellSocket, IDisposable
     {
-        readonly Regex Regex = new(@"(?<num>[1-9]*)\W*\b(?<host>\w+):(?<directory>.*)\s(?<user>\$|#) $");
+        readonly Regex Regex = new Regex(@"(?<num>[1-9]*)\W*\b(?<host>\w+):(?<directory>.*)\s(?<user>\$|#) $");
         Match Match;
         bool validMatch;
 
         StreamReader reader;
 
-        List<string> lines = new();
+        List<string> lines = new List<string>();
         string message;
         string command;
         bool showMsg;
-        private bool disposedValue;
 
         /// <inheritdoc/>
         public string Message
@@ -67,7 +66,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         public ShellSocket(IAdbSocket socket)
         {
             Socket = socket;
-            reader = new(socket.GetShellStream());
+            reader = new StreamReader(socket.GetShellStream());
 
             GetPrompt();
         }

@@ -84,8 +84,8 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             FramebufferHeader header = default;
 
             // Read the data from a MemoryStream so we can use the BinaryReader to process the data.
-            using (MemoryStream stream = new(data))
-            using (BinaryReader reader = new(stream, Encoding.ASCII, leaveOpen: true))
+            using (MemoryStream stream = new MemoryStream(data))
+            using (BinaryReader reader = new BinaryReader(stream, Encoding.ASCII, leaveOpen: true))
             {
                 header.Version = reader.ReadUInt32();
 
@@ -161,7 +161,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             // The pixel format of the framebuffer may not be one that .NET recognizes, so we need to fix that
             PixelFormat pixelFormat = StandardizePixelFormat(buffer);
 
-            Bitmap bitmap = new((int)Width, (int)Height, pixelFormat);
+            Bitmap bitmap = new Bitmap((int)Width, (int)Height, pixelFormat);
             BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.WriteOnly, pixelFormat);
             Marshal.Copy(buffer, 0, bitmapData.Scan0, buffer.Length);
             bitmap.UnlockBits(bitmapData);

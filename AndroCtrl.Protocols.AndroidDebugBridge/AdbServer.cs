@@ -30,7 +30,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <summary>
         /// The minum version of <c>adb.exe</c> that is supported by this library.
         /// </summary>
-        public static readonly Version RequiredAdbVersion = new(1, 0, 41);
+        public static readonly Version RequiredAdbVersion = new Version(1, 0, 41);
 
         /// <summary>
         /// The error code that is returned by the <see cref="SocketException"/> when the connection is refused.
@@ -58,7 +58,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <summary>
         /// A lock used to ensure only one caller at a time can attempt to restart adb.
         /// </summary>
-        private static readonly object RestartLock = new();
+        private static readonly object RestartLock = new object();
 
         /// <summary>
         /// The path to the adb server. Cached from calls to <see cref="StartServer(string, bool)"/>. Used when restarting

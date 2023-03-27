@@ -121,7 +121,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         {
             ValidateDevice();
 
-            PackageManagerReceiver pmr = new(Device, this);
+            PackageManagerReceiver pmr = new PackageManagerReceiver(Device, this);
 
             if (ThirdPartyOnly)
             {
@@ -161,7 +161,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         {
             ValidateDevice();
 
-            InstallReceiver receiver = new();
+            InstallReceiver receiver = new InstallReceiver();
             string reinstallSwitch = reinstall ? "-r " : string.Empty;
 
             string cmd = $"pm install {reinstallSwitch}{remoteFilePath}";
@@ -183,7 +183,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         {
             ValidateDevice();
 
-            InstallReceiver receiver = new();
+            InstallReceiver receiver = new InstallReceiver();
             client.ExecuteShellCommand(Device, $"pm uninstall {packageName}", receiver);
             if (!string.IsNullOrEmpty(receiver.ErrorMessage))
             {
@@ -201,7 +201,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         {
             ValidateDevice();
 
-            VersionInfoReceiver receiver = new();
+            VersionInfoReceiver receiver = new VersionInfoReceiver();
             client.ExecuteShellCommand(Device, $"dumpsys package {packageName}", receiver);
             return receiver.VersionInfo;
         }

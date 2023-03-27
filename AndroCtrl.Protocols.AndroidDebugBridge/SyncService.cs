@@ -300,7 +300,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             // read the result, in a byte array containing 3 ints
             // (mode, size, time)
-            FileStatistics value = new()
+            FileStatistics value = new FileStatistics()
             {
                 Path = remotePath
             };
@@ -313,7 +313,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <inheritdoc/>
         public IEnumerable<FileStatistics> GetDirectoryListing(string remotePath)
         {
-            Collection<FileStatistics> value = new();
+            Collection<FileStatistics> value = new Collection<FileStatistics>();
 
             // create the stat request message.
             Socket.SendSyncRequest(SyncCommand.LIST, remotePath);
@@ -331,7 +331,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                     throw new AdbException($"The server returned an invalid sync response.");
                 }
 
-                FileStatistics entry = new();
+                FileStatistics entry = new FileStatistics();
                 ReadStatistics(entry);
                 entry.Path = Socket.ReadSyncString();
 

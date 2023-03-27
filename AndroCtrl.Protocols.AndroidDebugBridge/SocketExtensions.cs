@@ -57,7 +57,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             // and convert to a TaskCancelledException - which is the exception we expect.
             CancellationTokenRegistration cancellationTokenRegistration = cancellationToken.Register(() => socket.Dispose());
 
-            ArraySegment<byte> array = new(buffer, offset, size);
+            ArraySegment<byte> array = new ArraySegment<byte>(buffer, offset, size);
             return socket.ReceiveAsync(array, socketFlags);
         }
     }

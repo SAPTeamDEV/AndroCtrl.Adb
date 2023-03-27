@@ -21,7 +21,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// class.
         /// </summary>
         private static readonly Dictionary<string, ForwardProtocol> Mappings
-            = new(StringComparer.OrdinalIgnoreCase)
+            = new Dictionary<string, ForwardProtocol>(StringComparer.OrdinalIgnoreCase)
                 {
                 { "tcp", ForwardProtocol.Tcp },
                 { "localabstract", ForwardProtocol.LocalAbstract },
@@ -101,7 +101,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             ForwardProtocol protocol = Mappings[parts[0]];
 
-            ForwardSpec value = new()
+            ForwardSpec value = new ForwardSpec()
             {
                 Protocol = protocol
             };
@@ -143,15 +143,25 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <inheritdoc/>
         public override string ToString()
         {
-            string protocolString = Mappings.FirstOrDefault(v => v.Value == Protocol).Key;
+            var protocolString = Mappings.FirstOrDefault(v => v.Value == this.Protocol).Key;
 
-            return Protocol switch
+            switch (this.Protocol)
             {
-                ForwardProtocol.JavaDebugWireProtocol => $"{protocolString}:{ProcessId}",
-                ForwardProtocol.Tcp => $"{protocolString}:{Port}",
-                ForwardProtocol.LocalAbstract or ForwardProtocol.LocalFilesystem or ForwardProtocol.LocalReserved or ForwardProtocol.Device => $"{protocolString}:{SocketName}",
-                _ => string.Empty,
-            };
+                case ForwardProtocol.JavaDebugWireProtocol:
+                    return $"{protocolString}:{this.ProcessId}";
+
+                case ForwardProtocol.Tcp:
+                    return $"{protocolString}:{this.Port}";
+
+                case ForwardProtocol.LocalAbstract:
+                case ForwardProtocol.LocalFilesystem:
+                case ForwardProtocol.LocalReserved:
+                case ForwardProtocol.Device:
+                    return $"{protocolString}:{this.SocketName}";
+
+                default:
+                    return string.Empty;
+            }
         }
 
         /// <inheritdoc/>
@@ -166,25 +176,35 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            ForwardSpec other = obj as ForwardSpec;
+            var other = obj as ForwardSpec;
 
             if (other == null)
             {
                 return false;
             }
 
-            if (other.Protocol != Protocol)
+            if (other.Protocol != this.Protocol)
             {
                 return false;
             }
 
-            return Protocol switch
+            switch (this.Protocol)
             {
-                ForwardProtocol.JavaDebugWireProtocol => ProcessId == other.ProcessId,
-                ForwardProtocol.Tcp => Port == other.Port,
-                ForwardProtocol.LocalAbstract or ForwardProtocol.LocalFilesystem or ForwardProtocol.LocalReserved or ForwardProtocol.Device => string.Equals(SocketName, other.SocketName),
-                _ => false,
-            };
+                case ForwardProtocol.JavaDebugWireProtocol:
+                    return this.ProcessId == other.ProcessId;
+
+                case ForwardProtocol.Tcp:
+                    return this.Port == other.Port;
+
+                case ForwardProtocol.LocalAbstract:
+                case ForwardProtocol.LocalFilesystem:
+                case ForwardProtocol.LocalReserved:
+                case ForwardProtocol.Device:
+                    return string.Equals(this.SocketName, other.SocketName);
+
+                default:
+                    return false;
+            }
         }
     }
 }

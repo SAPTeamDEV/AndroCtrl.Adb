@@ -167,8 +167,8 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
                         // Use a stream on the data buffer. This will make sure that,
                         // if anything goes wrong parsing the data, we never go past
                         // the message boundary itself.
-                        using (MemoryStream dataStream = new(data))
-                        using (BinaryReader reader = new(dataStream))
+                        using (MemoryStream dataStream = new MemoryStream(data))
+                        using (BinaryReader reader = new BinaryReader(dataStream))
                         {
                             int priority = reader.ReadInt32();
 
@@ -215,7 +215,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
                 case EventLogType.List:
                     byte listLength = reader.ReadByte();
 
-                    Collection<object> list = new();
+                    Collection<object> list = new Collection<object>();
 
                     for (int i = 0; i < listLength; i++)
                     {

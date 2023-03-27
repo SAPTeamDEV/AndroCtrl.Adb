@@ -473,7 +473,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// </returns>
         protected AdbResponse ReadAdbResponseInner()
         {
-            AdbResponse resp = new();
+            AdbResponse resp = new AdbResponse();
 
             byte[] reply = new byte[4];
             Read(reply);

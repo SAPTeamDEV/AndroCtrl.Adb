@@ -95,7 +95,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         public Version GetVersion()
         {
             // Run the adb.exe version command and capture the output.
-            List<string> standardOutput = new();
+            List<string> standardOutput = new List<string>();
 
             RunAdbProcess("version", null, standardOutput);
 
@@ -268,7 +268,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
 
             int status;
 
-            ProcessStartInfo psi = new(AdbPath, command)
+            ProcessStartInfo psi = new ProcessStartInfo(AdbPath, command)
             {
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
