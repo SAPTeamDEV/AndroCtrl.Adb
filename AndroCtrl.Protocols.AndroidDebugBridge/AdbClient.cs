@@ -149,8 +149,10 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <inheritdoc/>
         public void KillAdb()
         {
-            using IAdbSocket socket = adbSocketFactory(EndPoint);
-            socket.SendAdbRequest("host:kill");
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
+            {
+                socket.SendAdbRequest("host:kill");
+            }
 
             // The host will immediately close the connection after the kill
             // command has been sent; no need to read the response.
@@ -366,11 +368,13 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         {
             EnsureDevice(device);
 
-            using Framebuffer framebuffer = CreateRefreshableFramebuffer(device);
-            await framebuffer.RefreshAsync(cancellationToken).ConfigureAwait(false);
+            using (Framebuffer framebuffer = CreateRefreshableFramebuffer(device))
+            {
+                await framebuffer.RefreshAsync(cancellationToken).ConfigureAwait(false);
 
-            // Convert the framebuffer to an image, and return that.
-            return framebuffer.ToImage();
+                // Convert the framebuffer to an image, and return that.
+                return framebuffer.ToImage();
+            }
         }
 
         /// <inheritdoc/>
@@ -587,9 +591,11 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 throw new ArgumentNullException(nameof(endpoint));
             }
 
-            using IAdbSocket socket = adbSocketFactory(EndPoint);
-            socket.SendAdbRequest($"host:disconnect:{endpoint.Host}:{endpoint.Port}");
-            AdbResponse response = socket.ReadAdbResponse();
+            using (IAdbSocket socket = adbSocketFactory(EndPoint))
+            {
+                socket.SendAdbRequest($"host:disconnect:{endpoint.Host}:{endpoint.Port}");
+                AdbResponse response = socket.ReadAdbResponse();
+            }
         }
 
         /// <summary>

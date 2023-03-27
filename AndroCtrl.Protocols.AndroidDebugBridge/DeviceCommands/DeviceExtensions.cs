@@ -56,8 +56,10 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         /// </returns>
         public static FileStatistics Stat(this IAdbClient client, DeviceData device, string path)
         {
-            using ISyncService service = Factories.SyncServiceFactory(client, device);
-            return service.Stat(path);
+            using (ISyncService service = Factories.SyncServiceFactory(client, device))
+            {
+                return service.Stat(path);
+            }
         }
 
         /// <summary>
@@ -112,7 +114,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         /// </param>
         public static void UninstallPackage(this IAdbClient client, DeviceData device, string packageName)
         {
-            PackageManager manager = new(client, device);
+            PackageManager manager = new PackageManager(client, device);
             manager.UninstallPackage(packageName);
         }
 
@@ -127,7 +129,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         /// </param>
         public static VersionInfo GetPackageVersion(this IAdbClient client, DeviceData device, string packageName)
         {
-            PackageManager manager = new(client, device);
+            PackageManager manager = new PackageManager(client, device);
             return manager.GetVersionInfo(packageName);
         }
 
@@ -158,7 +160,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
             // The easiest way to do the directory listings would be to use the SyncService; unfortunately,
             // the sync service doesn't work very well with /proc/ so we're back to using ls and taking it
             // from there.
-            List<AndroidProcess> processes = new();
+            List<AndroidProcess> processes = new List<AndroidProcess>();
 
             // List all processes by doing ls /proc/.
             // All subfolders which are completely numeric are PIDs
@@ -182,7 +184,7 @@ else
     /system/bin/ls -1 /proc/
 fi".Replace("\r\n", "\n"), receiver);
 
-            Collection<int> pids = new();
+            Collection<int> pids = new Collection<int>();
 
             string output = receiver.ToString();
             using (StringReader reader = new(output))
