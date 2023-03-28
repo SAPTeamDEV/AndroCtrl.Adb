@@ -231,10 +231,6 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// <paramref name="device"/>. After this request, every client request will
         /// be sent directly to the adbd daemon running on the device.
         /// </summary>
-        /// <param name="socket">
-        /// An instance of the <see cref="IAdbSocket"/> class which is connected to
-        /// the Android Debug Bridge.
-        /// </param>
         /// <param name="device">
         /// The device to which to connect.
         /// </param>

@@ -121,6 +121,9 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
         /// <summary>
         /// Requests the version information from the device.
         /// </summary>
+        /// <param name="client">
+        /// A connection to ADB.
+        /// </param>
         /// <param name="device">
         /// The device on which to uninstall the package.
         /// </param>

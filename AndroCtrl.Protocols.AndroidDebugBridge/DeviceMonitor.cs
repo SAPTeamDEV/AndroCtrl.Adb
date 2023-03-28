@@ -112,6 +112,9 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// </value>
         public bool IsRunning { get; private set; }
 
+        /// <summary>
+        /// Gets a value indicating whether the events of this instance is receiving new updates.
+        /// </summary>
         public bool IsListening { get; private set; }
 
         /// <inheritdoc/>
@@ -330,7 +333,9 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                 }
             }
         }
-
+        /// <summary>
+        /// Temporarily pauses the <see cref="DeviceMonitor"/> event triggering.
+        /// </summary>
         public void Stop()
         {
             IsListening = false;

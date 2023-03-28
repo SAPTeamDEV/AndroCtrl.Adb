@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
 using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
 using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
@@ -222,6 +223,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// </summary>
         /// <param name="device">
         /// The device on which to remove the reverse port forwarding
+        /// </param>
         /// <param name="remote">
         /// Specification of the remote that was forwarded
         /// </param>
@@ -428,6 +430,9 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// <param name="endpoint">
         /// The DNS endpoint at which the <c>adb pair</c> address on the device is shown.
         /// </param>
+        /// <param name="pairKey">
+        /// The wireless debugging pair key.
+        /// </param>
         void Pair(DnsEndPoint endpoint, int pairKey);
 
         /// <summary>
@@ -446,6 +451,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// </param>
         void Unroot(DeviceData device);
 
+        /// <summary>
         /// Installs an Android application on an device.
         /// </summary>
         /// <param name="device">

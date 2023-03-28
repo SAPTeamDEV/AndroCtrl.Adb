@@ -31,7 +31,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
     ///     call the <see cref="GetDevices"/> method.
     /// </para>
     /// <para>
-    ///     To run a command on a device, you can use the <see cref="AdbClient.ExecuteRemoteCommandAsync(string, DeviceData, IShellOutputReceiver, CancellationToken, int)"/>
+    ///     To run a command on a device, you can use the <see cref="AdbClient.ExecuteRemoteCommandAsync(string, DeviceData, IShellOutputReceiver, CancellationToken)"/>
     ///     method.
     /// </para>
     /// </summary>
@@ -71,6 +71,9 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <param name="endPoint">
         /// The <see cref="EndPoint"/> at which the adb server is listening.
         /// </param>
+        /// <param name="adbSocketFactory">
+        /// The adb socket factory.
+        /// </param>
         public AdbClient(EndPoint endPoint, Func<EndPoint, IAdbSocket> adbSocketFactory)
         {
             if (endPoint == null)
@@ -93,7 +96,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         public static Encoding Encoding
         { get; } = Encoding.GetEncoding(DefaultEncoding);
 
-        public static EndPoint DefaultEndPoint => new IPEndPoint(IPAddress.Loopback, DefaultPort);
+        // public static EndPoint DefaultEndPoint => new IPEndPoint(IPAddress.Loopback, DefaultPort);
 
         /// <summary>
         /// Gets the <see cref="EndPoint"/> at which the adb server is listening.
@@ -195,6 +198,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             }
         }
 
+        ///<inheritdoc/>
         public void RemoveReverseForward(DeviceData device, string remote)
         {
             EnsureDevice(device);
@@ -208,6 +212,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             }
         }
 
+        ///<inheritdoc/>
         public void RemoveAllReverseForwards(DeviceData device)
         {
             EnsureDevice(device);
@@ -287,6 +292,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             }
         }
 
+        ///<inheritdoc/>
         public IEnumerable<ForwardData> ListReverseForward(DeviceData device)
         {
             EnsureDevice(device);
@@ -623,6 +629,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             }
         }
 
+        ///<inheritdoc/>
         public void Disconnect(DnsEndPoint endpoint)
         {
             if (endpoint == null)

@@ -49,7 +49,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             }
         }
 
-        public bool HasPendingData => lines.Count > 0;
+        private bool HasPendingData => lines.Count > 0;
 
         /// <inheritdoc/>
         public IAdbSocket Socket { get; }
@@ -63,6 +63,12 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         /// <inheritdoc/>
         public ShellAccess Access { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellSocket"/> class.
+        /// </summary>
+        /// <param name="socket">
+        /// The shell socket of specified device.
+        /// </param>
         public ShellSocket(IAdbSocket socket)
         {
             Socket = socket;

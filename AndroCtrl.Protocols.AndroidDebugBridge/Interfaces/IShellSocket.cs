@@ -70,7 +70,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
         /// <returns>
         /// A <see langword="string"/> that contains response without prompt.
         /// </returns>
-        string Interact(string command, IShellOutputReceiver[] receiver);
+        string Interact(string command, IShellOutputReceiver[] receivers);
 
         /// <summary>
         /// Reads all available data and converts it to string.

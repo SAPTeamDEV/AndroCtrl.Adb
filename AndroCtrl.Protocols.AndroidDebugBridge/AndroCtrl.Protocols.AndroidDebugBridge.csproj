@@ -12,19 +12,19 @@
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>AndroCtrl.Protocols.AndroidDebugBridge</PackageId>
     <PackageTags>android;adb;device</PackageTags>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Product>AnroCtrl: Android Debug Bridge Communication Library</Product>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>False</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Company>SAP Team</Company>
     <RepositoryUrl>https://github.com/SAPTeamDEV/AndroCtrl.Protocols.AndroidDebugBridge</RepositoryUrl>
-    <IsPublishable>False</IsPublishable>
+    <IsPublishable>True</IsPublishable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

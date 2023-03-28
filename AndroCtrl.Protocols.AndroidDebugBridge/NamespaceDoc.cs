@@ -16,8 +16,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
     ///
     /// <para>
     ///     Most of the adb functionality is exposed through the <see cref="AdbClient"/> class.
-    ///     You can create your own instance of that class, or just use the instance we provide for you at
-    ///     <see cref="AdbClient.Instance"/>
+    ///     You can create an instance of that class to use adb commands.
     /// </para>
     ///
     /// <para>
