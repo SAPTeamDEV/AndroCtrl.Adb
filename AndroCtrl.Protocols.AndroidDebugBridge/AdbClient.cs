@@ -96,7 +96,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
         public static Encoding Encoding
         { get; } = Encoding.GetEncoding(DefaultEncoding);
 
-        // public static EndPoint DefaultEndPoint => new IPEndPoint(IPAddress.Loopback, DefaultPort);
+        internal static EndPoint DefaultEndPoint => new IPEndPoint(IPAddress.Loopback, DefaultPort);
 
         /// <summary>
         /// Gets the <see cref="EndPoint"/> at which the adb server is listening.
