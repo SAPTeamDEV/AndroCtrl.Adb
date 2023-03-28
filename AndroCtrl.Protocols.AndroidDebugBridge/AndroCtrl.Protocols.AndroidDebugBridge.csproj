@@ -23,6 +23,7 @@
     <RepositoryUrl>https://github.com/SAPTeamDEV/AndroCtrl.Protocols.AndroidDebugBridge</RepositoryUrl>
     <IsPublishable>False</IsPublishable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
