@@ -5,7 +5,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Exceptions
+namespace SAPTeam.AndroCtrl.Adb.Exceptions
 {
     /// <summary>
     /// This namespace contains the various exceptions that are used by this library.

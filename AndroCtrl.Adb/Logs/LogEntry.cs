@@ -5,7 +5,7 @@
 
 using System;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
+namespace SAPTeam.AndroCtrl.Adb.Logs
 {
     /// <summary>
     /// The userspace structure for version 1 of the logger_entry ABI.

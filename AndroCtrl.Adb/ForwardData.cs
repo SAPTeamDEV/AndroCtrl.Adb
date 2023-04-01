@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Contains information about port forwarding configured by the Android Debug Bridge.

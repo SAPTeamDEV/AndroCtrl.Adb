@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
+namespace SAPTeam.AndroCtrl.Adb.Logs
 {
     /// <summary>
     /// Represents a standard Android log entry (an entry in any Android log buffer

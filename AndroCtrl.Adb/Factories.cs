@@ -5,12 +5,15 @@
 
 using System;
 using System.Net;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+using SAPTeam.AndroCtrl.Adb;
+
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
-    /// Provides factory methods used by the various AndroCtrl.Protocols.AndroidDebugBridge classes.
+    /// Provides factory methods used by the various SAPTeam.AndroCtrl.Adb classes.
     /// </summary>
     public static class Factories
     {

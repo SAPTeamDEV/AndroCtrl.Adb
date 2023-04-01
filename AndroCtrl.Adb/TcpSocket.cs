@@ -9,9 +9,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Implements the <see cref="ITcpSocket" /> interface using the standard <see cref="Socket"/>

@@ -6,7 +6,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Exceptions
+namespace SAPTeam.AndroCtrl.Adb.Exceptions
 {
     /// <summary>
     /// Thrown when an executed command identifies that it is being aborted.

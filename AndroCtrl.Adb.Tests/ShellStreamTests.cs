@@ -3,11 +3,11 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
+using SAPTeam.AndroCtrl.Adb.Logs;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     public class ShellStreamTests
     {

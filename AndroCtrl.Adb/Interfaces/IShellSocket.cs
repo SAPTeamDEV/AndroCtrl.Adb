@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using SAPTeam.AndroCtrl.Adb.Receivers;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
+namespace SAPTeam.AndroCtrl.Adb.Interfaces
 {
     /// <summary>
     /// Provides Interface for interact with Adb shell session.

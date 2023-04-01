@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.DeviceCommands
 {
     /// <summary>
     /// Represents the state of a process running on an Android device.

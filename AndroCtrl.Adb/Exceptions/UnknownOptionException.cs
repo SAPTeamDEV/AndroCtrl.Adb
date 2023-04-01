@@ -6,7 +6,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Exceptions
+namespace SAPTeam.AndroCtrl.Adb.Exceptions
 {
     /// <summary>
     /// Thrown when a command has an unknown option passed

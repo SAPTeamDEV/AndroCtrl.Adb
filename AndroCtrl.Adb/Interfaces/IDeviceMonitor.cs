@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
+namespace SAPTeam.AndroCtrl.Adb.Interfaces
 {
     /// <summary>
     /// Provides a common interface for any class that allows you to monitor the list of

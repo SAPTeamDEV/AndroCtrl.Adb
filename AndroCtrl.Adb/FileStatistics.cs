@@ -5,7 +5,7 @@
 
 using System;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Contains information about a file on the remote device.

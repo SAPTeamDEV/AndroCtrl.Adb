@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
+namespace SAPTeam.AndroCtrl.Adb.Receivers
 {
     /// <summary>
     ///

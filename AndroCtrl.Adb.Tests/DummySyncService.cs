@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     internal class DummySyncService : ISyncService
     {

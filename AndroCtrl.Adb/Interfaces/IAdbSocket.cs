@@ -8,9 +8,10 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using SAPTeam.AndroCtrl.Adb;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
+namespace SAPTeam.AndroCtrl.Adb.Interfaces
 {
     /// <summary>
     /// Provides a common interface for any class that acts as a client for the

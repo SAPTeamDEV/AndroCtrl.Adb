@@ -9,9 +9,10 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Provides access to the framebuffer (that is, a copy of the image being displayed on the device screen).

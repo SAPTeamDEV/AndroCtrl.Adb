@@ -5,9 +5,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     internal class DummyTcpSocket : ITcpSocket
     {

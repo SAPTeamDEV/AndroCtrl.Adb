@@ -8,12 +8,12 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
+namespace SAPTeam.AndroCtrl.Adb.Receivers
 {
     /// <summary>
     /// Recieves console output, and makes the console output available as a <see cref="string"/>. To

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.DeviceCommands
 {
     /// <summary>
     /// Just like System.IO.Path, except it is geared for Linux

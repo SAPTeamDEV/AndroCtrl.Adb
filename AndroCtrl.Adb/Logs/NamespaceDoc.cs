@@ -5,7 +5,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
+namespace SAPTeam.AndroCtrl.Adb.Logs
 {
     /// <summary>
     /// The classes in this namespace provide access to the Android system log.

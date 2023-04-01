@@ -5,7 +5,7 @@
 
 using System;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// The event arguments that are passed when a device event occurs.

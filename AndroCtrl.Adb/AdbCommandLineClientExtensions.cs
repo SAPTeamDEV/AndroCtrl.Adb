@@ -5,9 +5,10 @@
 
 using System;
 using System.IO;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Provides extension methods for the <see cref="IAdbCommandLineClient"/> class.

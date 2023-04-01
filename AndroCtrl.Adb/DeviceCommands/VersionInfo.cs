@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.DeviceCommands
 {
     /// <summary>
     /// Represents a version of an Android application.

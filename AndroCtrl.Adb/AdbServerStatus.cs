@@ -5,7 +5,7 @@
 
 using System;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Represents the status of the adb server.

@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Represents a protocol which is being forwarded over adb.

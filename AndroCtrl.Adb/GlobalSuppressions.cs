@@ -5,5 +5,5 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "<Pending>", Scope = "member", Target = "~M:AndroCtrl.Protocols.AndroidDebugBridge.DeviceMonitor.DeviceMonitorLoopAsync(System.Threading.CancellationToken)~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "<Pending>", Scope = "member", Target = "~M:AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands.PackageManager.SyncPackageToDevice(System.String)~System.String")]
+[assembly: SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "<Pending>", Scope = "member", Target = "~M:SAPTeam.AndroCtrl.Adb.DeviceMonitor.DeviceMonitorLoopAsync(System.Threading.CancellationToken)~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "<Pending>", Scope = "member", Target = "~M:SAPTeam.AndroCtrl.Adb.DeviceCommands.PackageManager.SyncPackageToDevice(System.String)~System.String")]

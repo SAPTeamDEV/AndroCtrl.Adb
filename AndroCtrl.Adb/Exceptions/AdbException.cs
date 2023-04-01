@@ -7,7 +7,9 @@ using System;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Exceptions
+using SAPTeam.AndroCtrl.Adb;
+
+namespace SAPTeam.AndroCtrl.Adb.Exceptions
 {
     /// <summary>
     /// Represents an exception with communicating with ADB

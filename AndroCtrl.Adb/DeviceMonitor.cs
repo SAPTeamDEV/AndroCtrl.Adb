@@ -9,12 +9,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+using SAPTeam.AndroCtrl.Adb.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// <para>

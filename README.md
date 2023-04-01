@@ -1,18 +1,18 @@
 # A .NET client for the Android Debug Bridge
 
-[![Build status](https://ci.appveyor.com/api/projects/status/o60gc1bdp5y4tbxd?svg=true)](https://ci.appveyor.com/project/SAPTeamDEV/androctrl-protocols-androiddebugbridge)
-[![NuGet Status](http://img.shields.io/nuget/v/AndroCtrl.Protocols.AndroidDebugBridge.svg?style=flat)](https://www.nuget.org/packages/AndroCtrl.Protocols.AndroidDebugBridge/)
+[![Build status](https://ci.appveyor.com/api/projects/status/vcx65q21codlils4?svg=true)](https://ci.appveyor.com/project/SAPTeamDEV/androctrl-adb)
+[![NuGet Status](http://img.shields.io/nuget/v/SAPTeam.AndroCtrl.Adb.svg?style=flat)](https://www.nuget.org/packages/SAPTeam.AndroCtrl.Adb/)
 
 This library allows .NET applications to communicate with Android devices. 
 It provides a .NET implementation of the `adb` protocol, giving more flexibility to the developer than launching an 
 `adb.exe` process and parsing the console output.
 
 ## Installation
-To install this library to your Project, install the [AndroCtrl.Protocols.AndroidDebugBridge NuGetPackage](https://www.nuget.org/packages/AndroCtrl.Protocols.AndroidDebugBridge). If you're
+To install this library to your Project, install the [SAPTeam.AndroCtrl.Adb NuGetPackage](https://www.nuget.org/packages/SAPTeam.AndroCtrl.Adb). If you're
 using Visual Studio, you can run the following command in the [Package Manager Console](http://docs.nuget.org/consume/package-manager-console):
 
 ```
-PM> Install-Package AndroCtrl.Protocols.AndroidDebugBridge
+PM> Install-Package SAPTeam.AndroCtrl.Adb
 ```
 
 ## Getting Started

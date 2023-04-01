@@ -1,10 +1,10 @@
 ﻿using System;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     /// <summary>
     /// Tests the <see cref="AdbCommandLineClient"/> class.

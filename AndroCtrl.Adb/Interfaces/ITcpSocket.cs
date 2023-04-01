@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
+namespace SAPTeam.AndroCtrl.Adb.Interfaces
 {
     /// <summary>
     /// Provides an interface that allows access to the standard .NET <see cref="Socket"/>

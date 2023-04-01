@@ -10,7 +10,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Whenever the <c>framebuffer:</c> service is invoked, the adb server responds with the contents

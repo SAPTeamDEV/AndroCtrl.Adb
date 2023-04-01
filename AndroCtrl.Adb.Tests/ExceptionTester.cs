@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     internal static class ExceptionTester<T>
         where T : Exception

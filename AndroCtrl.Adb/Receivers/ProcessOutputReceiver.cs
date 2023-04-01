@@ -7,9 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+using SAPTeam.AndroCtrl.Adb.DeviceCommands;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
+namespace SAPTeam.AndroCtrl.Adb.Receivers
 {
     /// <summary>
     /// Parses the output of a <c>cat /proc/[pid]/stat</c> command.

@@ -1,8 +1,10 @@
-﻿using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+﻿using SAPTeam.AndroCtrl.Adb.Exceptions;
+
+using SAPTeam.AndroCtrl.Adb.Tests;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.Exceptions
+namespace SAPTeam.AndroCtrl.Adb.Tests.Exceptions
 {
     public class UnknownOptionExceptionTests
     {

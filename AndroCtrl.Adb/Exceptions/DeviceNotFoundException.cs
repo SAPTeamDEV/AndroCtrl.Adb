@@ -6,7 +6,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Exceptions
+namespace SAPTeam.AndroCtrl.Adb.Exceptions
 {
     /// <summary>
     /// Unable to connect to the device because it was not found in the list of available devices.

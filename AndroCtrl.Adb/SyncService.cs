@@ -9,10 +9,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// <para>

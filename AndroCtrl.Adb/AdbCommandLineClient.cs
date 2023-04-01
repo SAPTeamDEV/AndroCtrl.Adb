@@ -11,12 +11,13 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+using SAPTeam.AndroCtrl.Adb.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Provides methods for interacting with the <c>adb.exe</c> command line client.

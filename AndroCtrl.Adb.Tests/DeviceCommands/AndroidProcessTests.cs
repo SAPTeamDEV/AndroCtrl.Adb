@@ -1,10 +1,10 @@
 ﻿using System;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+using SAPTeam.AndroCtrl.Adb.DeviceCommands;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.Tests.DeviceCommands
 {
     public class AndroidProcessTests
     {

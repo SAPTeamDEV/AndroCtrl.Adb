@@ -8,7 +8,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+using SAPTeam.AndroCtrl.Adb;
+
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Provides extension methods for the <see cref="Socket"/> class.

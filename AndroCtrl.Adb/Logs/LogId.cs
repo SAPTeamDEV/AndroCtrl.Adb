@@ -2,7 +2,7 @@
 // Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
 // </copyright>
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
+namespace SAPTeam.AndroCtrl.Adb.Logs
 {
     /// <summary>
     /// Identifies the various Android log buffers.

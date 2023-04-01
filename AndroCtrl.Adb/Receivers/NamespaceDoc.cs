@@ -6,7 +6,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
+namespace SAPTeam.AndroCtrl.Adb.Receivers
 {
     /// <summary>
     /// <para>

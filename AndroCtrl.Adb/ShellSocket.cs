@@ -12,10 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
-using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Receivers;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Provides methods to interact with Adb shell session.
@@ -121,7 +121,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
                     Socket.Read(resp);
                     Invalidate();
                     string result = Encoding.ASCII.GetString(resp);
-                    
+
                     lines = result.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     if (!string.IsNullOrEmpty(command))
                     {
@@ -184,7 +184,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
             while (true)
             {
                 var data = ReadAvailable(true);
-                if (data != string.Empty && (!noPrompt || (noPrompt && !validMatch)))
+                if (data != string.Empty && (!noPrompt || noPrompt && !validMatch))
                 {
                     result += data;
                     writer?.Write(data);

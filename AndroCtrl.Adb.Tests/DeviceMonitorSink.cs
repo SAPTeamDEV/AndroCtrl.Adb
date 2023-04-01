@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Threading;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     internal class DeviceMonitorSink
     {

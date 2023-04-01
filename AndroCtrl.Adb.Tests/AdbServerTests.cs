@@ -3,14 +3,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
 
 using Moq;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     public class AdbServerTests
     {

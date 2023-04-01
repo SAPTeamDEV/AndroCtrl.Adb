@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     public interface IDummyAdbSocket : IAdbSocket
     {

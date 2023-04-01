@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Extensions;
+using SAPTeam.AndroCtrl.Adb.Extensions;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     public class SyncServiceTests : SocketBasedTests
     {

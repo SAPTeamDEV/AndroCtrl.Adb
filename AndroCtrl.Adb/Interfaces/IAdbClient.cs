@@ -12,11 +12,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
-using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Logs;
+using SAPTeam.AndroCtrl.Adb.Receivers;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
+namespace SAPTeam.AndroCtrl.Adb.Interfaces
 {
     /// <summary>
     /// A common interface for any class that allows you to interact with the

@@ -5,7 +5,7 @@
 
 using System;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Extensions
+namespace SAPTeam.AndroCtrl.Adb.Extensions
 {
     /// <summary>
     /// Provides helper methods for working with Unix-based date formats.

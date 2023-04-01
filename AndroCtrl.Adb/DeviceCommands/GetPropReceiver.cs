@@ -6,9 +6,9 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using SAPTeam.AndroCtrl.Adb.Receivers;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.DeviceCommands
 {
     /// <summary>
     /// Parses the output of the <c>getprop</c> command, which lists all properties of an

@@ -8,7 +8,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.DeviceCommands
 {
     /// <summary>
     /// Processes command line output of the <c>dumpsys package</c> command.

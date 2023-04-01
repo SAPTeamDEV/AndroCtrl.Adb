@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
+namespace SAPTeam.AndroCtrl.Adb.Logs
 {
     /// <summary>
     /// Processes Android log files in binary format. You usually get the binary format by

@@ -3,9 +3,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
+using SAPTeam.AndroCtrl.Adb.Tests;
+
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     public class TcpSocketTests
     {

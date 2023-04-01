@@ -8,11 +8,11 @@ using System.Net;
 using System.Text;
 using System.Threading;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
-using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Receivers;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Provides extension methods for the <see cref="IAdbClient"/> interface. Provides overloads

@@ -6,7 +6,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.DeviceCommands
 {
     /// <summary>
     /// An exception while installing a package on the device

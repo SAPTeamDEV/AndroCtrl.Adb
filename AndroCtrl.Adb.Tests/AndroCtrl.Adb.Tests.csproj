@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AndroCtrl.Adb\AndroCtrl.Adb.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="dumpsys_package.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

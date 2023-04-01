@@ -3,9 +3,9 @@
 // </copyright>
 
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
+namespace SAPTeam.AndroCtrl.Adb.Interfaces
 {
     /// <summary>
     /// Represents a common interface for any class that allows starting or stopping the Android Debug Bridge (adb)

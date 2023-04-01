@@ -8,10 +8,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
-using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Receivers;
+
+namespace SAPTeam.AndroCtrl.Adb.DeviceCommands
 {
     /// <summary>
     /// Provides extension methods for the <see cref="DeviceData"/> class, allowing you to run

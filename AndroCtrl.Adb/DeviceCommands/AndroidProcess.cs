@@ -8,7 +8,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.DeviceCommands
 {
     /// <summary>
     /// Represents a process running on an Android device.

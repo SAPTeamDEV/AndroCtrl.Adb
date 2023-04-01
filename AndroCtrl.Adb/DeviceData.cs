@@ -6,7 +6,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// Represents a device that is connected to the Android Debug Bridge.

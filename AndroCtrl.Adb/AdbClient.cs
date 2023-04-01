@@ -14,12 +14,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Exceptions;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
-using AndroCtrl.Protocols.AndroidDebugBridge.Logs;
-using AndroCtrl.Protocols.AndroidDebugBridge.Receivers;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Logs;
+using SAPTeam.AndroCtrl.Adb.Receivers;
+using SAPTeam.AndroCtrl.Adb.Exceptions;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge
+namespace SAPTeam.AndroCtrl.Adb
 {
     /// <summary>
     /// <para>
@@ -31,7 +31,7 @@ namespace AndroCtrl.Protocols.AndroidDebugBridge
     ///     call the <see cref="GetDevices"/> method.
     /// </para>
     /// <para>
-    ///     To run a command on a device, you can use the <see cref="AdbClient.ExecuteRemoteCommandAsync(string, DeviceData, IShellOutputReceiver, CancellationToken)"/>
+    ///     To run a command on a device, you can use the <see cref="ExecuteRemoteCommandAsync(string, DeviceData, IShellOutputReceiver, CancellationToken)"/>
     ///     method.
     /// </para>
     /// </summary>

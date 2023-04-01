@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+using SAPTeam.AndroCtrl.Adb.DeviceCommands;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
 
 using Moq;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests.DeviceCommands
+namespace SAPTeam.AndroCtrl.Adb.Tests.DeviceCommands
 {
     public class DeviceExtensionsTests
     {

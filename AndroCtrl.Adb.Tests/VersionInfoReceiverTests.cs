@@ -7,11 +7,11 @@
 using System;
 using System.IO;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.DeviceCommands;
+using SAPTeam.AndroCtrl.Adb.DeviceCommands;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     /// <summary>
     /// Tests the <see cref="VersionInfoReceiver"/> class.

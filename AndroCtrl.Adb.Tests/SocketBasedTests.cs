@@ -6,7 +6,7 @@ using System.Net;
 
 using Xunit;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     public class SocketBasedTests
     {

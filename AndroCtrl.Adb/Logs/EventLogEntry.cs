@@ -5,7 +5,7 @@
 
 using System.Collections.ObjectModel;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Logs
+namespace SAPTeam.AndroCtrl.Adb.Logs
 {
     /// <summary>
     /// Represents an entry in event buffer of the the Android log.

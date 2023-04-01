@@ -8,7 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Interfaces
+using SAPTeam.AndroCtrl.Adb;
+
+namespace SAPTeam.AndroCtrl.Adb.Interfaces
 {
     /// <summary>
     /// Interface containing methods for file synchronisation.

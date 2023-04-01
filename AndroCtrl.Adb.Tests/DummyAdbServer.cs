@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
 
-using AndroCtrl.Protocols.AndroidDebugBridge.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Interfaces;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Tests
+namespace SAPTeam.AndroCtrl.Adb.Tests
 {
     /// <summary>
     /// A mock implementation of the <see cref="IAdbServer"/> class.

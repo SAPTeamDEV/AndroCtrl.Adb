@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 
-namespace AndroCtrl.Protocols.AndroidDebugBridge.Receivers
+namespace SAPTeam.AndroCtrl.Adb.Receivers
 {
     /// <summary>
     ///
