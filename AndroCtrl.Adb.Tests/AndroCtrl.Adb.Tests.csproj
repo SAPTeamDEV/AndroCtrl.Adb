@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <SignAssembly>False</SignAssembly>
+    <SignAssembly>True</SignAssembly>
     <AssemblyName>SAPTeam.AndroCtrl.Adb.Tests</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
+    <AssemblyOriginatorKeyFile>AndroCtrl.Adb.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>

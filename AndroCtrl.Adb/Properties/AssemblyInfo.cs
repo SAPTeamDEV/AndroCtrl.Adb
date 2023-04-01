@@ -17,4 +17,4 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("2b5960d4-d113-4b7e-b528-826db406697f")]
 
-[assembly: InternalsVisibleTo("SAPTeam.AndroCtrl.Adb.Tests")]
+[assembly: InternalsVisibleTo("SAPTeam.AndroCtrl.Adb.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100090c052bd1867f3fa91defb1bb319b8b24eb1f49a4e01d743d8a85763bf829026c8cb6ef8b38771860118a684b281d184d453e520c2d5328530a82f3d20ad49fca1fd3a0312bddc4559b838062c3ff635069f6a8f03bc0868ab18776efeb9fd1ba0aa1d4d2c525c8db6b27e7798d22b87d0e39129325ed1dbd6c3cff362a2dd5")]
