@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2960E3C7-0041-48A7-A70D-21289D1AD2F6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		README.md = README.md
+		version.json = version.json
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndroCtrl.Adb", "AndroCtrl.Adb\AndroCtrl.Adb.csproj", "{6843602B-D9EA-4AE3-BEE5-2FE6A9996A3D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndroCtrl.Adb.Tests", "AndroCtrl.Adb.Tests\AndroCtrl.Adb.Tests.csproj", "{6667AE2D-E652-4E97-A54C-95B39403B4F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6843602B-D9EA-4AE3-BEE5-2FE6A9996A3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6843602B-D9EA-4AE3-BEE5-2FE6A9996A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6843602B-D9EA-4AE3-BEE5-2FE6A9996A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6843602B-D9EA-4AE3-BEE5-2FE6A9996A3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6667AE2D-E652-4E97-A54C-95B39403B4F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6667AE2D-E652-4E97-A54C-95B39403B4F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6667AE2D-E652-4E97-A54C-95B39403B4F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6667AE2D-E652-4E97-A54C-95B39403B4F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0ACB9022-5726-46AD-868D-C43F8A25BD23}
+	EndGlobalSection
+EndGlobal
