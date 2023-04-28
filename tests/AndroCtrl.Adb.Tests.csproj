@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AndroCtrl.Adb\AndroCtrl.Adb.csproj" />
+    <ProjectReference Include="..\src\AndroCtrl.Adb.csproj" />
   </ItemGroup>
 
   <ItemGroup>

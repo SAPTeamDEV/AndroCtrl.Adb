@@ -5,14 +5,13 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2960E3C7-0041-48A7-A70D-21289D1AD2F6}"
 	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
 		README.md = README.md
-		version.json = version.json
+		version.json = src\version.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndroCtrl.Adb", "AndroCtrl.Adb\AndroCtrl.Adb.csproj", "{6843602B-D9EA-4AE3-BEE5-2FE6A9996A3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndroCtrl.Adb", "src\AndroCtrl.Adb.csproj", "{6843602B-D9EA-4AE3-BEE5-2FE6A9996A3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndroCtrl.Adb.Tests", "AndroCtrl.Adb.Tests\AndroCtrl.Adb.Tests.csproj", "{6667AE2D-E652-4E97-A54C-95B39403B4F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndroCtrl.Adb.Tests", "tests\AndroCtrl.Adb.Tests.csproj", "{6667AE2D-E652-4E97-A54C-95B39403B4F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
