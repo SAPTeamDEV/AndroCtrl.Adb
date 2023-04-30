@@ -1,0 +1,35 @@
+name: Gawe CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Create and Deploy package
+        type: boolean
+        default: true
+      nuget-deploy:
+        description: Deploy package to NuGet gallery
+        type: boolean
+        default: true
+  push:
+    paths:
+      - 'src/**'
+    branches: [master, dev]
+  pull_request:
+    branches: [master]
+    
+permissions:
+  contents:
+    write
+  packages:
+    write
+  pull-requests:
+    write
+
+jobs:
+  build:
+    uses: SAPTeamDEV/Gawe/.github/workflows/dotnet.yml@master
+    with:
+      deploy: ${{ !contains(inputs.deploy, 'false') }}
+      nuget-deploy: ${{ !contains(inputs.nuget-deploy, 'false') }}
+    secrets: inherit
