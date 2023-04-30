@@ -22,19 +22,15 @@ For Getting started with this library you can visit the github page.</Descriptio
     <PackageId>$(AssemblyName)</PackageId>
     <PackageTags>android;adb;device;adbwifi;adb-wifi;adb-client;adb-server;adb-pair;wireless-debugging</PackageTags>
     <Product>AnroCtrl: Android Debug Bridge Communication Library</Product>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Company>SAP Team</Company>
     <RepositoryUrl>https://github.com/SAPTeamDEV/AndroCtrl.Adb</RepositoryUrl>
     <IsPublishable>True</IsPublishable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+  	<PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <Copyright>Copyright © SAP Team 2023</Copyright>
-    <PackageReleaseNotes></PackageReleaseNotes>
     <AssemblyOriginatorKeyFile>AndroCtrl.Adb.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
