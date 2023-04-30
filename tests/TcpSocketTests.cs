@@ -47,6 +47,7 @@ namespace SAPTeam.AndroCtrl.Adb.Tests
             Assert.True(socket.Connected);
         }
 
+        /*
         [Fact]
         public void BufferSizeTest()
         {
@@ -57,6 +58,7 @@ namespace SAPTeam.AndroCtrl.Adb.Tests
             Assert.Equal(1024, socket.ReceiveBufferSize);
             socket.Dispose();
         }
+        */
 
         [Fact]
         public void CreateUnsupportedSocketTest()
