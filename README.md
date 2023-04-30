@@ -1,6 +1,6 @@
 # A .NET client for the Android Debug Bridge
 
-[![Build status](https://ci.appveyor.com/api/projects/status/vcx65q21codlils4?svg=true)](https://ci.appveyor.com/project/SAPTeamDEV/androctrl-adb)
+[![Gawe CI](https://github.com/SAPTeamDEV/AndroCtrl.Adb/actions/workflows/main.yml/badge.svg?event=push)](https://github.com/SAPTeamDEV/AndroCtrl.Adb/actions/workflows/main.yml)
 [![NuGet Status](http://img.shields.io/nuget/v/SAPTeam.AndroCtrl.Adb.svg?style=flat)](https://www.nuget.org/packages/SAPTeam.AndroCtrl.Adb/)
 
 This library allows .NET applications to communicate with Android devices. 
