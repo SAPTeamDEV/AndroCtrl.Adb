@@ -1,12 +1,10 @@
-﻿// <copyright file="Factories.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion">
-// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
+﻿// <copyright file="Factories.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion, SAP Team">
+// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion, Alireza Poodineh. All rights reserved.
 // </copyright>
 
 
 using System;
 using System.Net;
-
-using SAPTeam.AndroCtrl.Adb;
 
 using SAPTeam.AndroCtrl.Adb.Interfaces;
 

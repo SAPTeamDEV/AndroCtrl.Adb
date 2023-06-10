@@ -1,5 +1,5 @@
-﻿// <copyright file="ISyncService.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion">
-// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
+﻿// <copyright file="ISyncService.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion, SAP Team">
+// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion, Alireza Poodineh. All rights reserved.
 // </copyright>
 
 
@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-
-using SAPTeam.AndroCtrl.Adb;
 
 namespace SAPTeam.AndroCtrl.Adb.Interfaces
 {

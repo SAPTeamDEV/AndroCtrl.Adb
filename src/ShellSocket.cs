@@ -1,16 +1,14 @@
-﻿using System;
+﻿// <copyright file="ShellSocket.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion, SAP Team">
+// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion, Alireza Poodineh. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
 
 using SAPTeam.AndroCtrl.Adb.Interfaces;
 using SAPTeam.AndroCtrl.Adb.Receivers;

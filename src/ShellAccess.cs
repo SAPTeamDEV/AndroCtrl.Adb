@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="ShellAccess.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion, SAP Team">
+// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion, Alireza Poodineh. All rights reserved.
+// </copyright>
 
 namespace SAPTeam.AndroCtrl.Adb
 {

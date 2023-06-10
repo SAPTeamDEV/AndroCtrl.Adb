@@ -1,5 +1,5 @@
-﻿// <copyright file="AdbSocket.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion">
-// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion. All rights reserved.
+﻿// <copyright file="AdbSocket.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion, SAP Team">
+// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion, Alireza Poodineh. All rights reserved.
 // </copyright>
 
 
@@ -12,13 +12,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using SAPTeam.AndroCtrl.Adb.Logs;
-
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 using SAPTeam.AndroCtrl.Adb.Exceptions;
 using SAPTeam.AndroCtrl.Adb.Interfaces;
+using SAPTeam.AndroCtrl.Adb.Logs;
 
 namespace SAPTeam.AndroCtrl.Adb
 {

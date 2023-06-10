@@ -1,3 +1,7 @@
+// <copyright file="AssemblyInfo.cs" company="The Android Open Source Project, Ryan Conrad, Quamotion, SAP Team">
+// Copyright (c) The Android Open Source Project, Ryan Conrad, Quamotion, Alireza Poodineh. All rights reserved.
+// </copyright>
+
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

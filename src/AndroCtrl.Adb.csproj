@@ -27,11 +27,12 @@ For Getting started with this library you can visit the github page.</Descriptio
     <RepositoryUrl>https://github.com/SAPTeamDEV/AndroCtrl.Adb</RepositoryUrl>
     <IsPublishable>True</IsPublishable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-  	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+  	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <Copyright>Copyright © SAP Team 2023</Copyright>
     <AssemblyOriginatorKeyFile>AndroCtrl.Adb.snk</AssemblyOriginatorKeyFile>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +40,7 @@ For Getting started with this library you can visit the github page.</Descriptio
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Include="E:\Projects\Workspace\AndroCtrl\externals\AndroCtrl.Adb\src\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,8 +48,12 @@ For Getting started with this library you can visit the github page.</Descriptio
     <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" PrivateAssets="all" />
-    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All"/>
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="E:\Projects\Workspace\AndroCtrl\externals\AndroCtrl.Adb\src\.editorconfig" />
   </ItemGroup>
 
 </Project>
